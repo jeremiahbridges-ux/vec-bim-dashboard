@@ -1,0 +1,2147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VEC BIM Coordination Dashboard — QTS ATL2 DC6 v1.2</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  if (window.pdfjsLib) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+</script>
+
+<style>
+  :root {
+    --vec-navy: #0B2545;
+    --vec-navy-2: #13315C;
+    --vec-blue: #1B4F8C;
+    --vec-teal: #13A8A8;
+    --vec-light: #E8EEF4;
+    --vec-gray: #8C9BAB;
+
+    --bg: #F7F9FC;
+    --surface: #FFFFFF;
+    --surface-2: #F0F4F9;
+    --border: #DCE3ED;
+    --border-strong: #B4C1D1;
+
+    --text-primary: #0A1628;
+    --text-secondary: #4A5A6E;
+    --text-tertiary: #8C9BAB;
+
+    --green: #00875A;
+    --green-bg: #E4F4EC;
+    --yellow: #B86E00;
+    --yellow-bg: #FFF4E0;
+    --red: #C1121F;
+    --red-bg: #FCE4E6;
+    --gray: #8C9BAB;
+    --gray-bg: #EDF1F6;
+    --blue-bg: #DBEAFE;
+    --blue: #0969DA;
+
+    --court-owner: #6F42C1;
+    --court-design: #0969DA;
+    --court-gc: #BF6B00;
+    --court-trade: #1A7F37;
+    --court-vec: #0B2545;
+    --court-external: #6E7781;
+
+    --shadow-sm: 0 1px 2px rgba(11, 37, 69, 0.06);
+    --shadow: 0 2px 8px rgba(11, 37, 69, 0.08), 0 1px 2px rgba(11, 37, 69, 0.05);
+    --shadow-lg: 0 8px 24px rgba(11, 37, 69, 0.12);
+
+    --radius: 6px;
+    --radius-lg: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  .mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-feature-settings: 'tnum' 1; }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(180deg, var(--vec-navy) 0%, var(--vec-navy-2) 100%);
+    color: white;
+    padding: 24px 32px 20px;
+    position: sticky; top: 0; z-index: 50;
+    box-shadow: var(--shadow);
+  }
+  .header-inner {
+    max-width: 1600px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 24px; flex-wrap: wrap;
+  }
+  .brand-mark {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--vec-teal);
+  }
+  .brand-mark::before { content: ""; width: 24px; height: 2px; background: var(--vec-teal); }
+  .title { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; margin-top: 6px; }
+  .subtitle { font-size: 13px; color: rgba(255,255,255,0.72); margin-top: 4px; }
+  .header-meta { display: flex; gap: 28px; font-size: 12px; }
+  .meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .meta-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.15em;
+    text-transform: uppercase; color: rgba(255,255,255,0.55);
+  }
+  .meta-value { font-weight: 600; color: white; }
+
+  /* TOP-LEVEL VIEW TABS */
+  .view-tabs {
+    max-width: 1600px; margin: 0 auto;
+    padding: 16px 32px 0;
+    display: flex; gap: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .view-tab {
+    padding: 10px 18px; background: transparent; border: none;
+    font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    cursor: pointer; font-family: inherit;
+    border-bottom: 3px solid transparent;
+    transition: all 0.15s;
+  }
+  .view-tab:hover { color: var(--vec-navy); }
+  .view-tab.active { color: var(--vec-navy); border-bottom-color: var(--vec-teal); }
+
+  main { max-width: 1600px; margin: 0 auto; padding: 16px 32px 64px; }
+  .view-panel { display: none; }
+  .view-panel.active { display: block; }
+
+  /* CONTROL BAR */
+  .control-bar {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .filter-group { display: inline-flex; gap: 6px; align-items: center; }
+  .filter-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-tertiary);
+  }
+  .filter-select {
+    padding: 6px 10px; background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    font-size: 12px; color: var(--text-primary); font-family: inherit;
+    cursor: pointer; min-width: 130px;
+  }
+  .filter-select:focus { outline: none; border-color: var(--vec-blue); }
+  .clear-btn {
+    padding: 6px 10px; background: transparent;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    font-size: 11px; color: var(--text-secondary); cursor: pointer;
+    font-family: inherit; font-weight: 600;
+  }
+  .clear-btn:hover { background: var(--surface-2); }
+
+  /* KPI ROW */
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    gap: 12px; margin-bottom: 16px;
+  }
+  .kpi {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 14px 16px;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: var(--kpi-color, var(--vec-blue));
+  }
+  .kpi-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--text-tertiary);
+  }
+  .kpi-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px; font-weight: 700;
+    color: var(--kpi-color, var(--vec-navy));
+    line-height: 1.1; margin-top: 4px;
+  }
+  .kpi-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+  .kpi.total { --kpi-color: var(--vec-navy); }
+  .kpi.green { --kpi-color: var(--green); }
+  .kpi.blue { --kpi-color: var(--blue); }
+  .kpi.yellow { --kpi-color: var(--yellow); }
+  .kpi.red { --kpi-color: var(--red); }
+  .kpi.teal { --kpi-color: var(--vec-teal); }
+  .kpi.gray { --kpi-color: var(--gray); }
+
+  /* COURTS STRIP */
+  .courts-strip {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 14px 18px;
+    margin-bottom: 16px; box-shadow: var(--shadow-sm);
+  }
+  .courts-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .courts-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-secondary);
+  }
+  .courts-count { font-size: 12px; color: var(--text-tertiary); }
+  .courts-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 6px;
+  }
+  .court-tile {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-left: 3px solid var(--court-color);
+    border-radius: var(--radius); padding: 8px 10px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .court-tile:hover { background: white; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .court-tile.active { background: white; box-shadow: 0 0 0 2px var(--court-color); }
+  .court-tile.empty { opacity: 0.45; cursor: default; }
+  .court-tile.empty:hover { transform: none; box-shadow: none; background: var(--surface-2); }
+  .court-tile-name { font-size: 10px; font-weight: 600; color: var(--text-secondary); line-height: 1.3; }
+  .court-tile-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px; font-weight: 700; color: var(--court-color); margin-top: 2px;
+  }
+  .court-tile-blockers { font-size: 9px; color: var(--red); font-weight: 600; margin-top: 1px; }
+
+  .court-c-owner { --court-color: var(--court-owner); }
+  .court-c-design { --court-color: var(--court-design); }
+  .court-c-gc { --court-color: var(--court-gc); }
+  .court-c-trade { --court-color: var(--court-trade); }
+  .court-c-vec { --court-color: var(--court-vec); }
+  .court-c-external { --court-color: var(--court-external); }
+
+  .info-strip {
+    background: var(--vec-light); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 8px 14px;
+    margin-bottom: 16px; font-size: 12px; color: var(--text-secondary);
+    display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
+  }
+  .info-strip .dot {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; margin-right: 5px; vertical-align: middle;
+  }
+  .info-strip .dot.g { background: var(--green); }
+  .info-strip .dot.b { background: var(--blue); }
+  .info-strip .dot.r { background: var(--red); }
+  .info-strip .dot.p { background: var(--gray); }
+
+  /* ===== ZONE WORKFLOW CARDS ===== */
+  .zone-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+    gap: 14px;
+  }
+  .zone-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+    transition: all 0.2s;
+  }
+  .zone-card:hover { box-shadow: var(--shadow); border-color: var(--border-strong); }
+  .zone-card.complete { border-left: 4px solid var(--green); }
+  .zone-card.in-progress { border-left: 4px solid var(--blue); }
+  .zone-card.upcoming { border-left: 4px solid var(--gray); }
+  .zone-card.overdue { border-left: 4px solid var(--red); }
+
+  .zone-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+  }
+  .zone-header-row1 { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .zone-name { font-size: 15px; font-weight: 700; color: var(--vec-navy); letter-spacing: -0.01em; line-height: 1.3; }
+  .zone-segment { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; font-weight: 500; }
+  .zone-status {
+    padding: 3px 8px; border-radius: 10px;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .zone-status.complete { background: var(--green-bg); color: var(--green); }
+  .zone-status.in-progress { background: var(--blue-bg); color: var(--blue); }
+  .zone-status.upcoming { background: var(--gray-bg); color: var(--gray); }
+  .zone-status.overdue { background: var(--red-bg); color: var(--red); }
+
+  .zone-meta-row {
+    margin-top: 10px;
+    display: flex; gap: 12px; font-size: 11px; color: var(--text-secondary);
+  }
+  .zone-meta-item { display: flex; flex-direction: column; gap: 1px; }
+  .zone-meta-label { font-size: 9px; font-weight: 700; color: var(--text-tertiary); letter-spacing: 0.08em; text-transform: uppercase; }
+  .zone-meta-value { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--text-primary); }
+
+  /* WORKFLOW TIMELINE */
+  .workflow {
+    padding: 18px 18px 14px;
+    background: white;
+  }
+  .workflow-track {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    position: relative;
+  }
+  .workflow-step {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 0 2px;
+  }
+  .workflow-step-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--surface-2); border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: var(--text-tertiary);
+    z-index: 2;
+    transition: all 0.2s;
+  }
+  .workflow-step.complete .workflow-step-dot {
+    background: var(--green); border-color: var(--green); color: white;
+  }
+  .workflow-step.in-progress .workflow-step-dot {
+    background: var(--blue); border-color: var(--blue); color: white;
+    box-shadow: 0 0 0 4px rgba(9, 105, 218, 0.18);
+  }
+  .workflow-step.overdue .workflow-step-dot {
+    background: var(--red); border-color: var(--red); color: white;
+  }
+  .workflow-step.upcoming .workflow-step-dot { /* default */ }
+
+  .workflow-step-line {
+    position: absolute;
+    top: 13px; left: 50%; right: -50%;
+    height: 2px; background: var(--border);
+    z-index: 1;
+  }
+  .workflow-step:last-child .workflow-step-line { display: none; }
+  .workflow-step.complete .workflow-step-line { background: var(--green); }
+  .workflow-step.in-progress .workflow-step-line { background: linear-gradient(90deg, var(--blue), var(--border) 60%); }
+
+  .workflow-step-label {
+    font-size: 9px; font-weight: 600; color: var(--text-secondary);
+    margin-top: 6px; line-height: 1.2;
+    letter-spacing: 0.02em;
+    min-height: 22px;
+  }
+  .workflow-step-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; color: var(--text-tertiary);
+    margin-top: 2px;
+  }
+  .workflow-step.in-progress .workflow-step-label { color: var(--blue); font-weight: 700; }
+  .workflow-step.overdue .workflow-step-label { color: var(--red); font-weight: 700; }
+
+  /* CURRENT STAGE CALLOUT */
+  .stage-callout {
+    margin: 12px 18px 0;
+    padding: 10px 12px;
+    background: var(--blue-bg);
+    border-left: 3px solid var(--blue);
+    border-radius: var(--radius);
+    font-size: 12px;
+    color: var(--text-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .stage-callout.complete { background: var(--green-bg); border-left-color: var(--green); }
+  .stage-callout.overdue { background: var(--red-bg); border-left-color: var(--red); }
+  .stage-callout.upcoming { background: var(--gray-bg); border-left-color: var(--gray); }
+  .stage-callout-text { flex: 1; }
+  .stage-callout-action {
+    font-size: 11px; font-weight: 600;
+    padding: 4px 8px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-family: inherit;
+  }
+  .stage-callout-action:hover { background: var(--vec-navy); color: white; border-color: var(--vec-navy); }
+
+  /* TRADE PROGRESS (hybrid view) */
+  .trade-progress-section {
+    padding: 12px 18px 14px;
+    border-top: 1px dashed var(--border);
+    margin-top: 12px;
+  }
+  .trade-progress-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+  .trade-progress-title {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-tertiary);
+  }
+  .trade-progress-toggle {
+    font-size: 10px; color: var(--vec-blue); cursor: pointer;
+    background: none; border: none; font-family: inherit; font-weight: 600;
+    padding: 0;
+  }
+  .trade-progress-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+  .trade-pip {
+    display: flex; align-items: center; gap: 5px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    background: var(--surface-2);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+  .trade-pip-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .trade-pip.complete { background: var(--green-bg); color: var(--green); }
+  .trade-pip.complete .trade-pip-dot { background: var(--green); }
+  .trade-pip.in-progress { background: var(--blue-bg); color: var(--blue); }
+  .trade-pip.in-progress .trade-pip-dot { background: var(--blue); }
+  .trade-pip.upcoming .trade-pip-dot { background: var(--gray); }
+  .trade-pip.blocked { background: var(--red-bg); color: var(--red); }
+  .trade-pip.blocked .trade-pip-dot { background: var(--red); }
+
+  /* ZONE FOOTER (issues + actions) */
+  .zone-footer {
+    padding: 10px 18px;
+    border-top: 1px solid var(--border);
+    background: var(--surface-2);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--text-secondary);
+  }
+  .zone-issue-count {
+    font-weight: 600;
+  }
+  .issue-badge {
+    background: var(--red); color: white;
+    font-size: 9px; font-weight: 700; padding: 1px 6px;
+    border-radius: 8px; font-family: 'JetBrains Mono', monospace;
+    margin-left: 4px;
+  }
+  .issue-badge.zero { background: var(--gray); }
+  .zone-footer-btn {
+    padding: 4px 10px; background: var(--vec-navy);
+    color: white; border: none; border-radius: 4px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; cursor: pointer; font-family: inherit;
+  }
+  .zone-footer-btn:hover { background: var(--vec-blue); }
+  .zone-footer-btn.ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
+  .zone-footer-btn.ghost:hover { background: white; color: var(--vec-navy); }
+
+  /* ===== FLOOR PLAN OVERLAY ===== */
+  .plan-workspace {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 14px;
+    align-items: start;
+  }
+  @media (max-width: 1100px) { .plan-workspace { grid-template-columns: 1fr; } }
+
+  .plan-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .plan-toolbar {
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  }
+  .plan-input { padding: 5px 8px; font-size: 11px; max-width: 240px;
+                background: white; border: 1px dashed var(--border-strong);
+                border-radius: 4px; cursor: pointer; }
+  .plan-page-control { display: inline-flex; gap: 2px; background: white; border: 1px solid var(--border); border-radius: 4px; padding: 2px; }
+  .plan-page-btn { padding: 4px 8px; background: transparent; border: none; cursor: pointer; font-family: inherit; font-size: 11px; font-weight: 600; }
+  .plan-page-btn:hover { background: var(--surface-2); }
+  .plan-page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .plan-page-ind { padding: 0 6px; font-size: 11px; font-weight: 600; align-self: center; }
+
+  .plan-mode-btn {
+    padding: 6px 12px; background: transparent; border: 1px solid var(--border);
+    border-radius: 4px; font-family: inherit; font-size: 11px; font-weight: 600;
+    color: var(--text-secondary); cursor: pointer;
+  }
+  .plan-mode-btn:hover { background: var(--vec-navy); color: white; border-color: var(--vec-navy); }
+  .plan-mode-btn.active { background: var(--vec-teal); color: var(--vec-navy); border-color: var(--vec-teal); }
+  .plan-mode-btn.danger:hover { background: var(--red); border-color: var(--red); }
+
+  .plan-viewport {
+    position: relative; overflow: auto;
+    background:
+      linear-gradient(45deg, #eef2f7 25%, transparent 25%),
+      linear-gradient(-45deg, #eef2f7 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #eef2f7 75%),
+      linear-gradient(-45deg, transparent 75%, #eef2f7 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    min-height: 500px; max-height: 80vh;
+    text-align: center;
+  }
+  .plan-stage { position: relative; display: inline-block; }
+  .pdf-canvas { display: block; box-shadow: 0 6px 20px rgba(11, 37, 69, 0.1); }
+  .overlay-layer { position: absolute; left: 0; top: 0; pointer-events: auto; }
+  .plan-viewport.mapping { cursor: crosshair; }
+  .plan-viewport.mapping .zone-box { pointer-events: none; opacity: 0.5; }
+
+  .zone-box {
+    position: absolute; border: 2px solid; border-radius: 4px;
+    cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: flex-start; justify-content: flex-start;
+    padding: 4px 6px;
+    user-select: none;
+  }
+  .zone-box.complete    { border-color: var(--green);  background: rgba(0, 135, 90, 0.22); color: #003d27; }
+  .zone-box.in-progress { border-color: var(--blue);   background: rgba(9, 105, 218, 0.22); color: #084079; }
+  .zone-box.overdue     { border-color: var(--red);    background: rgba(193, 18, 31, 0.25); color: #7a0a14; }
+  .zone-box.upcoming    { border-color: var(--gray);   background: rgba(140, 155, 171, 0.22); color: #3d4a5c; }
+  .zone-box:hover { box-shadow: 0 0 0 3px rgba(19, 168, 168, 0.4); transform: translateY(-1px); z-index: 10; }
+  .zone-box.selected { box-shadow: 0 0 0 3px var(--vec-teal); z-index: 11; }
+  .zone-label {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 1px 5px; border-radius: 3px;
+    font-size: 9px; font-weight: 700;
+    white-space: nowrap; line-height: 1.3;
+  }
+  .draw-rect {
+    position: absolute; border: 2px dashed var(--vec-teal);
+    background: rgba(19, 168, 168, 0.18); pointer-events: none; z-index: 20;
+  }
+  .loading-state {
+    display: flex; align-items: center; justify-content: center;
+    height: 500px; flex-direction: column; gap: 12px;
+    color: var(--text-tertiary); font-size: 13px;
+  }
+  .spinner {
+    width: 32px; height: 32px;
+    border: 3px solid var(--border); border-top-color: var(--vec-teal);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* SIDE PANEL (in plan view) */
+  .side-panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    position: sticky; top: 16px;
+  }
+  .panel-header {
+    padding: 12px 16px; background: var(--vec-navy); color: white;
+  }
+  .panel-title { font-size: 13px; font-weight: 700; }
+  .panel-sub { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  .panel-body { padding: 14px 16px; max-height: 70vh; overflow-y: auto; }
+  .empty-state {
+    text-align: center; padding: 24px 16px;
+    color: var(--text-tertiary); font-size: 12px; line-height: 1.6;
+  }
+  .empty-state strong { display: block; color: var(--text-secondary); margin-bottom: 8px; font-size: 13px; }
+
+  /* MODAL */
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(10, 22, 40, 0.6); backdrop-filter: blur(4px);
+    z-index: 100; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    background: var(--surface); border-radius: var(--radius-lg);
+    width: 580px; max-width: 100%; max-height: 90vh; overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+  }
+  .modal-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+  }
+  .modal-title { font-size: 15px; font-weight: 700; color: var(--vec-navy); }
+  .modal-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+  .modal-close {
+    width: 28px; height: 28px; background: transparent; border: none;
+    font-size: 18px; color: var(--text-tertiary); cursor: pointer; border-radius: 4px;
+  }
+  .modal-close:hover { background: var(--surface-2); color: var(--text-primary); }
+  .modal-body { padding: 16px 20px; }
+  .modal-footer {
+    padding: 12px 20px; border-top: 1px solid var(--border);
+    display: flex; gap: 8px; justify-content: flex-end; background: var(--surface-2);
+  }
+  .form-group { margin-bottom: 12px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--text-secondary);
+    display: block; margin-bottom: 4px;
+  }
+  .form-input, .form-select, .form-textarea {
+    width: 100%; padding: 7px 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 12px;
+    color: var(--text-primary); font-family: inherit;
+  }
+  .form-textarea { min-height: 60px; resize: vertical; }
+  .btn {
+    padding: 7px 14px; background: var(--vec-navy); color: white;
+    border: none; border-radius: var(--radius);
+    font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+    cursor: pointer; font-family: inherit;
+  }
+  .btn:hover { background: var(--vec-blue); }
+  .btn.ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
+  .btn.ghost:hover { background: var(--surface-2); color: var(--text-primary); }
+  .btn.danger { background: var(--red); }
+
+  /* ISSUE CARDS in modal */
+  .issue-card {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-left: 3px solid var(--issue-color, var(--gray));
+    border-radius: var(--radius); padding: 10px 12px;
+    margin-bottom: 6px; cursor: pointer;
+  }
+  .issue-card:hover { background: white; box-shadow: var(--shadow-sm); }
+  .issue-card.priority-blocker { --issue-color: var(--red); }
+  .issue-card.priority-high { --issue-color: var(--yellow); }
+  .issue-card.priority-medium { --issue-color: var(--vec-blue); }
+  .issue-card.priority-low { --issue-color: var(--gray); }
+  .issue-card.status-resolved { opacity: 0.6; --issue-color: var(--green); }
+  .issue-row1 { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 5px; }
+  .issue-title { font-size: 12px; font-weight: 600; flex: 1; }
+  .issue-priority {
+    font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 8px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    background: var(--issue-color); color: white;
+  }
+  .issue-row2 {
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    font-size: 10px; color: var(--text-tertiary);
+  }
+  .court-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 1px 6px; border-radius: 8px;
+    background: white; border: 1px solid var(--border);
+    font-size: 9px; font-weight: 600;
+  }
+  .court-chip::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--court-color, var(--gray));
+  }
+
+  /* ACTION HISTORY */
+  .history-entry {
+    border-left: 2px solid var(--border);
+    padding: 0 0 10px 12px; margin-left: 4px; position: relative;
+  }
+  .history-entry::before {
+    content: ""; position: absolute; left: -5px; top: 4px;
+    width: 8px; height: 8px; background: var(--vec-blue);
+    border-radius: 50%; border: 2px solid var(--surface);
+  }
+  .history-entry.create::before { background: var(--vec-teal); }
+  .history-entry.resolve::before { background: var(--green); }
+  .history-entry.escalate::before { background: var(--red); }
+  .history-meta { font-size: 9px; color: var(--text-tertiary); font-family: 'JetBrains Mono', monospace; }
+  .history-actor { font-weight: 600; color: var(--text-secondary); }
+  .history-text { font-size: 11px; margin-top: 2px; line-height: 1.5; }
+
+  .detail-meta-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
+    margin-bottom: 14px; padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .meta-cell { background: var(--surface-2); padding: 6px 10px; border-radius: var(--radius); }
+  .meta-cell-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-tertiary); }
+  .meta-cell-value { font-size: 11px; margin-top: 2px; font-weight: 500; }
+
+  footer {
+    max-width: 1600px; margin: 0 auto;
+    padding: 24px 32px 32px; font-size: 11px;
+    color: var(--text-tertiary); text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 1200px) {
+    .kpi-row { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div>
+      <div class="brand-mark">VEC · BIM Coordination</div>
+      <div class="title">QTS ATL2 DC6 — Coordination Dashboard</div>
+      <div class="subtitle">Zone-stage workflow · Live coordination tracking · Floor plan overlay</div>
+    </div>
+    <div class="header-meta">
+      <div class="meta-item"><span class="meta-label">Today</span><span class="meta-value mono">22-Apr-2026</span></div>
+      <div class="meta-item"><span class="meta-label">GC</span><span class="meta-value">HITT</span></div>
+      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v1.2</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- TOP-LEVEL VIEW TABS -->
+<div class="view-tabs">
+  <button class="view-tab active" data-view="zones">Zone Workflows</button>
+  <button class="view-tab" data-view="plan">Floor Plan Overlay</button>
+</div>
+
+<main>
+
+  <!-- ZONE WORKFLOWS VIEW -->
+  <div class="view-panel active" id="panel-zones">
+
+    <div class="control-bar">
+      <div class="filter-group">
+        <span class="filter-label">Status</span>
+        <select class="filter-select" id="status-filter">
+          <option value="all">All</option>
+          <option value="overdue">Overdue</option>
+          <option value="in-progress">In Progress</option>
+          <option value="upcoming">Upcoming</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Stage</span>
+        <select class="filter-select" id="stage-filter">
+          <option value="all">All Stages</option>
+        </select>
+      </div>
+      <button class="clear-btn" onclick="clearAllFilters()">Reset filters</button>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi total">
+        <div class="kpi-label">Zones</div>
+        <div class="kpi-value" id="kpi-total">—</div>
+        <div class="kpi-sub">Total zones tracked</div>
+      </div>
+      <div class="kpi green">
+        <div class="kpi-label">Complete</div>
+        <div class="kpi-value" id="kpi-complete">—</div>
+        <div class="kpi-sub">Past sign-off</div>
+      </div>
+      <div class="kpi blue">
+        <div class="kpi-label">In Progress</div>
+        <div class="kpi-value" id="kpi-progress">—</div>
+        <div class="kpi-sub">Active stages</div>
+      </div>
+      <div class="kpi red">
+        <div class="kpi-label">Overdue</div>
+        <div class="kpi-value" id="kpi-overdue">—</div>
+        <div class="kpi-sub">Stages past finish</div>
+      </div>
+      <div class="kpi teal">
+        <div class="kpi-label">Open Issues</div>
+        <div class="kpi-value" id="kpi-issues">—</div>
+        <div class="kpi-sub">Across all zones</div>
+      </div>
+      <div class="kpi gray">
+        <div class="kpi-label">Upcoming</div>
+        <div class="kpi-value" id="kpi-upcoming">—</div>
+        <div class="kpi-sub">Not yet started</div>
+      </div>
+    </div>
+
+    <div class="courts-strip">
+      <div class="courts-header">
+        <div class="courts-title">Issues by Court — Click to Filter</div>
+        <div class="courts-count" id="courts-count">—</div>
+      </div>
+      <div class="courts-grid" id="courts-grid"></div>
+    </div>
+
+    <div class="info-strip">
+      <span><strong>Workflow status:</strong></span>
+      <span><span class="dot g"></span>Complete</span>
+      <span><span class="dot b"></span>In Progress</span>
+      <span><span class="dot r"></span>Overdue</span>
+      <span><span class="dot p"></span>Upcoming</span>
+      <span style="margin-left: auto;"><strong>Tip:</strong> Click any zone card to see issues + trade-by-trade progress.</span>
+    </div>
+
+    <div class="zone-grid" id="zone-grid"></div>
+  </div>
+
+  <!-- FLOOR PLAN VIEW -->
+  <div class="view-panel" id="panel-plan">
+    <div class="plan-workspace">
+      <div class="plan-card">
+        <div class="plan-toolbar">
+          <input type="file" accept="application/pdf" id="pdf-input" class="plan-input" title="Drop in any plan PDF">
+          <div class="plan-page-control">
+            <button class="plan-page-btn" id="page-prev">◀</button>
+            <span class="plan-page-ind" id="page-indicator">— / —</span>
+            <button class="plan-page-btn" id="page-next">▶</button>
+          </div>
+          <button class="plan-mode-btn" id="btn-map">✎ Map Zones</button>
+          <button class="plan-mode-btn danger" id="btn-clear">Clear Zones</button>
+          <button class="plan-mode-btn" id="btn-export">Export JSON</button>
+        </div>
+        <div class="plan-viewport" id="viewport">
+          <div class="loading-state" id="loading">
+            <div style="font-weight: 600; color: var(--vec-navy);">Drop in a plan PDF</div>
+            <div style="color: var(--text-tertiary); font-size: 12px; max-width: 380px; text-align: center; line-height: 1.5;">
+              Use the file picker above to load a site or building plan from your computer.
+              Then click "Map Zones" and draw rectangles around each zone.
+            </div>
+          </div>
+          <div class="plan-stage" id="stage" style="display: none;">
+            <canvas class="pdf-canvas" id="pdf-canvas"></canvas>
+            <div class="overlay-layer" id="overlay"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-panel">
+        <div class="panel-header">
+          <div class="panel-title" id="panel-title-text">Zone Detail</div>
+          <div class="panel-sub" id="panel-sub-text">Click a zone on the plan</div>
+        </div>
+        <div class="panel-body" id="panel-body"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Virtual Engineering Consultants · BIM Coordination Services · Template v1.2 · April 2026<br>
+  Zone × Stage workflow · 6-stage coordination pipeline · 15-court accountability tracker
+</footer>
+
+<!-- ZONE DETAIL MODAL -->
+<div class="modal-backdrop" id="zone-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="zone-modal-title">—</div>
+        <div class="modal-sub" id="zone-modal-sub">—</div>
+      </div>
+      <button class="modal-close" onclick="closeZoneModal()">✕</button>
+    </div>
+    <div class="modal-body" id="zone-modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closeZoneModal()">Close</button>
+      <button class="btn" id="zone-modal-add-issue">+ Log Issue</button>
+    </div>
+  </div>
+</div>
+
+<!-- ISSUE FORM MODAL -->
+<div class="modal-backdrop" id="issue-form-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="form-title">Log New Issue</div>
+        <div class="modal-sub" id="form-sub">—</div>
+      </div>
+      <button class="modal-close" onclick="closeIssueForm()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Issue Type</label>
+        <select class="form-select" id="form-type"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Title</label>
+        <input type="text" class="form-input" id="form-title-input" placeholder="One-line summary">
+      </div>
+      <div class="form-row">
+        <div>
+          <label class="form-label">Stage Tagged</label>
+          <select class="form-select" id="form-stage"></select>
+        </div>
+        <div>
+          <label class="form-label">Trade Tagged</label>
+          <select class="form-select" id="form-trade">
+            <option value="All Trades">All Trades</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label class="form-label">Court Category</label>
+          <select class="form-select" id="form-court-cat"></select>
+        </div>
+        <div>
+          <label class="form-label">Court</label>
+          <select class="form-select" id="form-court"></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label class="form-label">Specific Party</label>
+          <select class="form-select" id="form-party"></select>
+        </div>
+        <div>
+          <label class="form-label">Priority</label>
+          <select class="form-select" id="form-priority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+            <option value="blocker">Blocker</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label class="form-label">Due Date</label>
+          <input type="date" class="form-input" id="form-due">
+        </div>
+        <div>
+          <label class="form-label">Status</label>
+          <select class="form-select" id="form-status">
+            <option value="open" selected>Open</option>
+            <option value="in-progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+            <option value="wont-fix">Won't Fix</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">What's Needed</label>
+        <textarea class="form-textarea" id="form-needed"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">What It's Holding Up</label>
+        <input type="text" class="form-input" id="form-blocking">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closeIssueForm()">Cancel</button>
+      <button class="btn" onclick="saveIssue()" id="form-save">Log Issue</button>
+    </div>
+  </div>
+</div>
+
+<!-- ISSUE DETAIL MODAL -->
+<div class="modal-backdrop" id="issue-detail-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="detail-title">—</div>
+        <div class="modal-sub" id="detail-sub">—</div>
+      </div>
+      <button class="modal-close" onclick="closeIssueDetail()">✕</button>
+    </div>
+    <div class="modal-body" id="detail-body"></div>
+    <div class="modal-footer">
+      <button class="btn danger" id="detail-delete" style="margin-right: auto;">Delete</button>
+      <button class="btn ghost" onclick="closeIssueDetail()">Close</button>
+      <button class="btn" id="detail-edit">Edit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   TODAY (for status calc - hardcoded for demo, swap to new Date() in prod)
+   ============================================================ */
+const TODAY = new Date(2026, 3, 22);
+
+/* ============================================================
+   ZONES from CSV — exactly as uploaded
+   ============================================================ */
+const ZONES = [
+  { id: "ug-site",     name: "UG & Site Utilities",      segment: "Site",                level: "Site" },
+  { id: "yard",        name: "Yard",                     segment: "Segments D, F, H",    level: "L1/L2/Roof" },
+  { id: "admin-l2",    name: "Admin Level 2",            segment: "Segments A & B",      level: "Level 2" },
+  { id: "dh2100",      name: "Level 2 Data Hall 2100",   segment: "Segment C",           level: "Level 2" },
+  { id: "dh2200",      name: "Level 2 Data Hall 2200",   segment: "Segment E",           level: "Level 2" },
+  { id: "dh2300",      name: "Level 2 Data Hall 2300",   segment: "Segment G",           level: "Level 2" },
+  { id: "boh-l2",      name: "Level 2 BOH",              segment: "Segments J & K",      level: "Level 2" },
+  { id: "admin-l1",    name: "Admin Level 1",            segment: "Segments A & B",      level: "Level 1" },
+  { id: "dh1100",      name: "Level 1 Data Hall 1100",   segment: "Segment C",           level: "Level 1" },
+  { id: "dh1200",      name: "Level 1 Data Hall 1200",   segment: "Segment E",           level: "Level 1" },
+  { id: "dh1300",      name: "Level 1 Data Hall 1300",   segment: "Segment G",           level: "Level 1" },
+  { id: "boh-l1",      name: "Level 1 BOH",              segment: "Segments J & K",      level: "Level 1" },
+  { id: "roof",        name: "Roof",                     segment: "Segments A,B,E,G,J,K", level: "Roof" }
+];
+
+/* ============================================================
+   STAGES — the 6-step workflow per zone
+   ============================================================ */
+const STAGES = [
+  { id: "base",     name: "Base Modeling",   short: "Base Mod",    defaultCourt: "Trade — BIM" },
+  { id: "coord",    name: "Coordination / Clash", short: "Coord/Clash", defaultCourt: "VEC" },
+  { id: "signoff",  name: "Sign-Off Milestone", short: "Sign-Off",   defaultCourt: "VEC" },
+  { id: "submit",   name: "Submit Shop Drawings", short: "Submit",  defaultCourt: "Trade — BIM" },
+  { id: "review",   name: "A/E Review & Approve", short: "Review",  defaultCourt: "Architect" },
+  { id: "fab",      name: "Spool / Fab / Deliver", short: "Fab/Del", defaultCourt: "Trade — Field" }
+];
+
+/* ============================================================
+   SCHEDULE DATA — direct from your CSV
+   Format: [zoneId][stageId] = { start, finish, durationDays }
+   Plus zone.fieldActivity for what install begins after
+   ============================================================ */
+function d(s) { const [m,day,y] = s.split("/").map(Number); return new Date(y, m-1, day); }
+
+const SCHEDULE = {
+  "ug-site": {
+    base:    { start: d("1/29/2026"), finish: d("2/5/2026"),  duration: 5 },
+    coord:   { start: d("2/5/2026"),  finish: d("2/26/2026"), duration: 15 },
+    signoff: { start: d("2/26/2026"), finish: d("2/26/2026"), duration: 0 },
+    submit:  { start: d("2/26/2026"), finish: d("3/5/2026"),  duration: 5 },
+    review:  { start: d("3/5/2026"),  finish: d("3/19/2026"), duration: 10 },
+    fab:     { start: d("3/19/2026"), finish: d("4/16/2026"), duration: 20 },
+    fieldActivities: [
+      { start: d("4/16/2026"), label: "A10027 Install Storm Sewer - West - Y.0.9.8 to Y.0.9.7" },
+      { start: d("5/7/2026"),  label: "A1020 Install Storm Sewer - North - Y.0.9.9 to Y.0.9.8" },
+      { start: d("6/12/2026"), label: "A2780 Install Storm Sewer - South - Y.0.9.5 to Y.0.9.4" },
+      { start: d("4/16/2026"), label: "QTS1003 Install Telecom Ductbank - East - TMH-73 to TMH-74" },
+      { start: d("4/20/2026"), label: "A159060 Complete RAPs - Admin - Segment A" },
+      { start: d("5/1/2026"),  label: "A167090 FRP Spread Foundations - CL 1-10 - Admin - OE-A" }
+    ]
+  },
+  "yard": {
+    base:    { start: d("4/14/2026"), finish: d("4/21/2026"), duration: 5 },
+    coord:   { start: d("4/21/2026"), finish: d("5/12/2026"), duration: 15 },
+    signoff: { start: d("5/12/2026"), finish: d("5/12/2026"), duration: 0 },
+    submit:  { start: d("5/12/2026"), finish: d("5/19/2026"), duration: 5 },
+    review:  { start: d("5/19/2026"), finish: d("6/2/2026"),  duration: 10 },
+    fab:     { start: d("6/2/2026"),  finish: d("6/30/2026"), duration: 20 },
+    fieldActivities: [
+      { start: d("6/30/2026"), label: "A163470 Erect Steel - Chiller Platform Block #1 - Segment D (Seq 10-20)" }
+    ]
+  },
+  "admin-l2": {
+    base:    { start: d("5/19/2026"), finish: d("5/26/2026"), duration: 5 },
+    coord:   { start: d("5/26/2026"), finish: d("6/16/2026"), duration: 15 },
+    signoff: { start: d("6/16/2026"), finish: d("6/16/2026"), duration: 0 },
+    submit:  { start: d("6/16/2026"), finish: d("6/23/2026"), duration: 5 },
+    review:  { start: d("6/23/2026"), finish: d("7/7/2026"),  duration: 10 },
+    fab:     { start: d("7/7/2026"),  finish: d("8/4/2026"),  duration: 20 },
+    fieldActivities: [
+      { start: d("8/4/2026"), label: "A6280 SOMD MEP R/I and Inserts - CL 1-10 - Admin" }
+    ]
+  },
+  "dh2100": {
+    base:    { start: d("5/4/2026"),  finish: d("5/11/2026"), duration: 5 },
+    coord:   { start: d("5/11/2026"), finish: d("6/1/2026"),  duration: 15 },
+    signoff: { start: d("6/1/2026"),  finish: d("6/1/2026"),  duration: 0 },
+    submit:  { start: d("6/1/2026"),  finish: d("6/8/2026"),  duration: 5 },
+    review:  { start: d("6/8/2026"),  finish: d("6/22/2026"), duration: 10 },
+    fab:     { start: d("6/22/2026"), finish: d("7/20/2026"), duration: 20 },
+    fieldActivities: [
+      { start: d("7/20/2026"), label: "SOMD MEP R/I and Inserts - CL 10-15" }
+    ]
+  },
+  "dh2200": {
+    base:    { start: d("5/29/2026"), finish: d("6/5/2026"),  duration: 5 },
+    coord:   { start: d("6/5/2026"),  finish: d("6/26/2026"), duration: 15 },
+    signoff: { start: d("6/26/2026"), finish: d("6/26/2026"), duration: 0 },
+    submit:  { start: d("6/26/2026"), finish: d("7/3/2026"),  duration: 5 },
+    review:  { start: d("7/3/2026"),  finish: d("7/17/2026"), duration: 10 },
+    fab:     { start: d("7/17/2026"), finish: d("8/14/2026"), duration: 20 },
+    fieldActivities: [
+      { start: d("8/14/2026"), label: "A6250 SOMD MEP R/I and Inserts - CL 20-24" }
+    ]
+  },
+  "dh2300": {
+    base:    { start: d("7/1/2026"),  finish: d("7/8/2026"),  duration: 5 },
+    coord:   { start: d("7/8/2026"),  finish: d("7/29/2026"), duration: 15 },
+    signoff: { start: d("7/29/2026"), finish: d("7/29/2026"), duration: 0 },
+    submit:  { start: d("7/29/2026"), finish: d("8/5/2026"),  duration: 5 },
+    review:  { start: d("8/5/2026"),  finish: d("8/19/2026"), duration: 10 },
+    fab:     { start: d("8/19/2026"), finish: d("9/16/2026"), duration: 20 },
+    fieldActivities: [
+      { start: d("9/16/2026"), label: "A6230 SOMD MEP R/I and Inserts - CL 29-33" }
+    ]
+  },
+  "boh-l2": {
+    base:    { start: d("7/20/2026"), finish: d("7/27/2026"), duration: 5 },
+    coord:   { start: d("7/27/2026"), finish: d("8/17/2026"), duration: 15 },
+    signoff: { start: d("8/17/2026"), finish: d("8/17/2026"), duration: 0 },
+    submit:  { start: d("8/17/2026"), finish: d("8/24/2026"), duration: 5 },
+    review:  { start: d("8/24/2026"), finish: d("9/7/2026"),  duration: 10 },
+    fab:     { start: d("9/7/2026"),  finish: d("10/5/2026"), duration: 20 },
+    fieldActivities: [
+      { start: d("10/5/2026"), label: "A6210 SOMD MEP R/I and Inserts - CL 38-41 - Back of House" }
+    ]
+  },
+  "admin-l1": {
+    base:    { start: d("5/19/2026"), finish: d("5/26/2026"), duration: 5 },
+    coord:   { start: d("5/26/2026"), finish: d("6/16/2026"), duration: 15 },
+    signoff: { start: d("6/16/2026"), finish: d("6/16/2026"), duration: 0 },
+    submit:  { start: d("6/16/2026"), finish: d("6/23/2026"), duration: 5 },
+    review:  { start: d("6/23/2026"), finish: d("7/7/2026"),  duration: 10 },
+    fab:     { start: d("7/7/2026"),  finish: d("8/4/2026"),  duration: 20 },
+    fieldActivities: [
+      { start: d("8/4/2026"), label: "A6280 SOMD MEP R/I and Inserts - CL 1-10 - Admin" },
+      { start: d("8/4/2026"), label: "Alternative: A153380 FRP SOG - CL 1-10 - Admin - OL-OE" }
+    ]
+  },
+  "dh1100": {
+    base:    { start: d("5/4/2026"),  finish: d("5/11/2026"), duration: 5 },
+    coord:   { start: d("5/11/2026"), finish: d("6/1/2026"),  duration: 15 },
+    signoff: { start: d("6/1/2026"),  finish: d("6/1/2026"),  duration: 0 },
+    submit:  { start: d("6/1/2026"),  finish: d("6/8/2026"),  duration: 5 },
+    review:  { start: d("6/8/2026"),  finish: d("6/22/2026"), duration: 10 },
+    fab:     { start: d("6/22/2026"), finish: d("7/20/2026"), duration: 20 },
+    fieldActivities: [
+      { start: d("7/20/2026"), label: "SOMD MEP R/I and Inserts - CL 10-15" },
+      { start: d("8/11/2026"), label: "Alternative: A153400 FRP SOG - CL 10-15 - H-D" }
+    ]
+  },
+  "dh1200": {
+    base:    { start: d("5/29/2026"), finish: d("6/5/2026"),  duration: 5 },
+    coord:   { start: d("6/5/2026"),  finish: d("6/26/2026"), duration: 15 },
+    signoff: { start: d("6/26/2026"), finish: d("6/26/2026"), duration: 0 },
+    submit:  { start: d("6/26/2026"), finish: d("7/3/2026"),  duration: 5 },
+    review:  { start: d("7/3/2026"),  finish: d("7/17/2026"), duration: 10 },
+    fab:     { start: d("7/17/2026"), finish: d("8/14/2026"), duration: 20 },
+    fieldActivities: [
+      { start: d("8/14/2026"), label: "A6250 SOMD MEP R/I and Inserts - CL 20-24" },
+      { start: d("8/27/2026"), label: "Alternative: A153440 FRP SOG - CL 20-24 - H-D" }
+    ]
+  },
+  "dh1300": {
+    base:    { start: d("7/1/2026"),  finish: d("7/8/2026"),  duration: 5 },
+    coord:   { start: d("7/8/2026"),  finish: d("7/29/2026"), duration: 15 },
+    signoff: { start: d("7/29/2026"), finish: d("7/29/2026"), duration: 0 },
+    submit:  { start: d("7/29/2026"), finish: d("8/5/2026"),  duration: 5 },
+    review:  { start: d("8/5/2026"),  finish: d("8/19/2026"), duration: 10 },
+    fab:     { start: d("8/19/2026"), finish: d("9/16/2026"), duration: 20 },
+    fieldActivities: [
+      { start: d("9/16/2026"), label: "A6230 SOMD MEP R/I and Inserts - CL 29-33" },
+      { start: d("9/21/2026"), label: "Alternative: A153490 FRP SOG - CL 29-33 - D-A" }
+    ]
+  },
+  "boh-l1": {
+    base:    { start: d("7/20/2026"), finish: d("7/27/2026"), duration: 5 },
+    coord:   { start: d("7/27/2026"), finish: d("8/17/2026"), duration: 15 },
+    signoff: { start: d("8/17/2026"), finish: d("8/17/2026"), duration: 0 },
+    submit:  { start: d("8/17/2026"), finish: d("8/24/2026"), duration: 5 },
+    review:  { start: d("8/24/2026"), finish: d("9/7/2026"),  duration: 10 },
+    fab:     { start: d("9/7/2026"),  finish: d("10/5/2026"), duration: 20 },
+    fieldActivities: [
+      { start: d("10/5/2026"), label: "A6210 SOMD MEP R/I and Inserts - CL 38-41 - Back of House" },
+      { start: d("10/6/2026"), label: "Alternative: A153520 FRP SOG - CL 38-41 - Back of House - YF-YB" }
+    ]
+  },
+  "roof": {
+    base:    { start: d("6/30/2026"), finish: d("7/7/2026"),  duration: 5 },
+    coord:   { start: d("7/7/2026"),  finish: d("7/28/2026"), duration: 15 },
+    signoff: { start: d("7/28/2026"), finish: d("7/28/2026"), duration: 0 },
+    submit:  { start: d("7/28/2026"), finish: d("8/4/2026"),  duration: 5 },
+    review:  { start: d("8/4/2026"),  finish: d("8/18/2026"), duration: 10 },
+    fab:     { start: d("8/18/2026"), finish: d("9/15/2026"), duration: 20 },
+    fieldActivities: [
+      { start: d("9/15/2026"), label: "A139130 Install Permanent Roofing Assembly Along Perimeter - CL 1-10 - Admin" }
+    ]
+  }
+};
+
+/* ============================================================
+   TRADES (still tracked at issue level for hybrid view)
+   ============================================================ */
+const TRADES = ["Structural","Envelope","Mechanical","Electrical","Plumbing","Fire Suppression","Fire Alarm / VESDA","Elevator","Low Voltage / Telecom"];
+
+/* ============================================================
+   COURTS — 15 final + categories
+   ============================================================ */
+const COURT_CATEGORIES = [
+  { id: "owner",    name: "Owner",    color: "owner",    courts: ["QTS / Owner"] },
+  { id: "design",   name: "Design",   color: "design",   courts: ["Architect","Structural Engineer","Mechanical Engineer","Electrical Engineer","Plumbing Engineer","Fire Protection Engineer","Civil Engineer","Low Voltage / Telecom Designer"] },
+  { id: "gc",       name: "GC",       color: "gc",       courts: ["HITT / GC"] },
+  { id: "trade",    name: "Trade",    color: "trade",    courts: ["Trade — BIM","Trade — Field","Trade — Exec"] },
+  { id: "vec",      name: "VEC",      color: "vec",      courts: ["VEC"] },
+  { id: "external", name: "External", color: "external", courts: ["External"] }
+];
+const ALL_COURTS = COURT_CATEGORIES.flatMap(c => c.courts.map(name => ({ name, category: c.id, color: c.color })));
+const COURT_BY_NAME = Object.fromEntries(ALL_COURTS.map(c => [c.name, c]));
+
+const PARTIES = {
+  "QTS / Owner": ["QTS Project Team","QTS Procurement"],
+  "Architect": ["DLR Group"],
+  "Structural Engineer": ["Keller"],
+  "Mechanical Engineer": ["DLR Group (MEP)"],
+  "Electrical Engineer": ["DLR Group (MEP)"],
+  "Plumbing Engineer": ["DLR Group (MEP)"],
+  "Fire Protection Engineer": ["DLR Group (MEP)"],
+  "Civil Engineer": ["Keller"],
+  "Low Voltage / Telecom Designer": ["DLR Group"],
+  "HITT / GC": ["HITT — Office","HITT — Field"],
+  // Trade parties — populate per project with real sub names. Empty by default.
+  "Trade — BIM": [],
+  "Trade — Field": [],
+  "Trade — Exec": [],
+  "VEC": ["VEC — Coord","VEC — QA"],
+  "External": ["AHJ","Utility","Vendor / Manufacturer"]
+};
+
+const ISSUE_TYPES = [
+  { id: "clash-hard",   name: "Clash — Hard",         defaultCourt: "Trade — BIM" },
+  { id: "clash-soft",   name: "Clash — Soft",         defaultCourt: "Trade — BIM" },
+  { id: "rfi-open",     name: "RFI Open",             defaultCourt: "Architect" },
+  { id: "submittal",    name: "Submittal Stalled",    defaultCourt: "HITT / GC" },
+  { id: "ofci-delay",   name: "OFCI Delay",           defaultCourt: "QTS / Owner" },
+  { id: "prefab-miss",  name: "Prefab Cutoff Missed", defaultCourt: "Trade — Field" },
+  { id: "long-lead",    name: "Long Lead Slip",       defaultCourt: "HITT / GC" },
+  { id: "pull-change",  name: "Pull Sequence Change", defaultCourt: "HITT / GC" },
+  { id: "scope-gap",    name: "Scope Gap",            defaultCourt: "HITT / GC" },
+  { id: "logistics",    name: "Logistics",            defaultCourt: "HITT / GC" },
+  { id: "model-missing",name: "Model Not Received",   defaultCourt: "Trade — BIM" },
+  { id: "approval",     name: "Approval Pending",     defaultCourt: "Architect" },
+  { id: "other",        name: "Other",                defaultCourt: "VEC" }
+];
+
+/* ============================================================
+   ISSUES — start empty. Log real issues via the dashboard.
+   ============================================================ */
+let ISSUES = [];
+
+/* ============================================================
+   STAGE STATUS COMPUTATION
+   ============================================================ */
+function stageStatus(zoneId, stageId) {
+  const sched = SCHEDULE[zoneId][stageId];
+  if (!sched) return "upcoming";
+  const start = sched.start, finish = sched.finish;
+  if (TODAY < start) return "upcoming";
+  // Sign-off has duration 0; if today >= start, it's complete (no overdue concept)
+  if (sched.duration === 0) {
+    return TODAY >= start ? "complete" : "upcoming";
+  }
+  if (TODAY > finish) return "complete";  // past finish = complete
+  if (TODAY >= start && TODAY <= finish) {
+    // Check if any blockers exist on this stage that would mark overdue
+    const blockers = ISSUES.filter(i =>
+      i.zone === zoneId && i.stage === stageId &&
+      (i.status === "open" || i.status === "in-progress") &&
+      i.priority === "blocker"
+    );
+    return blockers.length > 0 ? "overdue" : "in-progress";
+  }
+  return "upcoming";
+}
+
+function currentStage(zoneId) {
+  // Returns the stage id that's currently in progress or overdue, or "complete" if all past, or "upcoming" if all future
+  for (const stage of STAGES) {
+    const s = stageStatus(zoneId, stage.id);
+    if (s === "in-progress" || s === "overdue") return stage.id;
+  }
+  // None in progress - if any are upcoming, return first upcoming
+  for (const stage of STAGES) {
+    const s = stageStatus(zoneId, stage.id);
+    if (s === "upcoming") return stage.id;
+  }
+  return "complete";
+}
+
+function zoneOverallStatus(zoneId) {
+  const stages = STAGES.map(s => stageStatus(zoneId, s.id));
+  if (stages.every(s => s === "complete")) return "complete";
+  if (stages.some(s => s === "overdue")) return "overdue";
+  if (stages.some(s => s === "in-progress")) return "in-progress";
+  return "upcoming";
+}
+
+/* ============================================================
+   PER-TRADE STATUS WITHIN ZONE (hybrid view)
+   For each trade, status of the zone reflects: do they have any open
+   blocker issue? if so, blocked. if any open issue at all, in-progress.
+   else, follows zone overall stage.
+   ============================================================ */
+function tradeStatusInZone(zoneId, trade) {
+  const zoneStatus = zoneOverallStatus(zoneId);
+  const tradeIssues = ISSUES.filter(i =>
+    i.zone === zoneId && i.trade === trade &&
+    (i.status === "open" || i.status === "in-progress")
+  );
+  if (tradeIssues.some(i => i.priority === "blocker")) return "blocked";
+  if (zoneStatus === "complete") return "complete";
+  if (tradeIssues.length > 0 || zoneStatus === "in-progress" || zoneStatus === "overdue") return "in-progress";
+  return "upcoming";
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function fmt(date) {
+  if (!date) return "—";
+  const m = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${String(date.getDate()).padStart(2,"0")}-${m[date.getMonth()]}`;
+}
+function fmtFull(date) {
+  if (!date) return "—";
+  const m = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${String(date.getDate()).padStart(2,"0")}-${m[date.getMonth()]}-${date.getFullYear()}`;
+}
+function fmtDateTime(s) {
+  const d = new Date(s); if (isNaN(d)) return s;
+  const date = fmtFull(d);
+  return `${date} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
+}
+function days(a, b) { return Math.round((a - b) / 86400000); }
+function daysSince(s) { return Math.max(0, days(TODAY, new Date(s.split("T")[0]))); }
+function parseDateInput(s) { if (!s) return null; const [y,m,day]=s.split("-").map(Number); return new Date(y,m-1,day); }
+
+// Earliest field activity start for a zone - derived from fieldActivities array
+function earliestFieldStart(zoneId) {
+  const acts = SCHEDULE[zoneId] && SCHEDULE[zoneId].fieldActivities;
+  if (!acts || !acts.length) return null;
+  return acts.reduce((min, a) => (!min || a.start < min ? a.start : min), null);
+}
+
+function statusLabel(s) {
+  return { complete: "Complete", "in-progress": "In Progress", upcoming: "Upcoming", overdue: "Overdue", blocked: "Blocked" }[s] || s;
+}
+
+function openIssuesForZone(zoneId) {
+  return ISSUES.filter(i => i.zone === zoneId && i.status !== "resolved" && i.status !== "wont-fix");
+}
+function openIssuesForZoneStage(zoneId, stageId) {
+  return ISSUES.filter(i => i.zone === zoneId && i.stage === stageId && i.status !== "resolved" && i.status !== "wont-fix");
+}
+
+/* ============================================================
+   FILTER STATE
+   ============================================================ */
+const FILTER = { status: "all", stage: "all", court: null };
+
+function getFilteredZones() {
+  return ZONES.filter(z => {
+    if (FILTER.status !== "all" && zoneOverallStatus(z.id) !== FILTER.status) return false;
+    if (FILTER.stage !== "all") {
+      // Show zones where the filtered stage is currently relevant
+      const s = stageStatus(z.id, FILTER.stage);
+      if (FILTER.status === "all") {
+        // pass
+      } else if (s !== FILTER.status) return false;
+    }
+    if (FILTER.court) {
+      const issues = openIssuesForZone(z.id);
+      if (!issues.some(i => i.court === FILTER.court)) return false;
+    }
+    return true;
+  });
+}
+
+function clearAllFilters() {
+  FILTER.status = "all"; FILTER.stage = "all"; FILTER.court = null;
+  document.getElementById("status-filter").value = "all";
+  document.getElementById("stage-filter").value = "all";
+  renderAll();
+}
+
+/* ============================================================
+   RENDER — KPIs
+   ============================================================ */
+function renderKPIs() {
+  document.getElementById("kpi-total").textContent = ZONES.length;
+  let complete = 0, progress = 0, overdue = 0, upcoming = 0;
+  for (const z of ZONES) {
+    const s = zoneOverallStatus(z.id);
+    if (s === "complete") complete++;
+    else if (s === "overdue") overdue++;
+    else if (s === "in-progress") progress++;
+    else upcoming++;
+  }
+  document.getElementById("kpi-complete").textContent = complete;
+  document.getElementById("kpi-progress").textContent = progress;
+  document.getElementById("kpi-overdue").textContent = overdue;
+  document.getElementById("kpi-upcoming").textContent = upcoming;
+  const openIssues = ISSUES.filter(i => i.status !== "resolved" && i.status !== "wont-fix").length;
+  document.getElementById("kpi-issues").textContent = openIssues;
+}
+
+/* ============================================================
+   RENDER — Courts strip
+   ============================================================ */
+function renderCourts() {
+  const grid = document.getElementById("courts-grid");
+  grid.innerHTML = "";
+  const issuesAll = ISSUES.filter(i => i.status !== "resolved" && i.status !== "wont-fix");
+  let total = 0, activeCourts = 0;
+  for (const c of ALL_COURTS) {
+    const list = issuesAll.filter(i => i.court === c.name);
+    const count = list.length;
+    const blockers = list.filter(i => i.priority === "blocker").length;
+    if (count > 0) activeCourts++;
+    total += count;
+    const tile = document.createElement("div");
+    tile.className = `court-tile court-c-${c.color}` + (count === 0 ? " empty" : "") + (FILTER.court === c.name ? " active" : "");
+    tile.innerHTML = `
+      <div class="court-tile-name">${c.name}</div>
+      <div class="court-tile-count">${count}</div>
+      ${blockers > 0 ? `<div class="court-tile-blockers">${blockers} blocker${blockers > 1 ? "s" : ""}</div>` : ""}
+    `;
+    if (count > 0) {
+      tile.addEventListener("click", () => {
+        FILTER.court = (FILTER.court === c.name) ? null : c.name;
+        renderAll();
+      });
+    }
+    grid.appendChild(tile);
+  }
+  document.getElementById("courts-count").textContent = `${total} open across ${activeCourts} courts`;
+}
+
+/* ============================================================
+   RENDER — Zone Workflow Cards (the main view)
+   ============================================================ */
+function renderZones() {
+  const grid = document.getElementById("zone-grid");
+  grid.innerHTML = "";
+  const filtered = getFilteredZones();
+  if (!filtered.length) {
+    grid.innerHTML = `<div style="padding:40px; text-align:center; color: var(--text-tertiary); grid-column: 1 / -1;">No zones match current filters.</div>`;
+    return;
+  }
+
+  for (const z of filtered) {
+    const overall = zoneOverallStatus(z.id);
+    const curStage = currentStage(z.id);
+    const curStageObj = STAGES.find(s => s.id === curStage);
+    const curSched = SCHEDULE[z.id][curStage];
+
+    const card = document.createElement("div");
+    card.className = `zone-card ${overall}`;
+
+    // Build workflow timeline
+    let timelineHTML = `<div class="workflow-track">`;
+    for (const stage of STAGES) {
+      const ss = stageStatus(z.id, stage.id);
+      const sched = SCHEDULE[z.id][stage.id];
+      const dotIcon = ss === "complete" ? "✓" : (STAGES.indexOf(stage) + 1);
+      timelineHTML += `
+        <div class="workflow-step ${ss}">
+          <div class="workflow-step-dot">${dotIcon}</div>
+          <div class="workflow-step-line"></div>
+          <div class="workflow-step-label">${stage.short}</div>
+          <div class="workflow-step-date">${fmt(sched.finish)}</div>
+        </div>
+      `;
+    }
+    timelineHTML += `</div>`;
+
+    // Stage callout
+    const fieldActs = SCHEDULE[z.id].fieldActivities || [];
+    const fieldSummary = fieldActs.length === 1
+      ? fieldActs[0].label
+      : `${fieldActs.length} field activities (earliest ${fmt(earliestFieldStart(z.id))})`;
+    const calloutText = overall === "complete"
+      ? `All stages complete. Field: <strong>${fieldSummary}</strong>`
+      : (curStageObj && curSched
+          ? `Currently: <strong>${curStageObj.name}</strong> · ${fmt(curSched.start)} → ${fmt(curSched.finish)}`
+          : "Awaiting kickoff");
+
+    // Trade progress pips
+    const tradePipsHTML = TRADES.map(t => {
+      const ts = tradeStatusInZone(z.id, t);
+      const dotClass = ts;
+      return `<div class="trade-pip ${ts}"><span class="trade-pip-dot"></span>${t}</div>`;
+    }).join("");
+
+    const openIssues = openIssuesForZone(z.id).length;
+
+    card.innerHTML = `
+      <div class="zone-header">
+        <div class="zone-header-row1">
+          <div>
+            <div class="zone-name">${z.name}</div>
+            <div class="zone-segment">${z.segment} · ${z.level}</div>
+          </div>
+          <span class="zone-status ${overall}">${statusLabel(overall)}</span>
+        </div>
+        <div class="zone-meta-row">
+          <div class="zone-meta-item">
+            <span class="zone-meta-label">Sign-Off</span>
+            <span class="zone-meta-value">${fmt(SCHEDULE[z.id].signoff.start)}</span>
+          </div>
+          <div class="zone-meta-item">
+            <span class="zone-meta-label">Field Start</span>
+            <span class="zone-meta-value">${fmt(earliestFieldStart(z.id))}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="workflow">${timelineHTML}</div>
+
+      <div class="stage-callout ${overall}">
+        <div class="stage-callout-text">${calloutText}</div>
+      </div>
+
+      <div class="trade-progress-section">
+        <div class="trade-progress-header">
+          <div class="trade-progress-title">Trade Progress (Hybrid View)</div>
+        </div>
+        <div class="trade-progress-grid">${tradePipsHTML}</div>
+      </div>
+
+      <div class="zone-footer">
+        <div class="zone-issue-count">
+          Open Issues
+          <span class="issue-badge ${openIssues === 0 ? 'zero' : ''}">${openIssues}</span>
+        </div>
+        <button class="zone-footer-btn" data-zoneid="${z.id}">View Details</button>
+      </div>
+    `;
+
+    card.querySelector(".zone-footer-btn").addEventListener("click", () => openZoneModal(z.id));
+    grid.appendChild(card);
+  }
+}
+
+/* ============================================================
+   ZONE DETAIL MODAL
+   ============================================================ */
+function openZoneModal(zoneId) {
+  const zone = ZONES.find(z => z.id === zoneId);
+  if (!zone) return;
+  const issues = ISSUES.filter(i => i.zone === zoneId);
+  const open = issues.filter(i => i.status !== "resolved" && i.status !== "wont-fix");
+  const resolved = issues.filter(i => i.status === "resolved" || i.status === "wont-fix");
+
+  document.getElementById("zone-modal-title").textContent = zone.name;
+  document.getElementById("zone-modal-sub").textContent = `${zone.segment} · ${zone.level}`;
+
+  // Build stage timeline + issues per stage
+  let body = `<div style="margin-bottom: 16px;">
+    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin-bottom: 8px;">6-Stage Workflow</div>`;
+
+  for (const stage of STAGES) {
+    const ss = stageStatus(zoneId, stage.id);
+    const sched = SCHEDULE[zoneId][stage.id];
+    const stageIssues = open.filter(i => i.stage === stage.id);
+    const statusColor = ss === "complete" ? "var(--green)" : ss === "in-progress" ? "var(--blue)" : ss === "overdue" ? "var(--red)" : "var(--gray)";
+
+    body += `
+      <div style="border: 1px solid var(--border); border-left: 3px solid ${statusColor}; border-radius: var(--radius); padding: 10px 12px; margin-bottom: 6px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-weight: 600; font-size: 13px;">${stage.name}</div>
+            <div style="font-size: 11px; color: var(--text-tertiary); font-family: 'JetBrains Mono', monospace; margin-top: 2px;">
+              ${fmt(sched.start)} → ${fmt(sched.finish)} · ${sched.duration}d · ${stage.defaultCourt}
+            </div>
+          </div>
+          <span style="padding: 2px 8px; background: ${statusColor}; color: white; border-radius: 8px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;">${statusLabel(ss)}</span>
+        </div>
+        ${stageIssues.length > 0 ? `<div style="margin-top: 8px;">${stageIssues.map(renderIssueCard).join("")}</div>` : ""}
+      </div>
+    `;
+  }
+  body += `</div>`;
+
+  // Trade progress section
+  body += `
+    <div style="margin-top: 18px;">
+      <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin-bottom: 8px;">Per-Trade Status</div>
+      <div class="trade-progress-grid">${TRADES.map(t => {
+        const ts = tradeStatusInZone(zoneId, t);
+        return `<div class="trade-pip ${ts}"><span class="trade-pip-dot"></span>${t}</div>`;
+      }).join("")}</div>
+    </div>
+  `;
+
+  // Resolved issues section
+  if (resolved.length > 0) {
+    body += `
+      <div style="margin-top: 18px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin-bottom: 8px;">Resolved (${resolved.length})</div>
+        ${resolved.map(renderIssueCard).join("")}
+      </div>
+    `;
+  }
+
+  document.getElementById("zone-modal-body").innerHTML = body;
+
+  document.getElementById("zone-modal-add-issue").onclick = () => {
+    closeZoneModal();
+    openIssueForm(zoneId, null);
+  };
+
+  document.getElementById("zone-modal").classList.add("show");
+}
+
+function closeZoneModal() {
+  document.getElementById("zone-modal").classList.remove("show");
+}
+
+/* ============================================================
+   ISSUE CARD RENDER
+   ============================================================ */
+function renderIssueCard(issue) {
+  const c = COURT_BY_NAME[issue.court];
+  const colorClass = c ? `court-c-${c.color}` : "";
+  const priorityLbl = { blocker:"Blocker", high:"High", medium:"Med", low:"Low" }[issue.priority];
+  const age = daysSince(issue.history[0].date);
+  const stageObj = STAGES.find(s => s.id === issue.stage);
+  return `
+    <div class="issue-card priority-${issue.priority} status-${issue.status}" onclick="event.stopPropagation(); openIssueDetail('${issue.id}')">
+      <div class="issue-row1">
+        <div class="issue-title">${issue.title}</div>
+        <div class="issue-priority">${priorityLbl}</div>
+      </div>
+      <div class="issue-row2">
+        <span class="court-chip ${colorClass}">${issue.court} · ${issue.party}</span>
+        <span><strong>${age}d</strong> in court</span>
+        ${stageObj ? `<span>Stage: <strong>${stageObj.short}</strong></span>` : ""}
+        ${issue.trade ? `<span>Trade: <strong>${issue.trade}</strong></span>` : ""}
+      </div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   ISSUE FORM
+   ============================================================ */
+let formContext = { zone: null, stage: null, editingId: null };
+
+function openIssueForm(zone, stage, editingId = null) {
+  formContext = { zone, stage, editingId };
+  const z = ZONES.find(zz => zz.id === zone);
+  document.getElementById("form-title").textContent = editingId ? "Edit Issue" : "Log New Issue";
+  document.getElementById("form-sub").textContent = `${z ? z.name : zone}${stage ? " · " + stage : ""}`;
+
+  // Type
+  const typeSel = document.getElementById("form-type");
+  typeSel.innerHTML = "";
+  for (const t of ISSUE_TYPES) {
+    const o = document.createElement("option");
+    o.value = t.id; o.textContent = t.name;
+    typeSel.appendChild(o);
+  }
+  // Stage
+  const stageSel = document.getElementById("form-stage");
+  stageSel.innerHTML = "";
+  for (const st of STAGES) {
+    const o = document.createElement("option");
+    o.value = st.id; o.textContent = st.name;
+    stageSel.appendChild(o);
+  }
+  // Trade
+  const tradeSel = document.getElementById("form-trade");
+  tradeSel.innerHTML = `<option value="All Trades">All Trades</option>`;
+  for (const t of TRADES) {
+    const o = document.createElement("option");
+    o.value = t; o.textContent = t;
+    tradeSel.appendChild(o);
+  }
+  // Court cat
+  const catSel = document.getElementById("form-court-cat");
+  catSel.innerHTML = "";
+  for (const c of COURT_CATEGORIES) {
+    const o = document.createElement("option");
+    o.value = c.id; o.textContent = c.name;
+    catSel.appendChild(o);
+  }
+
+  typeSel.onchange = () => {
+    const t = ISSUE_TYPES.find(x => x.id === typeSel.value);
+    if (t && t.defaultCourt) {
+      const c = COURT_BY_NAME[t.defaultCourt];
+      catSel.value = c.category;
+      populateCourtDropdown();
+      document.getElementById("form-court").value = t.defaultCourt;
+      populatePartyDropdown();
+    }
+  };
+  catSel.onchange = () => { populateCourtDropdown(); populatePartyDropdown(); };
+  document.getElementById("form-court").onchange = () => populatePartyDropdown();
+
+  if (editingId) {
+    const issue = ISSUES.find(i => i.id === editingId);
+    typeSel.value = issue.type;
+    document.getElementById("form-title-input").value = issue.title;
+    stageSel.value = issue.stage || STAGES[0].id;
+    tradeSel.value = issue.trade || "All Trades";
+    const c = COURT_BY_NAME[issue.court];
+    catSel.value = c.category;
+    populateCourtDropdown();
+    document.getElementById("form-court").value = issue.court;
+    populatePartyDropdown();
+    document.getElementById("form-party").value = issue.party;
+    document.getElementById("form-priority").value = issue.priority;
+    document.getElementById("form-due").value = issue.due || "";
+    document.getElementById("form-status").value = issue.status;
+    document.getElementById("form-needed").value = issue.needed || "";
+    document.getElementById("form-blocking").value = issue.blocking || "";
+  } else {
+    typeSel.value = "clash-hard";
+    typeSel.dispatchEvent(new Event("change"));
+    if (stage) stageSel.value = stage;
+    document.getElementById("form-title-input").value = "";
+    document.getElementById("form-priority").value = "medium";
+    document.getElementById("form-due").value = "";
+    document.getElementById("form-status").value = "open";
+    document.getElementById("form-needed").value = "";
+    document.getElementById("form-blocking").value = "";
+  }
+
+  document.getElementById("form-save").textContent = editingId ? "Save Changes" : "Log Issue";
+  document.getElementById("issue-form-modal").classList.add("show");
+}
+
+function populateCourtDropdown() {
+  const cat = document.getElementById("form-court-cat").value;
+  const courtSel = document.getElementById("form-court");
+  courtSel.innerHTML = "";
+  const catObj = COURT_CATEGORIES.find(c => c.id === cat);
+  if (!catObj) return;
+  for (const cName of catObj.courts) {
+    const o = document.createElement("option");
+    o.value = cName; o.textContent = cName;
+    courtSel.appendChild(o);
+  }
+}
+function populatePartyDropdown() {
+  const court = document.getElementById("form-court").value;
+  const sel = document.getElementById("form-party");
+  sel.innerHTML = "";
+  const parties = PARTIES[court] || [];
+  if (parties.length === 0) {
+    // Empty list — provide a free-text input substitute via single editable option
+    const o = document.createElement("option");
+    o.value = ""; o.textContent = "— type a name in the input below —";
+    sel.appendChild(o);
+    // Show free-text fallback by switching the select to a text-like behavior:
+    // Easiest: add a free-text option for each common pattern
+    const generic = document.createElement("option");
+    generic.value = "Sub (TBD)"; generic.textContent = "Sub (TBD)";
+    sel.appendChild(generic);
+  } else {
+    for (const p of parties) {
+      const o = document.createElement("option");
+      o.value = p; o.textContent = p;
+      sel.appendChild(o);
+    }
+  }
+}
+function closeIssueForm() { document.getElementById("issue-form-modal").classList.remove("show"); }
+
+function saveIssue() {
+  const title = document.getElementById("form-title-input").value.trim();
+  if (!title) { alert("Title required."); return; }
+  const data = {
+    type: document.getElementById("form-type").value,
+    stage: document.getElementById("form-stage").value,
+    trade: document.getElementById("form-trade").value,
+    court: document.getElementById("form-court").value,
+    party: document.getElementById("form-party").value,
+    priority: document.getElementById("form-priority").value,
+    due: document.getElementById("form-due").value,
+    status: document.getElementById("form-status").value,
+    needed: document.getElementById("form-needed").value.trim(),
+    blocking: document.getElementById("form-blocking").value.trim()
+  };
+  const now = new Date().toISOString().slice(0, 16);
+
+  if (formContext.editingId) {
+    const issue = ISSUES.find(i => i.id === formContext.editingId);
+    const changes = [];
+    for (const k of ["title","stage","trade","court","party","priority","status","due"]) {
+      if (issue[k] !== (k === "title" ? title : data[k])) changes.push(`${k} → ${k === "title" ? title : data[k]}`);
+    }
+    Object.assign(issue, { ...data, title });
+    if (changes.length) {
+      issue.history.push({
+        date: now, actor: "VEC",
+        type: data.status === "resolved" ? "resolve" : "edit",
+        text: changes.join(", ")
+      });
+    }
+  } else {
+    const newId = "ISS-" + String(ISSUES.length + 1).padStart(3, "0");
+    ISSUES.push({
+      id: newId, zone: formContext.zone, ...data, title,
+      history: [{ date: now, actor: "VEC", type: "create",
+                   text: `Logged: ${title}. Court: ${data.court} (${data.party}). Priority: ${data.priority}.` }]
+    });
+  }
+  closeIssueForm();
+  renderAll();
+  if (planState.selectedZoneId) renderPlanPanel(planState.selectedZoneId);
+}
+
+/* ============================================================
+   ISSUE DETAIL MODAL
+   ============================================================ */
+function openIssueDetail(id) {
+  const issue = ISSUES.find(i => i.id === id);
+  if (!issue) return;
+  const c = COURT_BY_NAME[issue.court];
+  const colorClass = c ? `court-c-${c.color}` : "";
+  const age = daysSince(issue.history[0].date);
+  const stageObj = STAGES.find(s => s.id === issue.stage);
+  const zone = ZONES.find(z => z.id === issue.zone);
+
+  document.getElementById("detail-title").textContent = issue.title;
+  document.getElementById("detail-sub").textContent = `${issue.id} · ${zone ? zone.name : issue.zone}${stageObj ? " · " + stageObj.short : ""}`;
+
+  document.getElementById("detail-body").innerHTML = `
+    <div class="detail-meta-grid">
+      <div class="meta-cell">
+        <div class="meta-cell-label">Court</div>
+        <div class="meta-cell-value"><span class="court-chip ${colorClass}">${issue.court}</span></div>
+      </div>
+      <div class="meta-cell"><div class="meta-cell-label">Party</div><div class="meta-cell-value">${issue.party}</div></div>
+      <div class="meta-cell"><div class="meta-cell-label">Stage</div><div class="meta-cell-value">${stageObj ? stageObj.name : "—"}</div></div>
+      <div class="meta-cell"><div class="meta-cell-label">Trade</div><div class="meta-cell-value">${issue.trade || "—"}</div></div>
+      <div class="meta-cell"><div class="meta-cell-label">Priority</div><div class="meta-cell-value" style="text-transform:capitalize">${issue.priority}</div></div>
+      <div class="meta-cell"><div class="meta-cell-label">Status</div><div class="meta-cell-value" style="text-transform:capitalize">${issue.status.replace("-"," ")}</div></div>
+      <div class="meta-cell"><div class="meta-cell-label">Age in Court</div><div class="meta-cell-value mono">${age} days</div></div>
+      <div class="meta-cell"><div class="meta-cell-label">Due</div><div class="meta-cell-value mono">${issue.due ? fmtFull(parseDateInput(issue.due)) : "—"}</div></div>
+      <div class="meta-cell" style="grid-column: span 2;"><div class="meta-cell-label">What's Needed</div><div class="meta-cell-value">${issue.needed || "—"}</div></div>
+      <div class="meta-cell" style="grid-column: span 2;"><div class="meta-cell-label">What It's Holding Up</div><div class="meta-cell-value">${issue.blocking || "—"}</div></div>
+    </div>
+    <div>
+      <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 10px;">Action History · ${issue.history.length}</div>
+      ${issue.history.slice().reverse().map(h => `
+        <div class="history-entry ${h.type}">
+          <div class="history-meta"><span class="history-actor">${h.actor}</span> · ${fmtDateTime(h.date)} · ${h.type}</div>
+          <div class="history-text">${h.text}</div>
+        </div>
+      `).join("")}
+    </div>
+    <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);">
+      <label class="form-label">Add Comment</label>
+      <textarea class="form-textarea" id="comment-input" placeholder="Status update, follow-up, escalation..."></textarea>
+      <div style="margin-top: 8px; display: flex; gap: 6px;">
+        <button class="btn ghost" onclick="addComment('${issue.id}', 'comment')">Comment</button>
+        <button class="btn ghost" onclick="addComment('${issue.id}', 'escalate')" style="border-color: var(--red); color: var(--red);">Escalate</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("detail-edit").onclick = () => {
+    closeIssueDetail();
+    openIssueForm(issue.zone, issue.stage, issue.id);
+  };
+  document.getElementById("detail-delete").onclick = () => {
+    if (confirm("Delete this issue?")) {
+      ISSUES = ISSUES.filter(i => i.id !== issue.id);
+      closeIssueDetail();
+      renderAll();
+    }
+  };
+
+  document.getElementById("issue-detail-modal").classList.add("show");
+}
+
+function addComment(id, type) {
+  const text = document.getElementById("comment-input").value.trim();
+  if (!text) return;
+  const issue = ISSUES.find(i => i.id === id);
+  const now = new Date().toISOString().slice(0, 16);
+  issue.history.push({ date: now, actor: "VEC", type, text });
+  closeIssueDetail();
+  openIssueDetail(id);
+  renderAll();
+}
+function closeIssueDetail() { document.getElementById("issue-detail-modal").classList.remove("show"); }
+
+/* ============================================================
+   STAGE FILTER POPULATION
+   ============================================================ */
+function populateStageFilter() {
+  const sel = document.getElementById("stage-filter");
+  for (const st of STAGES) {
+    const o = document.createElement("option");
+    o.value = st.id; o.textContent = st.name;
+    sel.appendChild(o);
+  }
+}
+
+/* ============================================================
+   FILTER WIRING
+   ============================================================ */
+document.getElementById("status-filter").addEventListener("change", e => { FILTER.status = e.target.value; renderAll(); });
+document.getElementById("stage-filter").addEventListener("change", e => { FILTER.stage = e.target.value; renderAll(); });
+
+document.querySelectorAll(".view-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+    document.getElementById("panel-" + tab.dataset.view).classList.add("active");
+  });
+});
+
+/* ============================================================
+   FLOOR PLAN OVERLAY
+   ============================================================ */
+const planState = {
+  pdfDoc: null, pdfFile: null,
+  currentPage: 1, numPages: 1, renderScale: 1.5,
+  zoneMaps: loadPlanMaps(),
+  mappingMode: false,
+  drawStart: null, drawRectEl: null,
+  pendingRect: null, selectedZoneId: null
+};
+
+function loadPlanMaps() {
+  try {
+    const raw = localStorage.getItem("vec-zonemaps-v2");
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return {};   // { pageNum: [{ zoneId, x, y, w, h }] }
+}
+function savePlanMaps() {
+  try { localStorage.setItem("vec-zonemaps-v2", JSON.stringify(planState.zoneMaps)); } catch(e) {}
+}
+
+async function loadPDFFromFile(file) {
+  document.getElementById("loading").style.display = "flex";
+  document.getElementById("loading").innerHTML = `<div class="spinner"></div><div>Loading ${file.name}…</div>`;
+  document.getElementById("stage").style.display = "none";
+  const buf = await file.arrayBuffer();
+  const task = pdfjsLib.getDocument({ data: buf });
+  planState.pdfDoc = await task.promise;
+  planState.numPages = planState.pdfDoc.numPages;
+  planState.currentPage = 1;
+  planState.pdfFile = file;
+  await renderPlanPage(planState.currentPage);
+  document.getElementById("loading").style.display = "none";
+  document.getElementById("stage").style.display = "inline-block";
+}
+
+async function renderPlanPage(pageNum) {
+  const page = await planState.pdfDoc.getPage(pageNum);
+  const viewport = page.getViewport({ scale: planState.renderScale });
+  const canvas = document.getElementById("pdf-canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  const overlay = document.getElementById("overlay");
+  overlay.style.width = viewport.width + "px";
+  overlay.style.height = viewport.height + "px";
+  await page.render({ canvasContext: ctx, viewport }).promise;
+  document.getElementById("page-indicator").textContent = `${pageNum} / ${planState.numPages}`;
+  document.getElementById("page-prev").disabled = pageNum <= 1;
+  document.getElementById("page-next").disabled = pageNum >= planState.numPages;
+  renderPlanOverlay();
+}
+
+function getPlanRectsForCurrent() {
+  if (!planState.zoneMaps[planState.currentPage]) planState.zoneMaps[planState.currentPage] = [];
+  return planState.zoneMaps[planState.currentPage];
+}
+
+function renderPlanOverlay() {
+  const overlay = document.getElementById("overlay");
+  overlay.innerHTML = "";
+  const canvas = document.getElementById("pdf-canvas");
+  const rects = getPlanRectsForCurrent();
+  for (const r of rects) {
+    const zoneMeta = ZONES.find(z => z.id === r.zoneId);
+    if (!zoneMeta) continue;
+    const status = zoneOverallStatus(r.zoneId);
+    const div = document.createElement("div");
+    div.className = "zone-box " + status + (planState.selectedZoneId === r.zoneId ? " selected" : "");
+    div.style.left = (r.x * canvas.width) + "px";
+    div.style.top = (r.y * canvas.height) + "px";
+    div.style.width = (r.w * canvas.width) + "px";
+    div.style.height = (r.h * canvas.height) + "px";
+    div.innerHTML = `<span class="zone-label">${zoneMeta.name}</span>`;
+    div.addEventListener("click", (e) => {
+      if (planState.mappingMode) return;
+      e.stopPropagation();
+      planState.selectedZoneId = r.zoneId;
+      renderPlanOverlay();
+      renderPlanPanel(r.zoneId);
+    });
+    overlay.appendChild(div);
+  }
+}
+
+function setMappingMode(on) {
+  planState.mappingMode = on;
+  const vp = document.getElementById("viewport");
+  const btn = document.getElementById("btn-map");
+  if (on) { vp.classList.add("mapping"); btn.classList.add("active"); btn.textContent = "✓ Done Mapping"; }
+  else    { vp.classList.remove("mapping"); btn.classList.remove("active"); btn.textContent = "✎ Map Zones"; }
+}
+
+function onOverlayMouseDown(e) {
+  if (!planState.mappingMode) return;
+  const canvas = document.getElementById("pdf-canvas");
+  const rect = canvas.getBoundingClientRect();
+  planState.drawStart = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  planState.drawRectEl = document.createElement("div");
+  planState.drawRectEl.className = "draw-rect";
+  Object.assign(planState.drawRectEl.style, { left: planState.drawStart.x+"px", top: planState.drawStart.y+"px", width: "0px", height: "0px" });
+  document.getElementById("overlay").appendChild(planState.drawRectEl);
+}
+function onOverlayMouseMove(e) {
+  if (!planState.mappingMode || !planState.drawStart || !planState.drawRectEl) return;
+  const canvas = document.getElementById("pdf-canvas");
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left, y = e.clientY - rect.top;
+  const l = Math.min(x, planState.drawStart.x), t = Math.min(y, planState.drawStart.y);
+  const w = Math.abs(x - planState.drawStart.x), h = Math.abs(y - planState.drawStart.y);
+  Object.assign(planState.drawRectEl.style, { left: l+"px", top: t+"px", width: w+"px", height: h+"px" });
+}
+function onOverlayMouseUp(e) {
+  if (!planState.mappingMode || !planState.drawStart || !planState.drawRectEl) return;
+  const canvas = document.getElementById("pdf-canvas");
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left, y = e.clientY - rect.top;
+  const l = Math.min(x, planState.drawStart.x) / canvas.width;
+  const t = Math.min(y, planState.drawStart.y) / canvas.height;
+  const w = Math.abs(x - planState.drawStart.x) / canvas.width;
+  const h = Math.abs(y - planState.drawStart.y) / canvas.height;
+  planState.drawStart = null;
+  if (planState.drawRectEl) { planState.drawRectEl.remove(); planState.drawRectEl = null; }
+  if (w < 0.01 || h < 0.01) return;
+  planState.pendingRect = { x: l, y: t, w, h };
+  // Pick zone via prompt-style picker
+  const choice = prompt("Which zone? Type the ID:\n\n" + ZONES.map((z,i) => `${i+1}. ${z.id} — ${z.name}`).join("\n"));
+  if (!choice) return;
+  let zoneId = choice;
+  // Allow typing number too
+  const num = parseInt(choice);
+  if (!isNaN(num) && num >= 1 && num <= ZONES.length) zoneId = ZONES[num-1].id;
+  const zone = ZONES.find(z => z.id === zoneId);
+  if (!zone) { alert("Zone not found: " + choice); return; }
+  const rects = getPlanRectsForCurrent();
+  rects.push({ zoneId, ...planState.pendingRect });
+  savePlanMaps();
+  renderPlanOverlay();
+}
+
+function renderPlanPanel(zoneId) {
+  const zone = ZONES.find(z => z.id === zoneId);
+  const body = document.getElementById("panel-body");
+  if (!zone) {
+    document.getElementById("panel-title-text").textContent = "Zone Detail";
+    document.getElementById("panel-sub-text").textContent = "Click a zone on the plan";
+    body.innerHTML = `<div class="empty-state"><strong>No zone selected</strong>Click any zone on the plan to see its workflow + issues.</div>`;
+    return;
+  }
+  document.getElementById("panel-title-text").textContent = zone.name;
+  document.getElementById("panel-sub-text").textContent = `${zone.segment} · ${zone.level}`;
+
+  const overall = zoneOverallStatus(zone.id);
+  const issues = openIssuesForZone(zone.id);
+
+  let html = `
+    <div style="margin-bottom: 12px;">
+      <span class="zone-status ${overall}" style="display: inline-block;">${statusLabel(overall)}</span>
+    </div>
+
+    <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 6px;">Workflow Stages</div>
+    <div style="margin-bottom: 14px;">
+      ${STAGES.map(s => {
+        const ss = stageStatus(zone.id, s.id);
+        const sched = SCHEDULE[zone.id][s.id];
+        const dotColor = ss === "complete" ? "var(--green)" : ss === "in-progress" ? "var(--blue)" : ss === "overdue" ? "var(--red)" : "var(--gray)";
+        return `<div style="display: flex; gap: 8px; align-items: center; padding: 4px 0; font-size: 11px;">
+          <div style="width:10px;height:10px;border-radius:50%;background:${dotColor};flex-shrink:0;"></div>
+          <div style="flex:1;">${s.name}</div>
+          <div style="font-family:'JetBrains Mono',monospace;color:var(--text-tertiary);font-size:10px;">${fmt(sched.start)} → ${fmt(sched.finish)}</div>
+        </div>`;
+      }).join("")}
+    </div>
+
+    <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 6px;">Field Activities (${(SCHEDULE[zone.id].fieldActivities || []).length})</div>
+    ${(SCHEDULE[zone.id].fieldActivities || []).map(fa => `
+      <div style="font-size: 11px; padding: 8px 10px; background: var(--surface-2); border-radius: var(--radius); margin-bottom: 6px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size: 10px; color: var(--text-tertiary);">Starts ${fmt(fa.start)}</div>
+        <div style="margin-top: 2px;">${fa.label}</div>
+      </div>
+    `).join("")}
+    <div style="margin-bottom: 14px;"></div>
+
+    <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 6px;">Open Issues (${issues.length})</div>
+    ${issues.length === 0
+      ? `<div style="font-size: 11px; color: var(--text-tertiary); font-style: italic; padding: 8px 0;">No open issues. ✓</div>`
+      : issues.map(renderIssueCard).join("")}
+
+    <button class="btn" style="margin-top: 12px; width: 100%;" onclick="openIssueForm('${zone.id}', null)">+ Log New Issue</button>
+  `;
+  body.innerHTML = html;
+}
+
+document.getElementById("pdf-input").addEventListener("change", async (e) => {
+  const f = e.target.files[0];
+  if (f) await loadPDFFromFile(f);
+});
+document.getElementById("page-prev").addEventListener("click", async () => {
+  if (planState.currentPage > 1) { planState.currentPage--; await renderPlanPage(planState.currentPage); }
+});
+document.getElementById("page-next").addEventListener("click", async () => {
+  if (planState.currentPage < planState.numPages) { planState.currentPage++; await renderPlanPage(planState.currentPage); }
+});
+document.getElementById("btn-map").addEventListener("click", () => setMappingMode(!planState.mappingMode));
+document.getElementById("btn-clear").addEventListener("click", () => {
+  if (confirm(`Clear all zone mappings on page ${planState.currentPage}?`)) {
+    planState.zoneMaps[planState.currentPage] = [];
+    savePlanMaps();
+    renderPlanOverlay();
+  }
+});
+document.getElementById("btn-export").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(planState.zoneMaps, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "vec-zone-maps.json"; a.click();
+  URL.revokeObjectURL(url);
+});
+
+const overlayEl = document.getElementById("overlay");
+overlayEl.addEventListener("mousedown", onOverlayMouseDown);
+document.addEventListener("mousemove", onOverlayMouseMove);
+document.addEventListener("mouseup", onOverlayMouseUp);
+overlayEl.addEventListener("click", (e) => {
+  if (e.target === overlayEl) {
+    planState.selectedZoneId = null;
+    renderPlanOverlay();
+    renderPlanPanel(null);
+  }
+});
+
+renderPlanPanel(null);
+
+/* ============================================================
+   RENDER ALL
+   ============================================================ */
+function renderAll() {
+  renderKPIs();
+  renderCourts();
+  renderZones();
+  if (planState.pdfDoc) renderPlanOverlay();
+}
+
+populateStageFilter();
+renderAll();
+
+// Expose
+window.openIssueForm = openIssueForm;
+window.closeIssueForm = closeIssueForm;
+window.saveIssue = saveIssue;
+window.openIssueDetail = openIssueDetail;
+window.closeIssueDetail = closeIssueDetail;
+window.addComment = addComment;
+window.openZoneModal = openZoneModal;
+window.closeZoneModal = closeZoneModal;
+window.clearAllFilters = clearAllFilters;
+</script>
+
+</body>
+</html>
