@@ -1,3 +1,2 @@
 /*
-  X-Frame-Options: ALLOW-FROM https://acc.autodesk.com/ https://bim360.autodesk.com/
-  Content-Security-Policy: frame-ancestors 'self' https://*.autodesk.com https://acc.autodesk.com https://*.bim360.autodesk.com;
+  Content-Security-Policy: frame-ancestors *
