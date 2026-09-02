@@ -215,8 +215,8 @@
     border-radius: var(--radius); padding: 8px 10px;
     cursor: pointer; transition: all 0.15s;
   }
-  .court-tile:hover { background: white; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
-  .court-tile.active { background: white; box-shadow: 0 0 0 2px var(--court-color); }
+  .court-tile:hover { background: var(--surface); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .court-tile.active { background: var(--surface); box-shadow: 0 0 0 2px var(--court-color); }
   .court-tile.empty { opacity: 0.45; cursor: default; }
   .court-tile.empty:hover { transform: none; box-shadow: none; background: var(--surface-2); }
   .court-tile-name { font-size: 10px; font-weight: 600; color: var(--text-secondary); line-height: 1.3; }
@@ -293,7 +293,7 @@
   /* WORKFLOW TIMELINE */
   .workflow {
     padding: 18px 18px 14px;
-    background: white;
+    background: var(--surface);
   }
   .workflow-track {
     display: grid;
@@ -372,7 +372,7 @@
   .stage-callout-action {
     font-size: 11px; font-weight: 600;
     padding: 4px 8px;
-    background: white;
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 4px;
     cursor: pointer;
@@ -452,7 +452,7 @@
   }
   .zone-footer-btn:hover { background: var(--vec-blue); }
   .zone-footer-btn.ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
-  .zone-footer-btn.ghost:hover { background: white; color: var(--vec-navy); }
+  .zone-footer-btn.ghost:hover { background: var(--surface-2); color: var(--vec-navy); }
 
   /* ===== V3.1 AUTH ===== */
   .auth-wrap {
@@ -591,9 +591,9 @@
     display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
   }
   .plan-input { padding: 5px 8px; font-size: 11px; max-width: 240px;
-                background: white; border: 1px dashed var(--border-strong);
+                background: var(--surface); border: 1px dashed var(--border-strong);
                 border-radius: 4px; cursor: pointer; }
-  .plan-page-control { display: inline-flex; gap: 2px; background: white; border: 1px solid var(--border); border-radius: 4px; padding: 2px; }
+  .plan-page-control { display: inline-flex; gap: 2px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 2px; }
   .plan-page-btn { padding: 4px 8px; background: transparent; border: none; cursor: pointer; font-family: inherit; font-size: 11px; font-weight: 600; }
   .plan-page-btn:hover { background: var(--surface-2); }
   .plan-page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
@@ -741,7 +741,7 @@
     border-radius: var(--radius); padding: 10px 12px;
     margin-bottom: 6px; cursor: pointer;
   }
-  .issue-card:hover { background: white; box-shadow: var(--shadow-sm); }
+  .issue-card:hover { background: var(--surface-2); box-shadow: var(--shadow-sm); }
   .issue-card.priority-blocker { --issue-color: var(--red); }
   .issue-card.priority-high { --issue-color: var(--yellow); }
   .issue-card.priority-medium { --issue-color: var(--vec-blue); }
@@ -761,7 +761,7 @@
   .court-chip {
     display: inline-flex; align-items: center; gap: 4px;
     padding: 1px 6px; border-radius: 8px;
-    background: white; border: 1px solid var(--border);
+    background: var(--surface); border: 1px solid var(--border);
     font-size: 9px; font-weight: 600;
   }
   .court-chip::before {
@@ -1682,9 +1682,114 @@
     .mp-kpis { grid-template-columns: repeat(2, 1fr); }
   }
 
+
+  /* ═══════════ V3.8 DARK MODE ═══════════ */
+  /* Dark is a selected palette, not an inverted one. The chart slots were
+     re-stepped for the dark surface and validated separately:
+     lightness band, chroma, CVD separation and contrast all pass. */
+  :root[data-theme="dark"] {
+    --brand:        #4A8CFF;
+    --brand-deep:   #7AACFF;
+    --brand-tint:   #17253D;
+    --ink:          #E8ECF2;
+
+    --vec-navy:   var(--ink);
+    --vec-navy-2: var(--ink);
+    --vec-blue:   var(--brand);
+    --vec-teal:   var(--brand);
+    --vec-light:  var(--brand-tint);
+
+    --bg:          #0E1218;
+    --surface:     #161A21;
+    --surface-2:   #1E242E;
+    --border:      #2A313C;
+    --border-strong: #3B434F;
+
+    --text-primary:   #E8ECF2;
+    --text-secondary: #A8B2C1;
+    --text-tertiary:  #6F7A8A;
+
+    --green: #3DBE85;  --green-bg: #12261E;
+    --yellow:#E0A03C;  --yellow-bg:#2A2113;
+    --red:   #F1706A;  --red-bg:   #2E1918;
+    --gray:  #6F7A8A;  --gray-bg:  #1E242E;
+    --blue:  var(--brand); --blue-bg: var(--brand-tint);
+
+    --court-owner: #A88BF5;
+    --court-design: var(--brand);
+    --court-gc: #E0A03C;
+    --court-trade: #3DBE85;
+    --court-vec: #A8B2C1;
+    --court-external: #8B94A3;
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+    --shadow:    0 1px 3px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4);
+    --shadow-lg: 0 12px 32px -8px rgba(0,0,0,0.7), 0 4px 8px -4px rgba(0,0,0,0.5);
+  }
+  :root[data-theme="dark"] .viz-root {
+    --viz-1: #5590F5;
+    --viz-2: #DE6E36;
+    --viz-3: #17A574;
+  }
+  :root[data-theme="dark"] .vec-logo { filter: brightness(1.35) saturate(1.05); }
+  :root[data-theme="dark"] .cp-row.urgent { background: rgba(241,112,106,0.07); }
+  :root[data-theme="dark"] .modal-backdrop { background: rgba(0,0,0,0.62); }
+  :root[data-theme="dark"] .viz-tip { background: #2A313C; border: 1px solid var(--border-strong); }
+  :root[data-theme="dark"] .form-select {
+    background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%236F7A8A%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E');
+  }
+  :root[data-theme="dark"] input[type="date"],
+  :root[data-theme="dark"] input[type="time"] { color-scheme: dark; }
+  :root[data-theme="dark"] .mp-page { background: var(--surface); }
+
+  .theme-toggle {
+    width: 30px; height: 30px; border-radius: 7px; flex-shrink: 0;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-secondary); font-size: 14px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: inherit; line-height: 1;
+  }
+  .theme-toggle:hover { background: var(--surface-2); color: var(--ink); border-color: var(--border-strong); }
+
+  /* ═══════════ V3.8 BITS ═══════════ */
+  .lib-delete {
+    margin-left: 8px; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-tertiary); font-family: inherit; font-size: 11px; font-weight: 600;
+    opacity: 0; transition: opacity .12s, color .12s, border-color .12s;
+  }
+  .lib-item:hover .lib-delete { opacity: 1; }
+  .lib-delete:hover { color: var(--red); border-color: var(--red); background: var(--red-bg); }
+
+  .an-filter {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    padding: 12px 14px; margin-bottom: 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+  }
+  .an-filter-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--text-tertiary); margin-right: 4px;
+  }
+  .an-chip {
+    padding: 5px 13px; border-radius: 20px; cursor: pointer; font-family: inherit;
+    font-size: 12px; font-weight: 600; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text-tertiary);
+  }
+  .an-chip:hover { border-color: var(--border-strong); color: var(--text-secondary); }
+  .an-chip.on { background: var(--brand-tint); border-color: var(--brand); color: var(--brand-deep); }
+  .an-chip.reset { margin-left: auto; color: var(--brand); border-color: transparent; background: transparent; }
+
 </style>
 </head>
 <body>
+<script>
+  // Applied before anything renders so the page never flashes the wrong theme
+  try {
+    var t = localStorage.getItem('vec-theme');
+    if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
 
 <!-- ═══════════════════════════════════════ -->
 <!-- AUTH GATE (v3.1) -->
@@ -1758,7 +1863,7 @@
       <button class="hub-btn hub-btn-secondary" onclick="openLibraryManager()" id="hub-library">VEC Library</button>
       <button class="hub-btn hub-btn-secondary" onclick="openAnalytics()" id="hub-analytics">Analytics</button>
       <button class="hub-btn hub-btn-secondary" onclick="openUsersManager()" id="hub-users">Users</button>
-      <button class="hub-btn hub-btn-secondary" onclick="importLegacyDC6()" id="hub-legacy" title="Pull the original DC6 data out of the old root level paths into a project">Import Legacy DC6</button>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Switch theme">☾</button>
     </div>
   </div>
   <div style="max-width:1600px;margin:0 auto;padding:0 32px;display:flex;justify-content:flex-end;align-items:center;gap:12px;">
@@ -1826,7 +1931,8 @@
     <div class="header-meta">
       <div class="meta-item"><span class="meta-label">Today</span><span class="meta-value mono" id="header-today">—</span></div>
       <div class="meta-item"><span class="meta-label">GC</span><span class="meta-value">HITT</span></div>
-      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v3.7</span></div>
+      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v3.8</span></div>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Switch theme">☾</button>
       <div class="notif-bell" onclick="toggleNotifications()" id="notif-bell" style="margin-left:12px;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         <div class="notif-badge" id="notif-count" style="display:none;">0</div>
@@ -1850,13 +1956,13 @@
       </div>
       <span class="role-badge" id="identity-role">—</span>
     </div>
-    <span class="idbar-note" style="display:none;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;" id="actas-label">Acting as</span>
-    <select id="company-selector" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:4px;color:white;padding:4px 10px;font-size:12px;font-family:inherit;font-weight:600;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27white%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;padding-right:28px;">
-    </select>
+
+    
   </div>
   <div style="display:flex;gap:12px;align-items:center;">
-    <span class="idbar-note mono">All changes tracked with company attribution</span>
+    <span class="idbar-note mono">Every change is recorded against your account</span>
     <button onclick="document.querySelectorAll('.view-tab').forEach(t=>t.classList.remove('active'));document.querySelector('.view-tab[data-view=\'directory\']').classList.add('active');document.querySelectorAll('.view-panel').forEach(p=>p.classList.remove('active'));document.getElementById('panel-directory').classList.add('active');" class="linkish">Manage Trades &amp; Contacts</button>
+    <button class="linkish" onclick="openProjectSettings()" id="btn-project-settings">Project settings</button>
     <button class="linkish" onclick="backToHub()">Projects</button>
     <button class="linkish" onclick="doSignOut()">Sign out</button>
   </div>
@@ -2012,15 +2118,11 @@
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <div>
         <h2 style="font-size:18px;font-weight:700;color:var(--vec-navy);">Change Log</h2>
-        <p style="font-size:12px;color:var(--text-tertiary);margin-top:2px;">Full audit trail of every update, who made it, and when.</p>
+        <p style="font-size:12px;color:var(--text-tertiary);margin-top:2px;">Full audit trail of every update: what changed, who made it, and when.</p>
       </div>
       <div style="display:flex;gap:8px;">
         <select class="filter-select" id="log-company-filter" onchange="renderChangeLog()">
-          <option value="all">All Companies</option>
-          <option value="VEC">VEC</option>
-          <option value="HITT">HITT</option>
-          <option value="QTS">QTS</option>
-          <option value="DLR">DLR Group</option>
+          <option value="all">All companies</option>
         </select>
         <button class="clear-btn" onclick="exportChangeLog()">Export CSV</button>
       </div>
@@ -2163,7 +2265,7 @@ Cleveland Electric, Electrical, Sarah Lee, BIM Lead, sarah@clevelandelec.com, 40
 </div>
 
 <footer>
-  Virtual Engineering Consultants · BIM Coordination Services · Template v3.7<br>
+  Virtual Engineering Consultants · BIM Coordination Services · Template v3.8<br>
   Zone × Stage workflow · Role permissions · Company library · Schedule intelligence · Meeting prep · Portfolio analytics
 </footer>
 
@@ -2413,6 +2515,81 @@ Cleveland Electric, Electrical, Sarah Lee, BIM Lead, sarah@clevelandelec.com, 40
 
 </div><!-- end project-view -->
 
+<!-- PROJECT SETTINGS (v3.8) -->
+<div class="modal-backdrop" id="settings-modal">
+  <div class="modal" style="max-width:760px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Project Settings</div>
+        <div class="modal-sub">Team, coordination cadence and the zone list</div>
+      </div>
+      <button class="modal-close" onclick="closeProjectSettings()">✕</button>
+    </div>
+    <div class="modal-body" id="settings-body"></div>
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closeProjectSettings()">Cancel</button>
+      <button class="btn" onclick="saveProjectSettings()">Save settings</button>
+    </div>
+  </div>
+</div>
+
+<!-- BULK USER PASTE (v3.8) -->
+<div class="modal-backdrop" id="bulk-users-modal">
+  <div class="modal" style="max-width:720px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Add people in bulk</div>
+        <div class="modal-sub">Paste a list. Each person gets their company and role the moment they sign up.</div>
+      </div>
+      <button class="modal-close" onclick="closeBulkUsers()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:10px;">
+        <div style="font-size:11.5px;font-weight:700;color:var(--text-secondary);margin-bottom:6px;">One person per line, in any order:</div>
+        <div class="mono" style="font-size:11.5px;color:var(--brand-deep);background:var(--brand-tint);padding:9px 12px;border-radius:var(--radius);line-height:1.6;">
+          email, company, role
+        </div>
+        <div style="font-size:11.5px;color:var(--text-tertiary);margin-top:6px;">
+          Roles understood: VEC Admin, VEC Coordinator, GC, Design, Owner, Trade, Viewer. Anything unrecognised becomes Trade.
+          Tabs or commas both work, so you can paste straight from a spreadsheet.
+        </div>
+      </div>
+      <textarea class="form-textarea" id="bulk-users-data" style="min-height:190px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.65;"
+        placeholder="john@mckenneys.com, McKenney's, Trade&#10;sarah@hitt.com, HITT Contracting, GC&#10;m.jones@dlrgroup.com, DLR Group, Design"></textarea>
+      <div id="bulk-users-preview" style="margin-top:12px;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closeBulkUsers()">Cancel</button>
+      <button class="btn ghost" onclick="previewBulkUsers()">Preview</button>
+      <button class="btn" onclick="executeBulkUsers()">Add all</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLONE PROJECT (v3.8) -->
+<div class="modal-backdrop" id="clone-modal">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Clone a project</div>
+        <div class="modal-sub">Start a new project from an existing one's setup</div>
+      </div>
+      <button class="modal-close" onclick="closeCloneDialog()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Copy setup from</label>
+        <select class="form-select" id="clone-select" onchange="renderCloneSummary()"></select>
+      </div>
+      <div id="clone-summary"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closeCloneDialog()">Cancel</button>
+      <button class="btn" onclick="confirmClone()">Continue</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════════════════════════════════ -->
 <!-- WHAT-IF MODAL (v3.5) -->
 <!-- ═══════════════════════════════════════ -->
@@ -2449,7 +2626,8 @@ Cleveland Electric, Electrical, Sarah Lee, BIM Lead, sarah@clevelandelec.com, 40
     <div class="modal-body">
       <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center;">
         <input class="lib-search" id="users-search" placeholder="Search name, email, or company..." oninput="renderUsersManager()" style="margin-bottom:0;">
-        <button class="btn ghost" onclick="openInviteForm()" style="white-space:nowrap;">+ Pre-assign Email</button>
+        <button class="btn ghost" onclick="openInviteForm()" style="white-space:nowrap;">+ One email</button>
+        <button class="btn" onclick="openBulkUsers()" style="white-space:nowrap;">+ Paste a list</button>
       </div>
       <div id="invite-form" style="display:none;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px;">
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:10px;">Pre-assign an email address</div>
@@ -2784,9 +2962,12 @@ function getTradeEntries() {
 // Who is making a change. The signed-in account is the source of truth now;
 // the company dropdown only survives as an admin "act as" fallback.
 function actorCompany() {
-  if (window.CURRENT_USER && CURRENT_USER.company) return CURRENT_USER.company;
-  const sel = document.getElementById('company-selector');
-  return (sel && sel.value) || 'VEC';
+  const u = window.CURRENT_USER;
+  return (u && u.company) || (u && u.email) || 'Unknown';
+}
+function actorName() {
+  const u = window.CURRENT_USER;
+  return u ? (u.name || u.email) : 'Unknown';
 }
 
 function getTradesForZone(zoneId) {
@@ -3637,7 +3818,7 @@ function openIssueDetail(id) {
 function postIssueComment(id, type) {
   const text = document.getElementById("comment-input").value.trim();
   if (!text) return;
-  const company = document.getElementById('company-selector').value;
+  const company = actorCompany();
   const issue = ISSUES.find(i => i.id === id);
   const now = new Date().toISOString().slice(0, 16);
   if (!issue.history) issue.history = [];
@@ -4014,7 +4195,7 @@ function closeBlockerForm() {
 }
 
 function saveBlocker() {
-  const company = document.getElementById('company-selector').value;
+  const company = actorCompany();
   const blocker = {
     id: blockerFormContext.editingId || 'BLK-' + Date.now(),
     zone: blockerFormContext.zone,
@@ -4092,7 +4273,7 @@ function openBlockerDetail(id) {
   `;
   
   document.getElementById('blocker-detail-resolve').onclick = () => {
-    const company = document.getElementById('company-selector').value;
+    const company = actorCompany();
     b.status = 'resolved';
     if (!b.history) b.history = [];
     b.history.push({ date: new Date().toISOString(), actor: company, action: 'Resolved', text: 'Blocker marked as resolved' });
@@ -4134,7 +4315,7 @@ function toggleDateEdit(zoneId) {
 }
 
 function updateStageDate(zoneId, stageId, field, value) {
-  const company = document.getElementById('company-selector').value;
+  const company = actorCompany();
   const sched = SCHEDULE[zoneId]?.[stageId];
   if (!sched || !value) return;
   
@@ -4380,7 +4561,7 @@ function renderModelPop() {
 }
 
 function updateModelPop(zoneId, trade, pct) {
-  const company = document.getElementById('company-selector').value;
+  const company = actorCompany();
   const now = new Date();
   const ts = `${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
   
@@ -4413,10 +4594,17 @@ try {
 
 function addChangeLogEntry(company, type, description) {
   const now = new Date();
+  const u = window.CURRENT_USER;
   CHANGE_LOG.unshift({
-    id: 'CL-' + Date.now(),
+    id: 'CL-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
     date: now.toISOString(),
-    company,
+    // The signed-in account is the record. `company` is only a fallback for
+    // anything logged before sign-in finished.
+    company: (u && u.company) || company || 'Unknown',
+    person: u ? (u.name || u.email) : '',
+    email: u ? u.email : '',
+    role: u ? u.role : '',
+    uid: u ? u.uid : '',
     type,
     description
   });
@@ -4430,6 +4618,18 @@ function renderChangeLog() {
   const list = document.getElementById('changelog-list');
   const filter = document.getElementById('log-company-filter').value;
   const entries = filter === 'all' ? CHANGE_LOG : CHANGE_LOG.filter(e => e.company === filter);
+
+  // Rebuild the filter from the companies actually present, not a hardcoded list
+  const sel = document.getElementById('log-company-filter');
+  const seen = Array.from(new Set(CHANGE_LOG.map(e => e.company).filter(Boolean))).sort();
+  const wanted = ['all'].concat(seen).join('|');
+  if (sel && sel.dataset.built !== wanted) {
+    const keep = sel.value;
+    sel.innerHTML = '<option value="all">All companies</option>' +
+      seen.map(c => `<option value="${c}">${c}</option>`).join('');
+    sel.dataset.built = wanted;
+    if (seen.includes(keep) || keep === 'all') sel.value = keep;
+  }
   
   if (entries.length === 0) {
     list.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-tertiary);">No changes logged yet. Updates to model population, blockers, and issues will appear here.</div>';
@@ -4451,7 +4651,10 @@ function renderChangeLog() {
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;display:flex;gap:12px;align-items:center;">
         <span style="padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:0.06em;background:${tc.bg};color:${tc.color};flex-shrink:0;">${tc.label}</span>
         <div style="flex:1;font-size:12px;">${e.description}</div>
-        <div style="font-size:11px;font-weight:600;color:var(--vec-navy);flex-shrink:0;">${e.company}</div>
+        <div style="flex-shrink:0;text-align:right;line-height:1.35;">
+          <div style="font-size:11.5px;font-weight:600;color:var(--ink);">${e.person || '<span style="color:var(--text-tertiary);font-weight:500;">unattributed</span>'}</div>
+          <div style="font-size:10px;color:var(--text-tertiary);">${e.company || '—'}</div>
+        </div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-tertiary);flex-shrink:0;">${dateStr}</div>
       </div>
     `;
@@ -4459,9 +4662,9 @@ function renderChangeLog() {
 }
 
 function exportChangeLog() {
-  let csv = 'Date,Company,Type,Description\n';
+  let csv = 'Date,Person,Email,Company,Role,Type,Description\n';
   for (const e of CHANGE_LOG) {
-    csv += `"${new Date(e.date).toLocaleString()}","${e.company}","${e.type}","${e.description.replace(/"/g,'""')}"\n`;
+    csv += `"${new Date(e.date).toLocaleString()}","${e.person || ''}","${e.email || ''}","${e.company || ''}","${e.role || ''}","${e.type}","${(e.description || '').replace(/"/g,'""')}"\n`;
   }
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
@@ -4729,26 +4932,11 @@ function rebuildCourtsFromDirectory() {
   }
 }
 
+// The company dropdown is gone; identity comes from the signed-in account.
+// Kept as a no-op because several call sites still invoke it after saves.
 function populateCompanySelector() {
-  const sel = document.getElementById('company-selector');
-  if (!sel) return;
-  sel.innerHTML = '';
-  for (const d of DIRECTORY) {
-    const o = document.createElement('option');
-    o.value = d.company || d.role || d.id || 'Unknown';
-    o.textContent = d.company ? `${d.company} (${d.role || ''})` : (d.role || d.id || 'Unknown');
-    o.style.color = '#000';
-    o.style.background = '#fff';
-    sel.appendChild(o);
-  }
-  if (DIRECTORY.length === 0) {
-    const o = document.createElement('option');
-    o.value = 'VEC'; o.textContent = 'VEC';
-    o.style.color = '#000'; o.style.background = '#fff';
-    sel.appendChild(o);
-  }
+  if (typeof paintIdentity === 'function') paintIdentity();
 }
-
 function renderDirectory() {
   const grid = document.getElementById('directory-grid');
   grid.innerHTML = DIRECTORY.map((d, idx) => `
@@ -4838,7 +5026,7 @@ Mike Jones, Foreman, mike@company.com, 404-555-5678"></textarea>
 
 function updateDirectory(idx, field, value) {
   DIRECTORY[idx][field] = value;
-  const company = document.getElementById('company-selector').value;
+  const company = actorCompany();
   addChangeLogEntry(company, 'status', `Updated directory: ${DIRECTORY[idx].company || DIRECTORY[idx].role} — ${field}`);
   saveDirectory();
   renderDirectory();
@@ -5042,7 +5230,7 @@ function executeImport() {
     }
   }
   
-  const company = document.getElementById('company-selector').value;
+  const company = actorCompany();
   addChangeLogEntry(company, 'status', `Imported ${parsed.length} contacts across ${Object.keys(grouped).length} companies`);
   
   saveDirectory();
@@ -5092,7 +5280,7 @@ function executePasteContacts(idx) {
   }
   
   if (added > 0) {
-    const company = document.getElementById('company-selector').value;
+    const company = actorCompany();
     addChangeLogEntry(company, 'status', `Added ${added} contacts to ${DIRECTORY[idx].company || DIRECTORY[idx].role}`);
     saveDirectory();
     renderDirectory();
@@ -5113,7 +5301,7 @@ renderDirectory();
 // Override issue save to log changes and sync to Firebase
 const origSaveIssue = window.saveIssue;
 window.saveIssue = function() {
-  const company = document.getElementById('company-selector').value;
+  const company = actorCompany();
   const title = document.getElementById('form-title-input').value;
   addChangeLogEntry(company, 'issue', `${formContext.editingId ? 'Updated' : 'Created'} issue: "${title}"`);
   origSaveIssue();
@@ -5287,7 +5475,7 @@ function loadProjectList() {
 
 function renderProjectHub() {
   const grid = document.getElementById('project-grid');
-  const company = document.getElementById('company-selector')?.value || 'VEC';
+  const company = actorCompany();
   
   // Show admin actions for VEC
   const adminActions = document.getElementById('hub-admin-actions');
@@ -5587,7 +5775,10 @@ function renderWizardStep() {
       <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">Design Team</h2>
       <p style="color:var(--text-tertiary);margin-bottom:12px;">Add design team companies and contacts.</p>
       <div style="margin-bottom:16px;">
-        <label class="form-label" style="margin-bottom:6px;">Quick Add Common Roles</label>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <label class="form-label" style="margin-bottom:0;">Quick Add Common Roles</label>
+          <button onclick="addLibraryDesignTeam()" style="padding:4px 12px;border-radius:4px;border:1px solid var(--brand);background:var(--surface);color:var(--brand);font-size:11px;cursor:pointer;font-family:inherit;font-weight:600;">Pull design team from library</button>
+        </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           ${['Architect','MEP Engineer','Structural Engineer','Civil Engineer','Landscape Architect','Interior Designer','Lighting Designer','AV / IT Consultant','Commissioning Agent','Geotechnical Engineer'].filter(r => !wizardData.designTeam.some(dt => dt.role === r)).map(r => `
             <button onclick="wizardData.designTeam.push({role:'${r}',name:'',company:'',email:''});renderWizardStep()" style="padding:4px 12px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);font-size:11px;cursor:pointer;font-family:inherit;">+ ${r}</button>
@@ -5632,7 +5823,10 @@ function renderWizardStep() {
       <div style="margin-bottom:16px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
           <label class="form-label" style="margin-bottom:0;">Quick Add From VEC Library</label>
-          <button onclick="openLibrary('wizard')" style="padding:4px 12px;border-radius:4px;border:1px solid var(--vec-teal);background:var(--surface);color:var(--vec-blue);font-size:11px;cursor:pointer;font-family:inherit;font-weight:600;">Browse all companies →</button>
+          <div style="display:flex;gap:6px;">
+            <button onclick="addAllLibraryTrades()" style="padding:4px 12px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);font-size:11px;cursor:pointer;font-family:inherit;font-weight:600;">Add all</button>
+            <button onclick="openLibrary('wizard')" style="padding:4px 12px;border-radius:4px;border:1px solid var(--brand);background:var(--surface);color:var(--brand);font-size:11px;cursor:pointer;font-family:inherit;font-weight:600;">Browse library →</button>
+          </div>
         </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;" id="wizard-library-chips">
           ${libraryQuickChips()}
@@ -5806,7 +6000,7 @@ window.migrateDC6 = migrateDC6;
 window.NOTIFICATIONS = [];
 
 function addCommentToItem(type, itemId, text) {
-  const company = document.getElementById('company-selector').value;
+  const company = actorCompany();
   const now = new Date().toISOString();
   
   // Parse @mentions — supports @[Company Name] bracket format and @SingleWord
@@ -5972,7 +6166,7 @@ function toggleNotifications() {
 }
 
 function updateNotifBadge() {
-  const company = document.getElementById('company-selector')?.value || 'VEC';
+  const company = actorCompany();
   const unread = (window.NOTIFICATIONS || []).filter(n => n.for === company && !n.read).length;
   const badge = document.getElementById('notif-count');
   if (badge) {
@@ -5982,7 +6176,7 @@ function updateNotifBadge() {
 }
 
 function renderNotifications() {
-  const company = document.getElementById('company-selector')?.value || 'VEC';
+  const company = actorCompany();
   const myNotifs = (window.NOTIFICATIONS || []).filter(n => n.for === company).slice(0, 20);
   const list = document.getElementById('notif-list');
   
@@ -6023,7 +6217,7 @@ window.toggleNotifications = toggleNotifications;
 window.markNotifRead = markNotifRead;
 
 // Update badge when company selector changes
-document.getElementById('company-selector')?.addEventListener('change', () => { updateNotifBadge(); });
+
 
 /* ============================================================
    V3.0 — AGING BADGES
@@ -6050,7 +6244,7 @@ function getSignoffs(zoneId) {
 }
 
 function toggleSignoff(zoneId, tradeName) {
-  const company = document.getElementById('company-selector').value;
+  const company = actorCompany();
   if (!window.SIGNOFFS[zoneId]) window.SIGNOFFS[zoneId] = {};
   
   if (window.SIGNOFFS[zoneId][tradeName]) {
@@ -6291,7 +6485,7 @@ function routeAfterLogin() {
 function paintIdentity() {
   const today = document.getElementById('header-today');
   if (today) today.textContent = fmtFull(TODAY);
-  const u = CURRENT_USER;
+  const u = window.CURRENT_USER;   // may not exist yet during module evaluation
   if (!u) return;
   const initials = (u.name || u.email || '?').split(/\s+/).map(s => s[0]).slice(0, 2).join('').toUpperCase();
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
@@ -6420,7 +6614,6 @@ function applyPermissions() {
   show('hub-clone-project', can('project.clone'));
   show('hub-library', can('library.edit'));
   show('hub-users', can('user.manage'));
-  show('hub-legacy', can('project.create'));
   show('hub-analytics', can('user.manage') || can('project.create'));
   const adminActions = document.getElementById('hub-admin-actions');
   if (adminActions) {
@@ -6466,11 +6659,6 @@ function applyPermissions() {
   const addIssueBtn = document.getElementById('zone-modal-add-issue');
   if (addIssueBtn) addIssueBtn.style.display = can('issue.create') ? '' : 'none';
 
-  // Act-as selector is admin only
-  const sel = document.getElementById('company-selector');
-  const actasLabel = document.getElementById('actas-label');
-  if (sel) sel.style.display = can('user.manage') ? '' : 'none';
-  if (actasLabel) actasLabel.style.display = can('user.manage') ? '' : 'none';
 }
 
 window.can = can;
@@ -6492,19 +6680,6 @@ window.doSignOut = doSignOut;
 const _origPopulateCompanySelector = populateCompanySelector;
 populateCompanySelector = function () {
   _origPopulateCompanySelector();
-  const sel = document.getElementById('company-selector');
-  if (!sel || !CURRENT_USER) return;
-  if (can('user.manage')) {
-    // Admin can act as any company; default to their own if it exists
-    const mine = Array.from(sel.options).find(o => o.value === CURRENT_USER.company);
-    if (mine) sel.value = CURRENT_USER.company;
-  } else {
-    sel.innerHTML = '';
-    const o = document.createElement('option');
-    o.value = CURRENT_USER.company || 'Unknown';
-    o.textContent = o.value;
-    sel.appendChild(o);
-  }
   paintIdentity();
 };
 
@@ -6572,59 +6747,7 @@ function decorateProjectCards() {
   });
 }
 
-// The original DC6 data predates the multi project rewrite and still sits at the
-// root of the database. This lifts it into projects/qts-atl2-dc6.
-function importLegacyDC6() {
-  if (!can('project.create')) { denied('create projects'); return; }
-  const legacyPaths = ['modelpop', 'blockers', 'issues', 'directory', 'changelog', 'schedule', 'zonemaps', 'signoffs'];
-
-  // Read each path independently. Once the database rules are published some of
-  // these legacy paths may be unreadable, and one refusal must not kill the import.
-  Promise.all(legacyPaths.map(pth =>
-    db.ref(pth).once('value')
-      .then(snap => [pth, snap.val()])
-      .catch(() => [pth, null])
-  ))
-    .then((pairs) => {
-      const found = pairs.filter(([, v]) => v !== null && v !== undefined);
-      if (found.length === 0) {
-        alert('No legacy data found at the root of the database. Nothing to import.');
-        return;
-      }
-      const summary = found.map(([p, v]) => {
-        const n = Array.isArray(v) ? v.length : (typeof v === 'object' ? Object.keys(v).length : 1);
-        return `  ${p}: ${n} record${n === 1 ? '' : 's'}`;
-      }).join('\n');
-
-      if (!confirm(`Found legacy DC6 data at the root:\n\n${summary}\n\nCopy it into a project called "QTS ATL2 DC6"?\n\nThe root copies are left untouched.`)) return;
-
-      const pid = 'qts-atl2-dc6';
-      const updates = {};
-      for (const [p, v] of found) updates[`projects/${pid}/${p}`] = v;
-      updates[`projects/${pid}/config`] = {
-        name: 'QTS ATL2 DC6',
-        gc: 'HITT Contracting',
-        owner: 'QTS Realty Trust',
-        architect: 'DLR Group',
-        vdc: 'VEC',
-        zones: ZONES.map(z => ({ id: z.id, name: z.name, segment: z.segment, level: z.level })),
-        importedAt: new Date().toISOString(),
-        lastActivity: new Date().toLocaleDateString()
-      };
-
-      db.ref().update(updates)
-        .then(() => {
-          alert('DC6 imported. It will appear in the hub now.');
-          loadProjectList();
-          if (can('library.use')) harvestLibrary(false);
-        })
-        .catch(e => alert('Import failed: ' + e.message));
-    })
-    .catch(e => alert('Could not read the legacy data: ' + e.message));
-}
-
 window.deleteProject = deleteProject;
-window.importLegacyDC6 = importLegacyDC6;
 
 const _origOpenProject = openProject;
 openProject = function (projectId) {
@@ -7061,7 +7184,7 @@ function pickFromLibrary(slug) {
     renderDirectory();
     renderLibraryList();
     addChangeLogEntry(
-      document.getElementById('company-selector').value,
+      actorCompany(),
       'status',
       `Added ${rec.name} to the directory from the VEC library`
     );
@@ -7503,7 +7626,7 @@ function computeShift(zoneId, stageId, newFinish) {
 function applyShift(zoneId, plan) {
   if (!can('schedule.edit')) { denied('change schedule dates'); return; }
   if (!plan || !plan.rows.length) return;
-  const company = document.getElementById('company-selector').value;
+  const company = actorCompany();
 
   for (const r of plan.rows) {
     const s = SCHEDULE[zoneId][r.stageId];
@@ -7550,7 +7673,7 @@ function applyCycleDueDates() {
     changed++;
   }
   saveIssues();
-  addChangeLogEntry(document.getElementById('company-selector').value, 'status',
+  addChangeLogEntry(actorCompany(), 'status',
     `Applied cycle due date standard to ${changed} open issues`);
   renderAll();
   renderScheduleIntel();
@@ -7878,7 +8001,7 @@ function buildMeetingSummary(cycleDateStr) {
   let openBlockers = [];
   try { openBlockers = BLOCKERS.filter(b => b.status === 'open'); } catch (e) {}
 
-  const sinceLast = (CHANGE_LOG || []).filter(e => e.timestamp && new Date(e.timestamp) >= prev);
+  const sinceLast = (CHANGE_LOG || []).filter(e => (e.date || e.timestamp) && new Date(e.date || e.timestamp) >= prev);
 
   const gates = ZONES.map(z => {
     const so = SCHEDULE[z.id] && SCHEDULE[z.id].signoff ? SCHEDULE[z.id].signoff.start : null;
@@ -8017,8 +8140,8 @@ function generateMeetingPrep() {
           <div class="mp-log">
             ${s.sinceLast.slice(0, 30).map(e => `
               <div class="mp-log-row">
-                <span class="mono mp-dim">${fmtDateTime(e.timestamp)}</span>
-                <span><strong>${e.company || '—'}</strong> ${e.description || ''}</span>
+                <span class="mono mp-dim">${fmtDateTime(e.date || e.timestamp)}</span>
+                <span><strong>${e.person ? e.person + ' · ' : ''}${e.company || '—'}</strong> ${e.description || ''}</span>
               </div>`).join('')}
           </div>` : '<p class="mp-dim">No logged activity since the last cycle.</p>'}
       </div>
@@ -8735,6 +8858,594 @@ document.addEventListener('click', (e) => {
 }, true);
 
 /* ============================================================
+   V3.8 — ROUND TWO
+   Theme toggle · library deletes · project settings · analytics
+   filters and zone drill-down · library-seeded wizard · bulk user
+   paste · clone dialog
+   ============================================================ */
+
+/* ---------- 1. THEME ---------- */
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  try { localStorage.setItem('vec-theme', theme); } catch (e) { /* private mode */ }
+  document.querySelectorAll('.theme-toggle').forEach(btn => {
+    btn.textContent = theme === 'dark' ? '☀' : '☾';
+    btn.title = theme === 'dark' ? 'Switch to light' : 'Switch to dark';
+  });
+}
+
+function currentTheme() {
+  return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+}
+
+function toggleTheme() {
+  applyTheme(currentTheme() === 'dark' ? 'light' : 'dark');
+  // Charts read their colours from CSS variables, so a repaint picks up the swap
+  if (document.getElementById('analytics-view') &&
+      document.getElementById('analytics-view').style.display === 'block' &&
+      window.ANALYTICS) renderAnalytics();
+}
+
+window.applyTheme = applyTheme;
+window.toggleTheme = toggleTheme;
+
+/* ---------- 2. LIBRARY: REMOVE A COMPANY ---------- */
+
+function deleteLibraryCompany(slug) {
+  if (!can('library.edit')) { denied('remove companies from the library'); return; }
+  const rec = window.LIBRARY[slug];
+  if (!rec) return;
+  const n = Object.keys(rec.projects || {}).length;
+
+  const typed = prompt(
+    `Remove "${rec.name}" from the VEC library?\n\n` +
+    `The library is shared across every project. This does not touch the ${n} project director${n === 1 ? 'y' : 'ies'} ` +
+    `it already appears in — it only stops the company being offered for new ones.\n\n` +
+    `Type the company name to confirm:`
+  );
+  if (typed === null) return;
+  if (typed.trim().toLowerCase() !== rec.name.trim().toLowerCase()) {
+    alert('That did not match. Nothing was removed.');
+    return;
+  }
+
+  delete window.LIBRARY[slug];
+  db.ref('library/companies/' + slug).remove()
+    .then(() => {
+      addChangeLogEntry(actorCompany(), 'status', `Removed ${rec.name} from the VEC company library`);
+      renderLibraryList();
+    })
+    .catch(e => alert('Could not remove it: ' + e.message));
+}
+window.deleteLibraryCompany = deleteLibraryCompany;
+
+/* ---------- 3. PROJECT SETTINGS ---------- */
+
+let settingsDraft = null;
+
+function openProjectSettings() {
+  if (!activeProjectId) { alert('Open a project first.'); return; }
+  if (!can('directory.edit')) { denied('edit project settings'); return; }
+
+  const cfg = (allProjects[activeProjectId] || {}).config || {};
+  settingsDraft = {
+    name: cfg.name || activeProjectId,
+    gc: cfg.gc || '',
+    owner: cfg.owner || '',
+    architect: cfg.architect || '',
+    meetingDays: normaliseMeetingDays(cfg.meetingDays),
+    zones: ZONES.map(z => ({ id: z.id, name: z.name, segment: z.segment || '', level: z.level || '' }))
+  };
+  document.getElementById('settings-modal').classList.add('show');
+  renderProjectSettings();
+}
+
+function normaliseMeetingDays(raw) {
+  if (!raw) return [{ day: 'Wednesday', time: '09:00' }, { day: 'Friday', time: '09:00' }];
+  const list = Array.isArray(raw) ? raw : Object.values(raw);
+  return list.map(m => typeof m === 'string' ? { day: m, time: '09:00' } : { day: m.day, time: m.time || '09:00' })
+             .filter(m => m.day);
+}
+
+function closeProjectSettings() {
+  document.getElementById('settings-modal').classList.remove('show');
+  settingsDraft = null;
+}
+
+function renderProjectSettings() {
+  const d = settingsDraft;
+  if (!d) return;
+  const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+  document.getElementById('settings-body').innerHTML = `
+    <div class="form-section">
+      <div class="form-section-title">Project</div>
+      <div class="form-group">
+        <label class="form-label">Project name</label>
+        <input class="form-input" value="${d.name}" onchange="settingsDraft.name=this.value">
+      </div>
+      <div class="form-row">
+        <div><label class="form-label">General contractor</label>
+          <input class="form-input" value="${d.gc}" onchange="settingsDraft.gc=this.value"></div>
+        <div><label class="form-label">Owner</label>
+          <input class="form-input" value="${d.owner}" onchange="settingsDraft.owner=this.value"></div>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Architect / engineer of record</label>
+        <input class="form-input" value="${d.architect}" onchange="settingsDraft.architect=this.value">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Coordination cadence</div>
+      <p style="font-size:11.5px;color:var(--text-tertiary);margin-bottom:10px;">
+        These days drive every due date, the cycle countdown and the what-if engine.
+      </p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+        ${DAYS.map(day => {
+          const on = d.meetingDays.some(m => m.day === day);
+          return `<div onclick="toggleMeetingDay('${day}')"
+            style="padding:8px 16px;border-radius:6px;cursor:pointer;font-size:12.5px;font-weight:600;
+                   border:1px solid ${on ? 'var(--brand)' : 'var(--border)'};
+                   background:${on ? 'var(--brand-tint)' : 'var(--surface)'};
+                   color:${on ? 'var(--brand-deep)' : 'var(--text-tertiary)'};">${day}</div>`;
+        }).join('')}
+      </div>
+      ${d.meetingDays.length ? `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          ${d.meetingDays.map((m, i) => `
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:12.5px;font-weight:600;min-width:86px;">${m.day}</span>
+              <input type="time" class="form-input" value="${m.time}" onchange="settingsDraft.meetingDays[${i}].time=this.value">
+            </div>`).join('')}
+        </div>` : '<p style="font-size:12px;color:var(--red);">Pick at least one meeting day.</p>'}
+    </div>
+
+    <div class="form-section" style="margin-bottom:0;">
+      <div class="form-section-title">Zones (${d.zones.length})</div>
+      <p style="font-size:11.5px;color:var(--text-tertiary);margin-bottom:12px;">
+        Removing a zone hides it everywhere but leaves its issues in the database, so it can be added back.
+      </p>
+      <div style="display:grid;grid-template-columns:1.6fr 1.2fr 0.9fr auto;gap:6px;margin-bottom:6px;
+                  font-size:9.5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-tertiary);">
+        <div>Zone name</div><div>Segment</div><div>Level</div><div></div>
+      </div>
+      ${d.zones.map((z, i) => `
+        <div style="display:grid;grid-template-columns:1.6fr 1.2fr 0.9fr auto;gap:6px;margin-bottom:6px;align-items:center;">
+          <input class="form-input" style="font-size:12px;padding:6px 9px;" value="${z.name}" onchange="settingsDraft.zones[${i}].name=this.value">
+          <input class="form-input" style="font-size:12px;padding:6px 9px;" value="${z.segment}" onchange="settingsDraft.zones[${i}].segment=this.value">
+          <input class="form-input" style="font-size:12px;padding:6px 9px;" value="${z.level}" onchange="settingsDraft.zones[${i}].level=this.value">
+          <button onclick="settingsDraft.zones.splice(${i},1);renderProjectSettings()"
+            style="background:none;border:none;color:var(--red);cursor:pointer;font-size:15px;padding:0 6px;">✕</button>
+        </div>`).join('')}
+      <button onclick="settingsDraft.zones.push({id:'z-'+Date.now(),name:'',segment:'',level:''});renderProjectSettings()"
+        style="margin-top:8px;background:var(--brand-tint);color:var(--brand-deep);border:1px dashed var(--brand);
+               border-radius:6px;padding:9px 16px;cursor:pointer;font-family:inherit;font-weight:600;font-size:12px;width:100%;">
+        + Add zone</button>
+    </div>`;
+}
+
+function toggleMeetingDay(day) {
+  const i = settingsDraft.meetingDays.findIndex(m => m.day === day);
+  if (i >= 0) settingsDraft.meetingDays.splice(i, 1);
+  else settingsDraft.meetingDays.push({ day, time: '09:00' });
+  renderProjectSettings();
+}
+
+function saveProjectSettings() {
+  if (!can('directory.edit')) { denied('edit project settings'); return; }
+  const d = settingsDraft;
+  if (!d.name.trim()) { alert('Project name cannot be empty.'); return; }
+  if (!d.meetingDays.length) { alert('Pick at least one coordination meeting day.'); return; }
+
+  const zones = d.zones.filter(z => z.name.trim()).map(z => ({
+    id: z.id || z.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    name: z.name.trim(), segment: z.segment.trim(), level: z.level.trim()
+  }));
+  if (!zones.length) { alert('A project needs at least one zone.'); return; }
+
+  const cfg = Object.assign({}, (allProjects[activeProjectId] || {}).config || {}, {
+    name: d.name.trim(), gc: d.gc.trim(), owner: d.owner.trim(), architect: d.architect.trim(),
+    meetingDays: d.meetingDays, zones, lastActivity: new Date().toLocaleDateString()
+  });
+
+  db.ref(`projects/${activeProjectId}/config`).set(cfg).then(() => {
+    if (!allProjects[activeProjectId]) allProjects[activeProjectId] = {};
+    allProjects[activeProjectId].config = cfg;
+
+    // Rebuild the live zone list, giving any brand new zone a default schedule
+    ZONES.length = 0;
+    for (const z of zones) {
+      ZONES.push(z);
+      if (!SCHEDULE[z.id]) {
+        const start = new Date();
+        const mk = (offset, dur) => ({
+          start: new Date(start.getTime() + offset * 86400000),
+          finish: new Date(start.getTime() + (offset + dur) * 86400000),
+          duration: dur
+        });
+        SCHEDULE[z.id] = {
+          base: mk(0, 14), coord: mk(14, 21), signoff: mk(35, 0),
+          submit: mk(35, 14), review: mk(49, 14), fab: mk(63, 21),
+          fieldActivities: []
+        };
+      }
+    }
+    saveSchedule();
+    document.getElementById('project-name-header').textContent = cfg.name;
+    document.getElementById('project-title-header').textContent = cfg.name + ' — Coordination Dashboard';
+    addChangeLogEntry(actorCompany(), 'status', `Updated project settings (${zones.length} zones, meetings ${d.meetingDays.map(m => m.day).join(' & ')})`);
+    closeProjectSettings();
+    refreshTrades();
+    renderAll();
+    renderScheduleIntel();
+  }).catch(e => alert('Could not save: ' + e.message));
+}
+
+window.openProjectSettings = openProjectSettings;
+window.closeProjectSettings = closeProjectSettings;
+window.renderProjectSettings = renderProjectSettings;
+window.toggleMeetingDay = toggleMeetingDay;
+window.saveProjectSettings = saveProjectSettings;
+
+/* ---------- 4. ANALYTICS FILTERS + ZONE DRILL-DOWN ---------- */
+
+window.ALL_PROJECT_DATA = {};
+window.ANALYTICS_FILTER = { projects: null };   // null = every project
+
+function applyAnalyticsFilter() {
+  const selected = window.ANALYTICS_FILTER.projects;
+  const subset = {};
+  for (const pid of Object.keys(window.ALL_PROJECT_DATA)) {
+    if (!selected || selected.includes(pid)) subset[pid] = window.ALL_PROJECT_DATA[pid];
+  }
+  window.ANALYTICS = collectAnalytics(subset);
+  renderAnalytics();
+}
+
+function toggleAnalyticsProject(pid) {
+  const all = Object.keys(window.ALL_PROJECT_DATA);
+  let sel = window.ANALYTICS_FILTER.projects || all.slice();
+  sel = sel.includes(pid) ? sel.filter(x => x !== pid) : sel.concat([pid]);
+  if (!sel.length) sel = all.slice();                 // never filter down to nothing
+  window.ANALYTICS_FILTER.projects = sel.length === all.length ? null : sel;
+  applyAnalyticsFilter();
+}
+
+function resetAnalyticsFilter() {
+  window.ANALYTICS_FILTER.projects = null;
+  applyAnalyticsFilter();
+}
+
+function analyticsFilterBar() {
+  const all = Object.keys(window.ALL_PROJECT_DATA);
+  const sel = window.ANALYTICS_FILTER.projects;
+  const isOn = pid => !sel || sel.includes(pid);
+  return `
+    <div class="an-filter">
+      <span class="an-filter-label">Projects</span>
+      ${all.map(pid => {
+        const name = (window.ALL_PROJECT_DATA[pid].config || {}).name || pid;
+        return `<button class="an-chip ${isOn(pid) ? 'on' : ''}" onclick="toggleAnalyticsProject('${pid}')">${name}</button>`;
+      }).join('')}
+      ${sel ? `<button class="an-chip reset" onclick="resetAnalyticsFilter()">Show all</button>` : ''}
+    </div>`;
+}
+
+// Per-zone table for a single project, so you can act on a zone from here
+function zoneDrilldown() {
+  const sel = window.ANALYTICS_FILTER.projects;
+  if (!sel || sel.length !== 1) {
+    return `<p class="viz-empty">Select a single project above to drill into its zones.</p>`;
+  }
+  const pid = sel[0];
+  const p = window.ALL_PROJECT_DATA[pid] || {};
+  const cfg = p.config || {};
+  const zones = asArray(cfg.zones);
+  if (!zones.length) return `<p class="viz-empty">This project has no zones defined.</p>`;
+
+  const issues = asArray(p.issues);
+  const blockers = asArray(p.blockers);
+  const signoffs = p.signoffs || {};
+  const dir = asArray(p.directory).filter(d => d.isTrade !== false && d.company);
+
+  return `
+    <div class="an-table-wrap">
+      <table class="an-table">
+        <thead><tr><th>Zone</th><th>Segment</th><th>Open issues</th><th>Blockers</th><th>Overdue</th><th>Signed</th><th></th></tr></thead>
+        <tbody>
+          ${zones.map(z => {
+            const zi = issues.filter(i => i.zone === z.id && i.status !== 'resolved' && i.status !== 'wont-fix');
+            const zb = blockers.filter(b => b.zone === z.id && b.status === 'open');
+            const overdue = zi.filter(i => i.due && new Date(i.due) < new Date()).length;
+            const zs = signoffs[z.id] || {};
+            const signed = Object.keys(zs).length;
+            const total = dir.length || Object.keys(zs).length;
+            return `
+              <tr>
+                <td><strong>${z.name}</strong></td>
+                <td class="an-dim">${z.segment || '—'}</td>
+                <td class="mono">${zi.length}</td>
+                <td class="mono ${zb.length ? 'an-bad' : ''}">${zb.length}</td>
+                <td class="mono ${overdue ? 'an-bad' : ''}">${overdue}</td>
+                <td class="mono">${signed}${total ? '/' + total : ''}</td>
+                <td><button class="btn ghost" style="font-size:11px;padding:4px 10px;"
+                    onclick="openProjectAtZone('${pid}','${z.id}')">Open zone</button></td>
+              </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+// Jump from analytics straight into a zone and start working on it
+function openProjectAtZone(pid, zoneId) {
+  document.getElementById('analytics-view').style.display = 'none';
+  openProject(pid);
+  setTimeout(() => {
+    try { openZoneModal(zoneId); } catch (e) { /* zone list not ready */ }
+  }, 1400);
+}
+
+window.toggleAnalyticsProject = toggleAnalyticsProject;
+window.resetAnalyticsFilter = resetAnalyticsFilter;
+window.openProjectAtZone = openProjectAtZone;
+window.applyAnalyticsFilter = applyAnalyticsFilter;
+
+/* ---------- 5. BULK USER PASTE ---------- */
+
+function openBulkUsers() {
+  if (!can('user.manage')) { denied('manage users'); return; }
+  document.getElementById('bulk-users-data').value = '';
+  document.getElementById('bulk-users-preview').innerHTML = '';
+  document.getElementById('bulk-users-modal').classList.add('show');
+}
+
+function closeBulkUsers() {
+  document.getElementById('bulk-users-modal').classList.remove('show');
+}
+
+const ROLE_ALIASES = {
+  'vec admin': 'vec_admin', 'admin': 'vec_admin', 'vec_admin': 'vec_admin',
+  'vec coordinator': 'vec_coordinator', 'coordinator': 'vec_coordinator', 'vec': 'vec_coordinator',
+  'gc': 'gc', 'general contractor': 'gc',
+  'design': 'design', 'design team': 'design', 'architect': 'design', 'engineer': 'design',
+  'owner': 'owner',
+  'trade': 'trade', 'trade partner': 'trade', 'sub': 'trade', 'subcontractor': 'trade',
+  'viewer': 'viewer', 'read only': 'viewer'
+};
+
+function parseBulkUsers() {
+  const raw = document.getElementById('bulk-users-data').value;
+  const rows = [];
+  for (const line of raw.split('\n')) {
+    const t = line.trim();
+    if (!t) continue;
+    const parts = t.split(/\t|,/).map(x => x.trim());
+    const email = (parts.find(x => x.includes('@')) || '').toLowerCase();
+    if (!email) { rows.push({ error: 'no email address', raw: t }); continue; }
+    const rest = parts.filter(x => x !== email && x);
+    // Whichever remaining cell looks like a role is the role; the other is the company
+    let role = null, company = '';
+    for (const cell of rest) {
+      const guess = ROLE_ALIASES[cell.toLowerCase()];
+      if (guess && !role) role = guess; else if (!company) company = cell;
+    }
+    rows.push({ email, company, role: role || 'trade', raw: t });
+  }
+  return rows;
+}
+
+function previewBulkUsers() {
+  const rows = parseBulkUsers();
+  const host = document.getElementById('bulk-users-preview');
+  if (!rows.length) { host.innerHTML = '<span class="an-dim">Nothing to preview yet.</span>'; return; }
+  const bad = rows.filter(r => r.error);
+  host.innerHTML = `
+    <div style="font-size:11.5px;margin-bottom:8px;">
+      <strong>${rows.length - bad.length}</strong> ready${bad.length ? `, <span style="color:var(--red);"><strong>${bad.length}</strong> unreadable</span>` : ''}
+    </div>
+    <div class="an-table-wrap" style="max-height:220px;overflow-y:auto;">
+      <table class="an-table" style="min-width:0;">
+        <thead><tr><th>Email</th><th>Company</th><th>Role</th></tr></thead>
+        <tbody>
+          ${rows.map(r => r.error
+            ? `<tr><td colspan="3" style="color:var(--red);">${r.raw} — ${r.error}</td></tr>`
+            : `<tr><td class="mono" style="font-size:11px;">${r.email}</td><td>${r.company || '<span class="an-dim">unassigned</span>'}</td><td>${roleLabel(r.role)}</td></tr>`
+          ).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function executeBulkUsers() {
+  if (!can('user.manage')) { denied('manage users'); return; }
+  const rows = parseBulkUsers().filter(r => !r.error);
+  if (!rows.length) { alert('Nothing to add.'); return; }
+
+  const updates = {};
+  for (const r of rows) {
+    const key = emailKey(r.email);
+    const invite = {
+      email: r.email, company: r.company, companyId: libSlug(r.company), role: r.role,
+      projects: (r.role === 'vec_admin' || r.role === 'vec_coordinator') ? 'all' : {},
+      createdAt: new Date().toISOString(),
+      createdBy: CURRENT_USER ? CURRENT_USER.email : ''
+    };
+    ALL_INVITES[key] = invite;
+    updates['invites/' + key] = invite;
+  }
+
+  db.ref().update(updates).then(() => {
+    closeBulkUsers();
+    renderUsersManager();
+    alert(`${rows.length} email${rows.length === 1 ? '' : 's'} pre-assigned. Each one gets its company and role automatically when they sign up.`);
+  }).catch(e => alert('Could not save: ' + e.message));
+}
+
+window.openBulkUsers = openBulkUsers;
+window.closeBulkUsers = closeBulkUsers;
+window.previewBulkUsers = previewBulkUsers;
+window.executeBulkUsers = executeBulkUsers;
+
+/* ---------- 6. CLONE PROJECT DIALOG ---------- */
+
+function openCloneDialog() {
+  if (!can('project.clone')) { denied('clone projects'); return; }
+  const pids = Object.keys(allProjects || {});
+  if (!pids.length) { alert('There are no projects to clone yet.'); return; }
+
+  document.getElementById('clone-select').innerHTML = pids.map(pid => {
+    const c = allProjects[pid].config || {};
+    const zones = asArray(c.zones).length;
+    return `<option value="${pid}">${c.name || pid}${zones ? ` — ${zones} zones` : ''}</option>`;
+  }).join('');
+  document.getElementById('clone-modal').classList.add('show');
+  renderCloneSummary();
+}
+
+function closeCloneDialog() {
+  document.getElementById('clone-modal').classList.remove('show');
+}
+
+function renderCloneSummary() {
+  const pid = document.getElementById('clone-select').value;
+  const p = allProjects[pid] || {};
+  const c = p.config || {};
+  const zones = asArray(c.zones).length;
+  const dir = asArray(p.directory).length;
+  const design = asArray(c.designTeam).length;
+  document.getElementById('clone-summary').innerHTML = `
+    <div class="perm-note" style="margin-bottom:0;">
+      Copies the <strong>${zones} zone${zones === 1 ? '' : 's'}</strong>,
+      <strong>${dir} director${dir === 1 ? 'y entry' : 'y entries'}</strong> and
+      <strong>${design} design team member${design === 1 ? '' : 's'}</strong> into a new project as a starting point.
+      Issues, blockers, sign-offs and the change log are <strong>not</strong> copied.
+    </div>`;
+}
+
+function confirmClone() {
+  const pid = document.getElementById('clone-select').value;
+  if (!pid) return;
+  closeCloneDialog();
+  openWizard(pid);
+}
+
+window.openCloneDialog = openCloneDialog;
+window.closeCloneDialog = closeCloneDialog;
+window.renderCloneSummary = renderCloneSummary;
+window.confirmClone = confirmClone;
+
+/* ---------- 7. WIZARD: PULL A WHOLE TEAM FROM THE LIBRARY ---------- */
+
+function addAllLibraryTrades() {
+  const already = new Set((wizardData.trades || []).map(t => libSlug(t.company)).filter(Boolean));
+  const rows = Object.values(window.LIBRARY || {}).filter(r => r.isTrade !== false && r.name && !already.has(r.slug));
+  if (!rows.length) { alert('Every trade in the library is already on this project.'); return; }
+  if (!confirm(`Add all ${rows.length} trade companies from the VEC library to this project?\n\nYou can remove any of them before launching.`)) return;
+  for (const r of rows) {
+    wizardData.trades.push({ name: r.trades[0] || r.role, role: r.role, company: r.name, selected: true, fromLibrary: r.slug });
+  }
+  renderWizardStep();
+  renderLibraryList();
+}
+
+function addLibraryDesignTeam() {
+  const already = new Set((wizardData.designTeam || []).map(d => libSlug(d.company)).filter(Boolean));
+  const rows = Object.values(window.LIBRARY || {}).filter(r => r.isTrade === false && r.name && !already.has(r.slug));
+  if (!rows.length) { alert('No design team companies in the library yet.'); return; }
+  for (const r of rows) {
+    const contact = (r.contacts || [])[0] || {};
+    wizardData.designTeam.push({ role: r.role, company: r.name, name: contact.name || '', email: contact.email || '' });
+  }
+  renderWizardStep();
+}
+
+window.addAllLibraryTrades = addAllLibraryTrades;
+window.addLibraryDesignTeam = addLibraryDesignTeam;
+
+/* ---------- 8. WIRE-UP ---------- */
+
+// Library rows get a delete control when browsing the library itself
+const _p6RenderLibraryList = renderLibraryList;
+renderLibraryList = function () {
+  _p6RenderLibraryList();
+  if (libraryTarget || !can('library.edit')) return;
+  document.querySelectorAll('#library-list .lib-item').forEach(item => {
+    if (item.querySelector('.lib-delete')) return;
+    const name = item.querySelector('.lib-name');
+    if (!name) return;
+    const rec = Object.values(window.LIBRARY || {}).find(r => r.name === name.textContent);
+    if (!rec) return;
+    const btn = document.createElement('button');
+    btn.className = 'lib-delete';
+    btn.textContent = 'Remove';
+    btn.title = 'Remove from the shared library';
+    btn.onclick = (e) => { e.stopPropagation(); deleteLibraryCompany(rec.slug); };
+    item.appendChild(btn);
+  });
+};
+window.renderLibraryList = renderLibraryList;
+
+// Analytics keeps the raw project data so filters can recompute without refetching
+const _p6OpenAnalytics = openAnalytics;
+openAnalytics = function () {
+  if (!can('project.open') || !(can('user.manage') || can('project.create'))) {
+    denied('open cross-project analytics'); return;
+  }
+  document.getElementById('hub-view').style.display = 'none';
+  document.getElementById('project-view').style.display = 'none';
+  document.getElementById('wizard-view').style.display = 'none';
+  document.getElementById('analytics-view').style.display = 'block';
+  document.getElementById('analytics-body').innerHTML = '<div class="viz-loading">Reading every project…</div>';
+
+  db.ref('projects').once('value').then((snap) => {
+    const all = snap.val() || {};
+    const visible = {};
+    for (const pid of Object.keys(all)) if (canOpenProject(pid)) visible[pid] = all[pid];
+    window.ALL_PROJECT_DATA = visible;
+    window.ANALYTICS_FILTER.projects = null;
+    applyAnalyticsFilter();
+  }).catch((e) => {
+    document.getElementById('analytics-body').innerHTML =
+      `<div class="viz-loading">Could not read the projects: ${e.message}</div>`;
+  });
+};
+window.openAnalytics = openAnalytics;
+
+// Filter bar on top, zone drill-down at the bottom
+const _p6RenderAnalytics = renderAnalytics;
+renderAnalytics = function () {
+  _p6RenderAnalytics();
+  const root = document.querySelector('#analytics-body .viz-root');
+  if (!root) return;
+
+  root.insertAdjacentHTML('afterbegin', analyticsFilterBar());
+
+  const sel = window.ANALYTICS_FILTER.projects;
+  const single = sel && sel.length === 1;
+  const name = single ? ((window.ALL_PROJECT_DATA[sel[0]].config || {}).name || sel[0]) : null;
+  root.insertAdjacentHTML('beforeend', `
+    <section class="an-card an-card-wide" style="margin-top:16px;">
+      <div class="an-card-head">
+        <h3>Zones${single ? ' — ' + name : ''}</h3>
+        <p>${single ? 'Open any zone to work on it directly.' : 'Filter to one project to drill into its zones.'}</p>
+      </div>
+      ${zoneDrilldown()}
+    </section>`);
+  vizBind(root);
+};
+window.renderAnalytics = renderAnalytics;
+
+// Theme, on load, before anything paints
+(function initTheme() {
+  let saved = 'light';
+  try { saved = localStorage.getItem('vec-theme') || 'light'; } catch (e) { /* private mode */ }
+  applyTheme(saved === 'dark' ? 'dark' : 'light');
+})();
+
+/* ============================================================
    V3.1 — INITIALIZATION
    The auth listener above drives everything. Nothing renders
    until a signed-in account has a role assigned.
@@ -8742,7 +9453,7 @@ document.addEventListener('click', (e) => {
 setAuthMode('signin');
 showAuthScreen(false);
 
-console.log('🚀 VEC BIM Coordination Platform v3.7 loaded — project-scoped listeners');
+console.log('🚀 VEC BIM Coordination Platform v3.8 loaded');
 
 </script>
 
