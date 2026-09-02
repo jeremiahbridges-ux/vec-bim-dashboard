@@ -1826,7 +1826,7 @@
     <div class="header-meta">
       <div class="meta-item"><span class="meta-label">Today</span><span class="meta-value mono" id="header-today">—</span></div>
       <div class="meta-item"><span class="meta-label">GC</span><span class="meta-value">HITT</span></div>
-      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v3.6</span></div>
+      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v3.7</span></div>
       <div class="notif-bell" onclick="toggleNotifications()" id="notif-bell" style="margin-left:12px;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         <div class="notif-badge" id="notif-count" style="display:none;">0</div>
@@ -2163,7 +2163,7 @@ Cleveland Electric, Electrical, Sarah Lee, BIM Lead, sarah@clevelandelec.com, 40
 </div>
 
 <footer>
-  Virtual Engineering Consultants · BIM Coordination Services · Template v3.6<br>
+  Virtual Engineering Consultants · BIM Coordination Services · Template v3.7<br>
   Zone × Stage workflow · Role permissions · Company library · Schedule intelligence · Meeting prep · Portfolio analytics
 </footer>
 
@@ -2517,12 +2517,49 @@ const db = firebase.database();
 function fbSave(path, data) {
   try { db.ref(path).set(data); } catch(e) { console.error('Firebase save error:', e); }
 }
+// Realtime listeners are registered here but NOT bound until a project is open,
+// then bound under projects/<id>/. Before this fix they bound to the root paths,
+// so the stale pre-rewrite data at the root kept overwriting the open project.
+const LISTENERS = [];
+
 function fbListen(path, callback) {
-  db.ref(path).on('value', (snap) => {
-    const val = snap.val();
-    if (val !== null) callback(val);
-  });
+  const entry = { path, cb: callback, ref: null, handler: null };
+  LISTENERS.push(entry);
+  // activeProjectId is declared later with let, so reading it during module
+  // evaluation throws rather than returning undefined. Registration only.
+  let active = null;
+  try { active = activeProjectId; } catch (e) { active = null; }
+  if (active) attachListener(entry);
 }
+
+function attachListener(entry) {
+  detachListener(entry);
+  if (!activeProjectId) return;
+  const ref = db.ref('projects/' + activeProjectId + '/' + entry.path);
+  const handler = (snap) => {
+    const val = snap.val();
+    if (val !== null) entry.cb(val);
+  };
+  ref.on('value', handler);
+  entry.ref = ref;
+  entry.handler = handler;
+}
+
+function detachListener(entry) {
+  if (entry.ref && entry.handler) {
+    try { entry.ref.off('value', entry.handler); } catch (e) { /* already gone */ }
+  }
+  entry.ref = null;
+  entry.handler = null;
+}
+
+function bindProjectListeners() {
+  if (!activeProjectId) return;
+  LISTENERS.forEach(attachListener);
+  console.log('Bound ' + LISTENERS.length + ' listeners to projects/' + activeProjectId);
+}
+
+function unbindProjectListeners() { LISTENERS.forEach(detachListener); }
 
 /* ============================================================
    TODAY
@@ -2744,11 +2781,23 @@ function getTradeEntries() {
   });
 }
 
+// Who is making a change. The signed-in account is the source of truth now;
+// the company dropdown only survives as an admin "act as" fallback.
+function actorCompany() {
+  if (window.CURRENT_USER && CURRENT_USER.company) return CURRENT_USER.company;
+  const sel = document.getElementById('company-selector');
+  return (sel && sel.value) || 'VEC';
+}
+
 function getTradesForZone(zoneId) {
   const entries = getTradeEntries();
+  // zones null/undefined -> every zone (default for a new trade)
+  // zones []              -> no zones (deliberately unassigned)
+  // zones [ids]           -> exactly those zones
+  // The old code read an empty array as "all zones", so clearing every checkbox
+  // put the trade back in every zone, the opposite of what was just asked for.
   return entries.filter(d => {
-    if (!d.zones || d.zones === null || !Array.isArray(d.zones)) return true; // No restrictions = all zones
-    if (d.zones.length === 0) return true; // Empty array = all zones (old data)
+    if (d.zones === null || d.zones === undefined || !Array.isArray(d.zones)) return true;
     return d.zones.includes(zoneId);
   });
 }
@@ -4594,6 +4643,8 @@ for (const d of DIRECTORY) {
     d.isTrade = !nonTradeRoles.some(r => (d.role || '').includes(r));
   }
   if (d.zones === undefined) d.zones = null; // null = all zones
+  // Legacy rows used [] to mean "all zones". Convert once so [] can now mean "none".
+  if (Array.isArray(d.zones) && d.zones.length === 0 && !d.zonesSet) d.zones = null;
   if (!d.contacts) d.contacts = [];
   if (!d.color) d.color = '#666';
 }
@@ -4728,10 +4779,21 @@ function renderDirectory() {
 
         ${d.isTrade !== false ? `
         <div style="margin-bottom:10px;">
-          <label style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-tertiary);display:block;margin-bottom:6px;">Zone Assignments (uncheck zones where this trade doesn't work)</label>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:12px;flex-wrap:wrap;">
+            <label style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-tertiary);">
+              Zone Assignments
+              <span style="text-transform:none;letter-spacing:0;font-weight:600;color:${!Array.isArray(d.zones) ? 'var(--text-tertiary)' : (d.zones.length === 0 ? 'var(--red)' : 'var(--brand)')};">
+                ${!Array.isArray(d.zones) ? '· all zones' : (d.zones.length === 0 ? '· no zones assigned' : '· ' + d.zones.length + ' of ' + ZONES.length)}
+              </span>
+            </label>
+            <div style="display:flex;gap:6px;">
+              <button onclick="setAllZones(${idx}, true)" style="padding:3px 10px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);font-size:10px;font-weight:600;cursor:pointer;font-family:inherit;">All</button>
+              <button onclick="setAllZones(${idx}, false)" style="padding:3px 10px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);font-size:10px;font-weight:600;cursor:pointer;font-family:inherit;">None</button>
+            </div>
+          </div>
           <div style="display:flex;flex-wrap:wrap;gap:4px;">
             ${ZONES.map(zn => {
-              const assigned = !d.zones || d.zones === null || (Array.isArray(d.zones) && d.zones.includes(zn.id));
+              const assigned = !Array.isArray(d.zones) || d.zones.includes(zn.id);
               return `<label style="display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;font-size:10px;cursor:pointer;background:${assigned ? 'var(--blue-bg)' : 'var(--surface-2)'};color:${assigned ? 'var(--blue)' : 'var(--text-tertiary)'};border:1px solid ${assigned ? 'rgba(0,100,200,0.2)' : 'var(--border)'};">
                 <input type="checkbox" ${assigned ? 'checked' : ''} onchange="toggleZoneAssignment(${idx},'${zn.id}',this.checked)" style="margin:0;width:12px;height:12px;">
                 ${zn.name.replace('Level 1 ','L1 ').replace('Level 2 ','L2 ')}
@@ -4836,21 +4898,33 @@ window.addContact = addContact;
 window.removeContact = removeContact;
 
 function toggleZoneAssignment(dirIdx, zoneId, checked) {
+  if (!can('directory.edit')) { denied('change zone assignments'); return; }
   const d = DIRECTORY[dirIdx];
-  // Initialize zones array if null (means "all zones")
-  if (!d.zones || d.zones === null) {
-    d.zones = ZONES.map(z => z.id); // Start with all checked
-  }
-  if (checked && !d.zones.includes(zoneId)) {
-    d.zones.push(zoneId);
-  } else if (!checked) {
-    d.zones = d.zones.filter(z => z !== zoneId);
-  }
-  const company = document.getElementById('company-selector').value;
-  addChangeLogEntry(company, 'status', `Updated zone assignments for ${d.company || d.role}`);
+  // A trade with no explicit list is on every zone, so the first uncheck starts
+  // from "all" and removes one. zonesSet marks the list as deliberate after that.
+  if (!Array.isArray(d.zones)) d.zones = ZONES.map(z => z.id);
+  if (checked && !d.zones.includes(zoneId)) d.zones.push(zoneId);
+  else if (!checked) d.zones = d.zones.filter(z => z !== zoneId);
+  d.zonesSet = true;
+
+  const zoneName = (ZONES.find(z => z.id === zoneId) || {}).name || zoneId;
+  addChangeLogEntry(actorCompany(), 'status',
+    (checked ? 'Added ' : 'Removed ') + (d.company || d.role) + (checked ? ' to ' : ' from ') + zoneName);
   saveDirectory();
   renderDirectory();
 }
+
+function setAllZones(dirIdx, all) {
+  if (!can('directory.edit')) { denied('change zone assignments'); return; }
+  const d = DIRECTORY[dirIdx];
+  d.zones = all ? ZONES.map(z => z.id) : [];
+  d.zonesSet = true;
+  addChangeLogEntry(actorCompany(), 'status',
+    (all ? 'Assigned all zones to ' : 'Cleared all zones for ') + (d.company || d.role));
+  saveDirectory();
+  renderDirectory();
+}
+window.setAllZones = setAllZones;
 window.toggleZoneAssignment = toggleZoneAssignment;
 
 function openImportModal() {
@@ -5123,15 +5197,22 @@ fbListen('directory', (data) => {
   }
 });
 
-// Push defaults to Firebase if no directory data exists yet
-db.ref('directory').once('value', (snap) => {
-  const val = snap.val();
-  if (!val || (Array.isArray(val) && val.length === 0) || Object.keys(val).length === 0) {
-    console.log('No directory in Firebase, pushing defaults');
-    fbSave('directory', DIRECTORY);
-    renderDirectory();
-  }
-});
+// Seed a directory only into an OPEN project, never into the root. The old
+// version ran at page load with no project active and wrote the default
+// directory to the root node, which then fought with every project's own copy.
+function seedDirectoryIfEmpty() {
+  if (!activeProjectId) return;
+  db.ref('projects/' + activeProjectId + '/directory').once('value', (snap) => {
+    const val = snap.val();
+    const empty = !val || (Array.isArray(val) && val.length === 0) ||
+                  (typeof val === 'object' && Object.keys(val).length === 0);
+    if (empty) {
+      console.log('Project has no directory, seeding defaults');
+      fbSave('directory', DIRECTORY);
+      renderDirectory();
+    }
+  });
+}
 
 // Listen for changelog changes
 fbListen('changelog', (data) => {
@@ -5370,6 +5451,8 @@ function loadProjectData(projectId) {
           if (!d.id) d.id = 'co-' + Math.random().toString(36).slice(2,8);
           if (d.isTrade === undefined) d.isTrade = !nonTradeRoles.some(r => (d.role || '').includes(r));
           if (d.zones === undefined) d.zones = null;
+        if (Array.isArray(d.zones) && d.zones.length === 0 && !d.zonesSet) d.zones = null;
+          if (Array.isArray(d.zones) && d.zones.length === 0 && !d.zonesSet) d.zones = null;
           if (!d.contacts) d.contacts = [];
           if (!d.color) d.color = '#666';
         }
@@ -8029,11 +8112,21 @@ const _p3OpenProject = openProject;
 openProject = function (pid) {
   _p3OpenProject(pid);
   setTimeout(() => {
+    // Point every realtime listener at THIS project, then seed a directory if
+    // the project has none. Both used to happen against the root paths.
+    bindProjectListeners();
+    seedDirectoryIfEmpty();
     loadScheduleFromDb(pid).then((loaded) => {
       if (loaded) renderAll();
       renderScheduleIntel();
     });
   }, 600);
+};
+
+const _p3BackToHub = backToHub;
+backToHub = function () {
+  unbindProjectListeners();
+  _p3BackToHub();
 };
 
 // Keep the date editor and the shift engine writing through one path
@@ -8649,7 +8742,7 @@ document.addEventListener('click', (e) => {
 setAuthMode('signin');
 showAuthScreen(false);
 
-console.log('🚀 VEC BIM Coordination Platform v3.6 loaded');
+console.log('🚀 VEC BIM Coordination Platform v3.7 loaded — project-scoped listeners');
 
 </script>
 
