@@ -1556,6 +1556,132 @@
     @page { margin: 14mm; }
   }
 
+
+  /* ═══════════ V3.6 ANALYTICS + DATA VIZ ═══════════ */
+  /* Categorical slots, validated against the white chart surface:
+     worst all-pairs CVD ΔE 9.2, normal-vision ΔE 27.6, all checks pass.
+     Slot 1 is the VEC brand blue. Slot 3 sits below 3:1 contrast, so every
+     chart using it ships direct labels (the relief rule). */
+  .viz-root {
+    --viz-1: #1662F4;   /* VEC blue */
+    --viz-2: #EB6834;   /* orange  */
+    --viz-3: #1BAF7A;   /* aqua    */
+  }
+
+  .an-kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 18px; }
+  .an-kpi {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 16px 18px; box-shadow: var(--shadow-sm);
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--text-tertiary);
+  }
+  .an-kpi span {
+    display: block; font-size: 30px; font-weight: 700; color: var(--ink);
+    letter-spacing: -0.03em; text-transform: none; margin-bottom: 3px;
+    font-variant-numeric: tabular-nums; line-height: 1.1;
+  }
+  .an-kpi.bad span { color: var(--red); }
+
+  .an-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .an-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 20px 22px; box-shadow: var(--shadow-sm);
+  }
+  .an-card-wide { grid-column: 1 / -1; }
+  .an-card-head { margin-bottom: 16px; }
+  .an-card-head h3 { font-size: 14px; font-weight: 700; color: var(--ink); letter-spacing: -0.015em; }
+  .an-card-head p { font-size: 11.5px; color: var(--text-tertiary); margin-top: 3px; }
+
+  .viz-loading, .viz-empty {
+    padding: 26px 4px; color: var(--text-tertiary); font-size: 12.5px; text-align: center;
+  }
+
+  /* horizontal bars */
+  .viz-bars { display: flex; flex-direction: column; gap: 10px; }
+  .viz-bar-row { display: grid; grid-template-columns: 130px 1fr 62px; gap: 12px; align-items: center; }
+  .viz-bar-label { font-size: 12px; color: var(--text-secondary); }
+  .viz-bar-track { height: 12px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+  .viz-bar-fill { height: 100%; border-radius: 0 4px 4px 0; transition: width .2s; }
+  .viz-bar-value { font-size: 12.5px; font-weight: 700; color: var(--ink); text-align: right; }
+  .viz-bar-row:hover .viz-bar-track { box-shadow: 0 0 0 2px var(--brand-tint); }
+
+  /* histogram */
+  .viz-hist { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; height: 180px; align-items: end; }
+  .viz-hist-col { display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+  .viz-hist-value { font-size: 12px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
+  .viz-hist-bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 3px; }
+  .viz-hist-label { font-size: 10.5px; color: var(--text-tertiary); margin-top: 7px; }
+  .viz-hist-col:hover .viz-hist-bar { filter: brightness(0.92); }
+
+  /* dumbbell */
+  .viz-dumbbell { display: flex; flex-direction: column; gap: 12px; }
+  .viz-db-row { display: grid; grid-template-columns: 190px 1fr 62px; gap: 12px; align-items: center; }
+  .viz-db-label { font-size: 12px; color: var(--text-secondary); }
+  .viz-db-track { position: relative; height: 18px; }
+  .viz-db-track::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 8px;
+    height: 1px; background: var(--border);
+  }
+  .viz-db-connector { position: absolute; top: 7px; height: 3px; border-radius: 2px; }
+  .viz-db-connector.late { background: var(--red-bg); }
+  .viz-db-connector.early { background: var(--green-bg); }
+  .viz-db-dot {
+    position: absolute; top: 3px; width: 11px; height: 11px; border-radius: 50%;
+    margin-left: -5px; box-shadow: 0 0 0 2px var(--surface);
+  }
+  .viz-db-dot.planned { background: var(--text-tertiary); }
+  .viz-db-dot.actual.late { background: var(--red); }
+  .viz-db-dot.actual.early { background: var(--green); }
+  .viz-db-value { font-size: 12.5px; font-weight: 700; text-align: right; }
+  .viz-db-value.late { color: var(--red); }
+  .viz-db-value.early { color: var(--green); }
+  .viz-legend {
+    display: flex; gap: 18px; margin-top: 14px; padding-top: 12px;
+    border-top: 1px solid var(--border); font-size: 11px; color: var(--text-tertiary);
+  }
+  .viz-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .viz-key { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .viz-key.planned { background: var(--text-tertiary); }
+  .viz-key.actual { background: var(--red); }
+  .viz-key.early { background: var(--green); }
+  .viz-hist-value.zero { color: var(--text-tertiary); font-weight: 500; }
+  .viz-hist-bar { min-height: 0; }
+
+  /* tooltip */
+  .viz-tip {
+    position: fixed; display: none; z-index: 200; pointer-events: none;
+    background: var(--ink); color: #fff; padding: 8px 11px; border-radius: 6px;
+    font-size: 11.5px; line-height: 1.5; max-width: 240px;
+    box-shadow: var(--shadow-lg);
+  }
+  .viz-tip strong { font-weight: 700; }
+
+  /* scorecard table */
+  .an-table-wrap { overflow-x: auto; }
+  .an-table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 760px; }
+  .an-table th {
+    text-align: left; font-size: 9.5px; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--text-tertiary);
+    padding: 8px 12px 8px 0; border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  .an-table td { padding: 11px 12px 11px 0; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .an-table tbody tr:hover { background: var(--surface-2); }
+  .an-table tbody tr:last-child td { border-bottom: none; }
+  .an-bad { color: var(--red); font-weight: 700; }
+  .an-dim { color: var(--text-tertiary); }
+  .an-inline-bar {
+    display: inline-block; width: 60px; height: 7px; background: var(--surface-2);
+    border-radius: 4px; overflow: hidden; vertical-align: middle; margin-right: 8px;
+  }
+  .an-inline-fill { display: block; height: 100%; background: var(--viz-1, #1662F4); border-radius: 0 4px 4px 0; }
+  .an-inline-num { font-size: 11.5px; color: var(--text-secondary); }
+
+  @media (max-width: 1100px) {
+    .an-grid { grid-template-columns: 1fr; }
+    .an-kpis { grid-template-columns: repeat(2, 1fr); }
+    .mp-kpis { grid-template-columns: repeat(2, 1fr); }
+  }
+
 </style>
 </head>
 <body>
@@ -1630,6 +1756,7 @@
       <button class="hub-btn hub-btn-primary" onclick="openWizard()" id="hub-new-project">+ New Project</button>
       <button class="hub-btn hub-btn-secondary" onclick="openCloneDialog()" id="hub-clone-project">Clone Project</button>
       <button class="hub-btn hub-btn-secondary" onclick="openLibraryManager()" id="hub-library">VEC Library</button>
+      <button class="hub-btn hub-btn-secondary" onclick="openAnalytics()" id="hub-analytics">Analytics</button>
       <button class="hub-btn hub-btn-secondary" onclick="openUsersManager()" id="hub-users">Users</button>
       <button class="hub-btn hub-btn-secondary" onclick="importLegacyDC6()" id="hub-legacy" title="Pull the original DC6 data out of the old root level paths into a project">Import Legacy DC6</button>
     </div>
@@ -1644,6 +1771,24 @@
       <div style="padding:40px;text-align:center;color:var(--text-tertiary);grid-column:1/-1;">Loading projects...</div>
     </div>
   </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- CROSS-PROJECT ANALYTICS (v3.6, VEC only) -->
+<!-- ═══════════════════════════════════════ -->
+<div id="analytics-view" style="display:none;">
+  <div class="hub-header">
+    <div>
+      <div class="hub-brand"><span class="vec-logo lg"></span><span class="brand-rule"></span>BIM Coordination Platform</div>
+      <div class="hub-title">Portfolio Analytics</div>
+      <div class="hub-subtitle">Every project you have access to, rolled up</div>
+    </div>
+    <div class="hub-actions">
+      <button class="hub-btn hub-btn-secondary" onclick="exportAnalyticsCsv()">Export scorecard CSV</button>
+      <button class="hub-btn hub-btn-secondary" onclick="closeAnalytics()">Back to projects</button>
+    </div>
+  </div>
+  <div class="hub-body" id="analytics-body"></div>
 </div>
 
 <!-- ═══════════════════════════════════════ -->
@@ -1681,7 +1826,7 @@
     <div class="header-meta">
       <div class="meta-item"><span class="meta-label">Today</span><span class="meta-value mono" id="header-today">—</span></div>
       <div class="meta-item"><span class="meta-label">GC</span><span class="meta-value">HITT</span></div>
-      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v3.5</span></div>
+      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v3.6</span></div>
       <div class="notif-bell" onclick="toggleNotifications()" id="notif-bell" style="margin-left:12px;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         <div class="notif-badge" id="notif-count" style="display:none;">0</div>
@@ -2018,8 +2163,8 @@ Cleveland Electric, Electrical, Sarah Lee, BIM Lead, sarah@clevelandelec.com, 40
 </div>
 
 <footer>
-  Virtual Engineering Consultants · BIM Coordination Services · Template v3.5<br>
-  Zone × Stage workflow · Role permissions · Company library · Schedule intelligence · Meeting prep
+  Virtual Engineering Consultants · BIM Coordination Services · Template v3.6<br>
+  Zone × Stage workflow · Role permissions · Company library · Schedule intelligence · Meeting prep · Portfolio analytics
 </footer>
 
 <!-- ZONE DETAIL MODAL -->
@@ -5037,6 +5182,8 @@ let activeProjectId = null;
 let allProjects = {};
 
 function backToHub() {
+  const an = document.getElementById('analytics-view');
+  if (an) an.style.display = 'none';
   document.getElementById('project-view').style.display = 'none';
   document.getElementById('wizard-view').style.display = 'none';
   document.getElementById('hub-view').style.display = 'block';
@@ -6191,6 +6338,7 @@ function applyPermissions() {
   show('hub-library', can('library.edit'));
   show('hub-users', can('user.manage'));
   show('hub-legacy', can('project.create'));
+  show('hub-analytics', can('user.manage') || can('project.create'));
   const adminActions = document.getElementById('hub-admin-actions');
   if (adminActions) {
     const anyAdmin = can('project.create') || can('project.clone') || can('library.edit') || can('user.manage');
@@ -7896,6 +8044,604 @@ updateStageDate = function (zoneId, stageId, field, value) {
 };
 
 /* ============================================================
+   V3.6 — PHASE 5: CROSS-PROJECT ANALYTICS (VEC only)
+   Reads every project the signed-in account can see and rolls
+   them up. Nothing here writes.
+   ============================================================ */
+
+window.ANALYTICS = null;
+
+/* ---------- data collection ---------- */
+
+function asArray(v) {
+  if (!v) return [];
+  return Array.isArray(v) ? v.filter(Boolean) : Object.values(v).filter(Boolean);
+}
+
+function zoneTypeOf(name) {
+  const n = String(name || '').toLowerCase();
+  if (n.includes('data hall')) return 'Data Hall';
+  if (n.includes('boh')) return 'BOH';
+  if (n.includes('admin')) return 'Admin';
+  if (n.includes('yard')) return 'Yard';
+  if (n.includes('roof')) return 'Roof';
+  if (n.includes('site') || n.includes('utilit')) return 'Site / Utilities';
+  return 'Other';
+}
+
+// Company name out of a trade label, which the app writes as "Company — Role"
+function companyOfTrade(label) {
+  if (!label) return null;
+  const parts = String(label).split('—');
+  return parts[0].trim() || null;
+}
+
+function daysBetween(a, b) {
+  if (!a || !b) return null;
+  const d = (new Date(b) - new Date(a)) / 86400000;
+  return isFinite(d) ? Math.round(d) : null;
+}
+
+function collectAnalytics(projects) {
+  const out = {
+    projects: [],
+    totals: { projects: 0, zones: 0, issues: 0, openIssues: 0, blockers: 0, openBlockers: 0 },
+    trades: {},          // company -> scorecard
+    blockerTypes: {},    // type -> { count, open, resolveDays: [] }
+    blockerAges: [],     // ages of currently open blockers
+    zoneTypes: {},       // type -> { planned: [], actual: [], slips: [] }
+    coverage: { issuesWithResolveDate: 0, resolvedIssues: 0, blockersWithResolveDate: 0, resolvedBlockers: 0 }
+  };
+
+  for (const pid of Object.keys(projects || {})) {
+    const p = projects[pid] || {};
+    const cfg = p.config || {};
+    const issues = asArray(p.issues);
+    const blockers = asArray(p.blockers);
+    const signoffs = p.signoffs || {};
+    const zones = asArray(cfg.zones);
+    const schedule = p.schedule || {};
+
+    const openIssues = issues.filter(i => i.status !== 'resolved' && i.status !== 'wont-fix');
+    const openBlockers = blockers.filter(b => b.status === 'open');
+
+    out.projects.push({
+      id: pid,
+      name: cfg.name || pid,
+      gc: cfg.gc || '',
+      zones: zones.length,
+      issues: issues.length,
+      openIssues: openIssues.length,
+      blockers: blockers.length,
+      openBlockers: openBlockers.length
+    });
+
+    out.totals.projects++;
+    out.totals.zones += zones.length;
+    out.totals.issues += issues.length;
+    out.totals.openIssues += openIssues.length;
+    out.totals.blockers += blockers.length;
+    out.totals.openBlockers += openBlockers.length;
+
+    /* --- trade scorecard --- */
+    for (const i of issues) {
+      const company = companyOfTrade(i.trade);
+      if (!company || company === 'All Trades') continue;
+      const t = out.trades[company] = out.trades[company] || {
+        company, projects: new Set(), issues: 0, open: 0, resolved: 0, overdue: 0,
+        blockersHeld: 0, resolveDays: [], openAges: [], signoffsOnTime: 0, signoffsLate: 0
+      };
+      t.projects.add(pid);
+      t.issues++;
+      if (i.status === 'resolved' || i.status === 'wont-fix') {
+        t.resolved++;
+        out.coverage.resolvedIssues++;
+        if (i.resolvedAt && i.created) {
+          const d = daysBetween(i.created, i.resolvedAt);
+          if (d !== null && d >= 0) { t.resolveDays.push(d); out.coverage.issuesWithResolveDate++; }
+        }
+      } else {
+        t.open++;
+        if (i.due && new Date(i.due) < new Date()) t.overdue++;
+        if (i.created) {
+          const age = daysBetween(i.created, new Date().toISOString());
+          if (age !== null && age >= 0) t.openAges.push(age);
+        }
+      }
+    }
+
+    for (const b of blockers) {
+      const company = companyOfTrade(b.trade);
+      if (company) {
+        const t = out.trades[company] = out.trades[company] || {
+          company, projects: new Set(), issues: 0, open: 0, resolved: 0, overdue: 0,
+          blockersHeld: 0, resolveDays: [], openAges: [], signoffsOnTime: 0, signoffsLate: 0
+        };
+        t.projects.add(pid);
+        if (b.status === 'open') t.blockersHeld++;
+      }
+
+      const type = b.blockerType || 'other';
+      const bt = out.blockerTypes[type] = out.blockerTypes[type] || { type, count: 0, open: 0, resolveDays: [] };
+      bt.count++;
+      if (b.status === 'open') {
+        bt.open++;
+        if (b.dateSubmitted) {
+          const age = daysBetween(b.dateSubmitted, new Date().toISOString());
+          if (age !== null && age >= 0) out.blockerAges.push({ age, type, title: b.title || type, project: cfg.name || pid });
+        }
+      } else {
+        out.coverage.resolvedBlockers++;
+        if (b.resolvedAt && b.dateSubmitted) {
+          const d = daysBetween(b.dateSubmitted, b.resolvedAt);
+          if (d !== null && d >= 0) { bt.resolveDays.push(d); out.coverage.blockersWithResolveDate++; }
+        }
+      }
+    }
+
+    /* --- cycle time by zone type, planned gate vs actual sign-off --- */
+    for (const z of zones) {
+      const sched = schedule[z.id];
+      const planned = sched && sched.signoff && sched.signoff.start ? new Date(sched.signoff.start) : null;
+      const zs = signoffs[z.id] || {};
+      const dates = Object.values(zs).map(s => s && s.date).filter(Boolean).map(d => new Date(d));
+      const actual = dates.length ? new Date(Math.max.apply(null, dates)) : null;
+
+      const type = zoneTypeOf(z.name);
+      const zt = out.zoneTypes[type] = out.zoneTypes[type] || { type, zones: 0, signedZones: 0, plannedDur: [], slips: [] };
+      zt.zones++;
+
+      if (sched && sched.base && sched.base.start && planned) {
+        const dur = daysBetween(sched.base.start, planned);
+        if (dur !== null && dur > 0) zt.plannedDur.push(dur);
+      }
+      if (planned && actual) {
+        zt.signedZones++;
+        const slip = daysBetween(planned, actual);
+        if (slip !== null) zt.slips.push(slip);
+      }
+
+      // Sign-off timeliness per trade, for the scorecard
+      if (planned) {
+        for (const tradeLabel of Object.keys(zs)) {
+          const company = companyOfTrade(tradeLabel);
+          if (!company) continue;
+          const t = out.trades[company];
+          if (!t) continue;
+          const when = zs[tradeLabel] && zs[tradeLabel].date ? new Date(zs[tradeLabel].date) : null;
+          if (!when) continue;
+          if (when <= planned) t.signoffsOnTime++; else t.signoffsLate++;
+        }
+      }
+    }
+  }
+
+  // finalize trades
+  out.tradeRows = Object.values(out.trades).map(t => {
+    const avg = arr => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null;
+    return {
+      company: t.company,
+      projects: t.projects.size,
+      issues: t.issues,
+      open: t.open,
+      resolved: t.resolved,
+      closeRate: t.issues ? Math.round((t.resolved / t.issues) * 100) : null,
+      overdue: t.overdue,
+      blockersHeld: t.blockersHeld,
+      avgResolveDays: avg(t.resolveDays),
+      avgOpenAge: avg(t.openAges),
+      signoffsOnTime: t.signoffsOnTime,
+      signoffsLate: t.signoffsLate
+    };
+  }).sort((a, b) => b.issues - a.issues);
+
+  return out;
+}
+
+/* ---------- chart primitives (no libraries, no dual axes) ---------- */
+
+const VIZ = { s1: 'var(--viz-1)', s2: 'var(--viz-2)', s3: 'var(--viz-3)' };
+
+function vizTooltipInit() {
+  if (document.getElementById('viz-tip')) return;
+  const tip = document.createElement('div');
+  tip.id = 'viz-tip';
+  tip.className = 'viz-tip';
+  document.body.appendChild(tip);
+}
+
+function vizBind(host) {
+  vizTooltipInit();
+  const tip = document.getElementById('viz-tip');
+  host.querySelectorAll('[data-tip]').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      tip.innerHTML = el.getAttribute('data-tip');
+      tip.style.display = 'block';
+    });
+    el.addEventListener('mousemove', (e) => {
+      tip.style.left = Math.min(window.innerWidth - 260, e.clientX + 14) + 'px';
+      tip.style.top = (e.clientY + 16) + 'px';
+    });
+    el.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+  });
+}
+
+// Horizontal bars. One measure, ranked. Direct label on every bar because the
+// rows are few and the number is the point.
+function hBarChart(rows, opts) {
+  opts = opts || {};
+  const max = Math.max(1, ...rows.map(r => r.value || 0));
+  return `
+    <div class="viz-bars">
+      ${rows.map(r => {
+        const pct = Math.max(1.5, ((r.value || 0) / max) * 100);
+        const color = r.color || VIZ.s1;
+        return `
+          <div class="viz-bar-row" data-tip="<strong>${r.label}</strong><br>${r.tip || ((r.value || 0) + (opts.unit ? ' ' + opts.unit : ''))}">
+            <div class="viz-bar-label">${r.label}</div>
+            <div class="viz-bar-track">
+              <div class="viz-bar-fill" style="width:${pct}%;background:${color};"></div>
+            </div>
+            <div class="viz-bar-value mono">${r.display !== undefined ? r.display : (r.value || 0)}</div>
+          </div>`;
+      }).join('')}
+    </div>`;
+}
+
+// Planned vs actual as a dumbbell. Two points on one scale, never two axes.
+function dumbbellChart(rows, opts) {
+  opts = opts || {};
+  const all = rows.flatMap(r => [r.a, r.b]).filter(v => typeof v === 'number');
+  if (!all.length) return '<p class="viz-empty">Not enough dated sign-offs yet.</p>';
+  const lo = Math.min(0, ...all), hi = Math.max(1, ...all);
+  const span = (hi - lo) || 1;
+  const x = v => ((v - lo) / span) * 100;
+
+  return `
+    <div class="viz-dumbbell">
+      ${rows.map(r => {
+        const xa = x(r.a), xb = x(r.b);
+        const left = Math.min(xa, xb), width = Math.abs(xb - xa);
+        const late = r.b > r.a;
+        return `
+          <div class="viz-db-row" data-tip="<strong>${r.label}</strong><br>Planned ${r.aLabel}<br>Actual ${r.bLabel}<br>${late ? 'Late by ' : 'Early by '}${Math.abs(r.b - r.a)} days">
+            <div class="viz-db-label">${r.label}</div>
+            <div class="viz-db-track">
+              <div class="viz-db-connector ${late ? 'late' : 'early'}" style="left:${left}%;width:${width}%;"></div>
+              <div class="viz-db-dot planned" style="left:${xa}%;"></div>
+              <div class="viz-db-dot actual ${late ? 'late' : 'early'}" style="left:${xb}%;"></div>
+            </div>
+            <div class="viz-db-value mono ${late ? 'late' : 'early'}">${r.b - r.a > 0 ? '+' : ''}${r.b - r.a}d</div>
+          </div>`;
+      }).join('')}
+      <div class="viz-legend">
+        <span><i class="viz-key planned"></i>Planned gate</span>
+        <span><i class="viz-key actual"></i>Signed late</span>
+        <span><i class="viz-key early"></i>Signed early</span>
+      </div>
+    </div>`;
+}
+
+// Age distribution of open blockers. Single series, one hue, ordered buckets.
+function histogram(ages) {
+  const buckets = [
+    { label: '0–7d', min: 0, max: 7 },
+    { label: '8–14d', min: 8, max: 14 },
+    { label: '15–30d', min: 15, max: 30 },
+    { label: '31–60d', min: 31, max: 60 },
+    { label: '60d+', min: 61, max: Infinity }
+  ];
+  const counts = buckets.map(b => ({
+    label: b.label,
+    value: ages.filter(a => a.age >= b.min && a.age <= b.max).length
+  }));
+  const max = Math.max(1, ...counts.map(c => c.value));
+  return `
+    <div class="viz-hist">
+      ${counts.map((c, i) => {
+        const h = c.value === 0 ? 0 : Math.max(3, (c.value / max) * 100);
+        const hot = i >= 3;
+        return `
+          <div class="viz-hist-col" data-tip="<strong>${c.label} old</strong><br>${c.value} open blocker${c.value === 1 ? '' : 's'}">
+            <div class="viz-hist-value mono ${c.value === 0 ? 'zero' : ''}">${c.value}</div>
+            <div class="viz-hist-bar" style="height:${h}%;background:${hot ? 'var(--red)' : VIZ.s1};"></div>
+            <div class="viz-hist-label">${c.label}</div>
+          </div>`;
+      }).join('')}
+    </div>`;
+}
+
+/* ---------- views ---------- */
+
+function openAnalytics() {
+  if (!can('project.open') || !(can('user.manage') || can('project.create'))) {
+    denied('open cross-project analytics');
+    return;
+  }
+  document.getElementById('hub-view').style.display = 'none';
+  document.getElementById('project-view').style.display = 'none';
+  document.getElementById('wizard-view').style.display = 'none';
+  document.getElementById('analytics-view').style.display = 'block';
+  document.getElementById('analytics-body').innerHTML =
+    '<div class="viz-loading">Reading every project…</div>';
+
+  db.ref('projects').once('value').then((snap) => {
+    const all = snap.val() || {};
+    const visible = {};
+    for (const pid of Object.keys(all)) if (canOpenProject(pid)) visible[pid] = all[pid];
+    window.ANALYTICS = collectAnalytics(visible);
+    renderAnalytics();
+  }).catch((e) => {
+    document.getElementById('analytics-body').innerHTML =
+      `<div class="viz-loading">Could not read the projects: ${e.message}</div>`;
+  });
+}
+
+function closeAnalytics() {
+  document.getElementById('analytics-view').style.display = 'none';
+  backToHub();
+}
+
+function renderAnalytics() {
+  const a = window.ANALYTICS;
+  const host = document.getElementById('analytics-body');
+  if (!a) return;
+
+  if (a.totals.projects === 0) {
+    host.innerHTML = '<div class="viz-loading">No projects to analyse yet.</div>';
+    return;
+  }
+
+  /* blocker resolution by type */
+  const typeRows = Object.values(a.blockerTypes).map((t, i) => {
+    const avg = t.resolveDays.length
+      ? Math.round(t.resolveDays.reduce((x, y) => x + y, 0) / t.resolveDays.length) : null;
+    return {
+      label: ({ rfi: 'RFI', submittal: 'Submittal', ofci: 'OFCI' })[t.type] || t.type,
+      value: avg === null ? 0 : avg,
+      display: avg === null ? 'no data' : avg + 'd',
+      color: [VIZ.s1, VIZ.s2, VIZ.s3][i % 3],
+      tip: avg === null
+        ? `${t.count} logged, ${t.open} still open<br>No resolution dates recorded yet`
+        : `Average ${avg} days to clear<br>${t.resolveDays.length} resolved, ${t.open} still open`
+    };
+  }).sort((x, y) => y.value - x.value);
+
+  const typeVolume = Object.values(a.blockerTypes).map((t, i) => ({
+    label: ({ rfi: 'RFI', submittal: 'Submittal', ofci: 'OFCI' })[t.type] || t.type,
+    value: t.count,
+    display: String(t.count),
+    color: [VIZ.s1, VIZ.s2, VIZ.s3][i % 3],
+    tip: `${t.count} logged all time · ${t.open} open now`
+  })).sort((x, y) => y.value - x.value);
+
+  /* cycle time by zone type */
+  const zoneRows = Object.values(a.zoneTypes)
+    .filter(z => z.slips.length)
+    .map(z => {
+      const avgSlip = Math.round(z.slips.reduce((x, y) => x + y, 0) / z.slips.length);
+      const avgPlanned = z.plannedDur.length
+        ? Math.round(z.plannedDur.reduce((x, y) => x + y, 0) / z.plannedDur.length) : 0;
+      return {
+        label: `${z.type} (${z.signedZones}/${z.zones})`,
+        a: 0,
+        b: avgSlip,
+        aLabel: 'gate date',
+        bLabel: `${avgSlip > 0 ? avgSlip + ' days late' : Math.abs(avgSlip) + ' days early'}`,
+        avgPlanned
+      };
+    }).sort((x, y) => y.b - x.b);
+
+  const plannedRows = Object.values(a.zoneTypes)
+    .filter(z => z.plannedDur.length)
+    .map((z, i) => {
+      const avg = Math.round(z.plannedDur.reduce((x, y) => x + y, 0) / z.plannedDur.length);
+      return {
+        label: z.type,
+        value: avg,
+        display: avg + 'd',
+        color: VIZ.s1,
+        tip: `${z.zones} zone${z.zones === 1 ? '' : 's'}<br>Average ${avg} days from base modelling start to the sign-off gate`
+      };
+    }).sort((x, y) => y.value - x.value);
+
+  const cov = a.coverage;
+  const resolveCoverage = cov.resolvedIssues
+    ? Math.round((cov.issuesWithResolveDate / cov.resolvedIssues) * 100) : null;
+
+  host.innerHTML = `
+    <div class="viz-root">
+
+      <div class="an-kpis">
+        <div class="an-kpi"><span>${a.totals.projects}</span>Projects</div>
+        <div class="an-kpi"><span>${a.totals.zones}</span>Zones</div>
+        <div class="an-kpi"><span>${a.totals.openIssues}</span>Open issues</div>
+        <div class="an-kpi ${a.totals.openBlockers ? 'bad' : ''}"><span>${a.totals.openBlockers}</span>Open blockers</div>
+        <div class="an-kpi"><span>${a.tradeRows.length}</span>Trade partners</div>
+      </div>
+
+      ${resolveCoverage !== null && resolveCoverage < 90 ? `
+        <div class="perm-note">
+          <strong>Resolution timing is partial.</strong> Only ${cov.issuesWithResolveDate} of ${cov.resolvedIssues}
+          resolved issues carry a resolution date, so average close time is computed from those and left blank elsewhere.
+          Everything resolved from this version forward is stamped, and the number fills in as you work.
+        </div>` : ''}
+
+      <div class="an-grid">
+
+        <section class="an-card">
+          <div class="an-card-head">
+            <h3>Blocker volume by type</h3>
+            <p>How often each kind of blocker shows up across every project</p>
+          </div>
+          ${typeVolume.length ? hBarChart(typeVolume) : '<p class="viz-empty">No blockers logged yet.</p>'}
+        </section>
+
+        <section class="an-card">
+          <div class="an-card-head">
+            <h3>Average days to clear</h3>
+            <p>From the date submitted to the date resolved</p>
+          </div>
+          ${typeRows.length ? hBarChart(typeRows) : '<p class="viz-empty">No blockers logged yet.</p>'}
+        </section>
+
+        <section class="an-card">
+          <div class="an-card-head">
+            <h3>Open blockers by age</h3>
+            <p>Anything past 30 days is shown in red</p>
+          </div>
+          ${a.blockerAges.length ? histogram(a.blockerAges) : '<p class="viz-empty">Nothing open right now.</p>'}
+        </section>
+
+        <section class="an-card">
+          <div class="an-card-head">
+            <h3>Planned coordination window by zone type</h3>
+            <p>Base modelling start to the sign-off gate</p>
+          </div>
+          ${plannedRows.length ? hBarChart(plannedRows, { unit: 'days' }) : '<p class="viz-empty">No scheduled zones yet.</p>'}
+        </section>
+
+        <section class="an-card an-card-wide">
+          <div class="an-card-head">
+            <h3>Gate slip by zone type</h3>
+            <p>Average days between the planned sign-off gate and the last trade actually signing</p>
+          </div>
+          ${zoneRows.length ? dumbbellChart(zoneRows) : '<p class="viz-empty">No zones have been signed off yet, so there is nothing to compare against the plan.</p>'}
+        </section>
+
+      </div>
+
+      <section class="an-card an-card-wide" style="margin-top:16px;">
+        <div class="an-card-head">
+          <h3>Trade performance scorecard</h3>
+          <p>Every trade partner across every project. Sorted by volume of issues assigned.</p>
+        </div>
+        ${a.tradeRows.length ? `
+          <div class="an-table-wrap">
+            <table class="an-table">
+              <thead>
+                <tr>
+                  <th>Company</th><th>Projects</th><th>Issues</th><th>Open</th>
+                  <th>Close rate</th><th>Overdue</th><th>Blockers held</th>
+                  <th>Avg age of open</th><th>Sign-offs on time</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${a.tradeRows.map(t => `
+                  <tr>
+                    <td><strong>${t.company}</strong></td>
+                    <td class="mono">${t.projects}</td>
+                    <td class="mono">${t.issues}</td>
+                    <td class="mono">${t.open}</td>
+                    <td>
+                      ${t.closeRate === null ? '<span class="an-dim">—</span>' : `
+                        <div class="an-inline-bar" data-tip="<strong>${t.company}</strong><br>${t.resolved} of ${t.issues} closed">
+                          <span class="an-inline-fill" style="width:${t.closeRate}%"></span>
+                        </div>
+                        <span class="mono an-inline-num">${t.closeRate}%</span>`}
+                    </td>
+                    <td class="mono ${t.overdue ? 'an-bad' : ''}">${t.overdue}</td>
+                    <td class="mono ${t.blockersHeld ? 'an-bad' : ''}">${t.blockersHeld}</td>
+                    <td class="mono">${t.avgOpenAge === null ? '—' : t.avgOpenAge + 'd'}</td>
+                    <td class="mono">${(t.signoffsOnTime + t.signoffsLate) === 0
+                      ? '<span class="an-dim">—</span>'
+                      : `${t.signoffsOnTime}/${t.signoffsOnTime + t.signoffsLate}`}</td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>` : '<p class="viz-empty">No issues assigned to a trade yet.</p>'}
+      </section>
+
+      <section class="an-card an-card-wide" style="margin-top:16px;">
+        <div class="an-card-head">
+          <h3>Projects</h3>
+        </div>
+        <div class="an-table-wrap">
+          <table class="an-table">
+            <thead><tr><th>Project</th><th>GC</th><th>Zones</th><th>Issues</th><th>Open</th><th>Blockers open</th><th></th></tr></thead>
+            <tbody>
+              ${a.projects.map(p => `
+                <tr>
+                  <td><strong>${p.name}</strong></td>
+                  <td>${p.gc || '<span class="an-dim">—</span>'}</td>
+                  <td class="mono">${p.zones || '—'}</td>
+                  <td class="mono">${p.issues}</td>
+                  <td class="mono">${p.openIssues}</td>
+                  <td class="mono ${p.openBlockers ? 'an-bad' : ''}">${p.openBlockers}</td>
+                  <td><button class="btn ghost" style="font-size:11px;padding:4px 10px;" onclick="openProject('${p.id}')">Open</button></td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>`;
+
+  vizBind(host);
+}
+
+function exportAnalyticsCsv() {
+  const a = window.ANALYTICS;
+  if (!a) return;
+  const head = ['Company', 'Projects', 'Issues', 'Open', 'Resolved', 'Close rate %', 'Overdue', 'Blockers held', 'Avg age open (d)', 'Sign-offs on time', 'Sign-offs late'];
+  const lines = [head.join(',')].concat(a.tradeRows.map(t => [
+    `"${t.company}"`, t.projects, t.issues, t.open, t.resolved,
+    t.closeRate === null ? '' : t.closeRate, t.overdue, t.blockersHeld,
+    t.avgOpenAge === null ? '' : t.avgOpenAge, t.signoffsOnTime, t.signoffsLate
+  ].join(',')));
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'vec-trade-scorecard.csv';
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+window.openAnalytics = openAnalytics;
+window.closeAnalytics = closeAnalytics;
+window.renderAnalytics = renderAnalytics;
+window.exportAnalyticsCsv = exportAnalyticsCsv;
+
+/* ---------- resolution timestamps, so the analytics can improve ---------- */
+// Nothing in the original build recorded WHEN something was resolved, only that
+// it was. Without a timestamp there is no cycle time to measure. These stamp it
+// going forward; historical records stay blank rather than being guessed.
+
+const _p5SaveIssue = window.saveIssue;
+window.saveIssue = function () {
+  const statusEl = document.getElementById('form-status');
+  const becomingResolved = statusEl && (statusEl.value === 'resolved' || statusEl.value === 'wont-fix');
+  const editingId = formContext.editingId;
+  _p5SaveIssue();
+  if (becomingResolved) {
+    const issue = ISSUES.find(i => i.id === editingId) || ISSUES[ISSUES.length - 1];
+    if (issue && !issue.resolvedAt) {
+      issue.resolvedAt = new Date().toISOString();
+      issue.resolvedBy = CURRENT_USER ? CURRENT_USER.name : '';
+      if (typeof saveIssues === 'function') saveIssues();
+    }
+  }
+};
+
+// The blocker detail modal resolves through its own button handler
+document.addEventListener('click', (e) => {
+  const btn = e.target && e.target.closest ? e.target.closest('#blocker-detail-resolve') : null;
+  if (!btn) return;
+  setTimeout(() => {
+    try {
+      for (const b of BLOCKERS) {
+        if (b.status !== 'open' && !b.resolvedAt) {
+          b.resolvedAt = new Date().toISOString();
+          b.resolvedBy = CURRENT_USER ? CURRENT_USER.name : '';
+        }
+      }
+      if (typeof saveBlockers === 'function') saveBlockers();
+    } catch (err) { /* nothing to stamp */ }
+  }, 120);
+}, true);
+
+/* ============================================================
    V3.1 — INITIALIZATION
    The auth listener above drives everything. Nothing renders
    until a signed-in account has a role assigned.
@@ -7903,7 +8649,7 @@ updateStageDate = function (zoneId, stageId, field, value) {
 setAuthMode('signin');
 showAuthScreen(false);
 
-console.log('🚀 VEC BIM Coordination Platform v3.1 loaded — auth + permissions + company library');
+console.log('🚀 VEC BIM Coordination Platform v3.6 loaded');
 
 </script>
 
