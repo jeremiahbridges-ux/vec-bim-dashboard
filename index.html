@@ -1394,6 +1394,168 @@
   }
 
 
+
+  /* ═══════════ V3.5 SCHEDULE INTELLIGENCE ═══════════ */
+  .cycle-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 16px 18px; box-shadow: var(--shadow-sm);
+  }
+  .cycle-meta { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .cycle-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-tertiary);
+  }
+  .cycle-days { font-size: 15px; font-weight: 700; color: var(--ink); margin-top: 3px; letter-spacing: -0.015em; }
+  .cycle-track {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+    gap: 8px; margin-top: 14px;
+  }
+  .cycle-pip {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 9px 11px; background: var(--surface-2);
+  }
+  .cycle-pip.now { background: var(--brand-tint); border-color: var(--brand); }
+  .cycle-pip-day { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-tertiary); }
+  .cycle-pip.now .cycle-pip-day { color: var(--brand-deep); }
+  .cycle-pip-date { font-size: 13px; font-weight: 700; color: var(--ink); margin-top: 3px; }
+  .cycle-pip-idx { font-size: 10px; color: var(--text-tertiary); margin-top: 2px; }
+  .cycle-pip.now .cycle-pip-idx { color: var(--brand-deep); font-weight: 600; }
+
+  .cp-table {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm);
+  }
+  .cp-head, .cp-row {
+    display: grid; grid-template-columns: 1.5fr 1.3fr 2fr 0.9fr 0.7fr 0.8fr;
+    gap: 12px; padding: 11px 16px; align-items: center;
+  }
+  .cp-head {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--text-tertiary); background: var(--surface-2); border-bottom: 1px solid var(--border);
+  }
+  .cp-row { border-bottom: 1px solid var(--border); font-size: 12.5px; }
+  .cp-row:last-child { border-bottom: none; }
+  .cp-row.urgent { background: #FFFBFA; box-shadow: inset 3px 0 0 var(--red); }
+  .cp-zone { font-size: 13.5px; font-weight: 700; color: var(--ink); letter-spacing: -0.012em; }
+  .cp-sub { font-size: 11.5px; color: var(--text-tertiary); }
+  .cp-trade {
+    display: inline-block; padding: 3px 9px; border-radius: 5px;
+    background: var(--brand-tint); color: var(--brand-deep);
+    font-size: 11.5px; font-weight: 700;
+  }
+  .cp-row.urgent .cp-trade { background: var(--red-bg); color: var(--red); }
+  .cp-urgent { color: var(--red); font-weight: 700; }
+
+  .bottleneck-chip {
+    margin: 0 18px 14px; padding: 8px 11px; border-radius: var(--radius);
+    background: var(--surface-2); border: 1px solid var(--border);
+    font-size: 11.5px; color: var(--text-secondary);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .bottleneck-chip strong { color: var(--ink); }
+  .bottleneck-chip.urgent { background: var(--red-bg); border-color: transparent; color: var(--red); }
+  .bottleneck-chip.urgent strong { color: var(--red); }
+  .bottleneck-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--yellow); flex-shrink: 0; }
+  .bottleneck-chip.urgent .bottleneck-dot { background: var(--red); }
+
+  .whatif-headline {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    padding: 14px 16px; border-radius: var(--radius);
+    background: var(--surface-2); border: 1px solid var(--border);
+  }
+  .whatif-headline.bad { background: var(--red-bg); border-color: transparent; }
+  .whatif-headline.good { background: var(--green-bg); border-color: transparent; }
+  .whatif-headline-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--text-tertiary);
+  }
+  .whatif-headline-value { font-size: 15px; color: var(--text-secondary); margin-top: 4px; }
+  .whatif-headline-value strong { color: var(--ink); }
+  .whatif-delta { font-size: 24px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .whatif-headline.bad .whatif-delta { color: var(--red); }
+  .whatif-headline.good .whatif-delta { color: var(--green); }
+
+  /* ═══════════ MEETING PREP DOCUMENT ═══════════ */
+  .mp-page {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 34px 38px; box-shadow: var(--shadow-sm);
+    max-width: 1000px; margin: 0 auto 24px;
+  }
+  .mp-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 24px; padding-bottom: 18px; border-bottom: 2px solid var(--ink); margin-bottom: 20px;
+  }
+  .mp-brand { margin-bottom: 10px; }
+  .mp-title { font-size: 24px; font-weight: 700; color: var(--ink); letter-spacing: -0.028em; }
+  .mp-sub { font-size: 13px; color: var(--text-secondary); margin-top: 3px; }
+  .mp-meta { display: flex; flex-direction: column; gap: 7px; text-align: right; }
+  .mp-meta div { font-size: 12px; }
+  .mp-meta span {
+    display: block; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-tertiary);
+  }
+  .mp-meta strong { color: var(--ink); font-weight: 600; }
+  .mp-kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 26px; }
+  .mp-kpi {
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--text-tertiary);
+  }
+  .mp-kpi span {
+    display: block; font-size: 26px; font-weight: 700; color: var(--ink);
+    letter-spacing: -0.03em; text-transform: none; margin-bottom: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .mp-kpi.bad span { color: var(--red); }
+  .mp-section { margin-bottom: 26px; }
+  .mp-section h3 {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--ink); padding-bottom: 7px; border-bottom: 1px solid var(--border); margin-bottom: 12px;
+  }
+  .mp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .mp-table th {
+    text-align: left; font-size: 9.5px; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--text-tertiary);
+    padding: 6px 10px 6px 0; border-bottom: 1px solid var(--border);
+  }
+  .mp-table td { padding: 9px 10px 9px 0; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .mp-table tr.mp-urgent td { background: var(--red-bg); }
+  .mp-dim { color: var(--text-tertiary); font-size: 11px; }
+  .mp-item {
+    display: flex; justify-content: space-between; gap: 16px;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+  }
+  .mp-item-main { font-size: 12.5px; color: var(--ink); }
+  .mp-item-meta { font-size: 11px; color: var(--text-tertiary); white-space: nowrap; }
+  .mp-pri {
+    display: inline-block; padding: 1px 6px; border-radius: 4px; margin-right: 7px;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.05em;
+  }
+  .mp-pri-blocker { background: var(--red-bg); color: var(--red); }
+  .mp-pri-high { background: var(--yellow-bg); color: var(--yellow); }
+  .mp-pri-medium { background: var(--brand-tint); color: var(--brand-deep); }
+  .mp-pri-low { background: var(--surface-2); color: var(--text-tertiary); }
+  .mp-log-row {
+    display: grid; grid-template-columns: 150px 1fr; gap: 12px;
+    padding: 5px 0; font-size: 11.5px; border-bottom: 1px solid var(--border);
+  }
+  .mp-foot {
+    margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--border);
+    font-size: 10.5px; color: var(--text-tertiary);
+  }
+
+  @media print {
+    body { background: #fff; }
+    .header, .identity-bar, .view-tabs, footer, .control-bar,
+    #panel-reports > div:not(#meeting-doc), .modal-backdrop, .hub-header { display: none !important; }
+    main { padding: 0; max-width: none; }
+    .mp-page { border: none; box-shadow: none; padding: 0; max-width: none; margin: 0; }
+    .mp-section { page-break-inside: avoid; }
+    .mp-table tr { page-break-inside: avoid; }
+    .mp-header { page-break-after: avoid; }
+    @page { margin: 14mm; }
+  }
+
 </style>
 </head>
 <body>
@@ -1517,9 +1679,9 @@
       <div class="subtitle">Zone-stage workflow · Live coordination tracking · Floor plan overlay</div>
     </div>
     <div class="header-meta">
-      <div class="meta-item"><span class="meta-label">Today</span><span class="meta-value mono">22-Apr-2026</span></div>
+      <div class="meta-item"><span class="meta-label">Today</span><span class="meta-value mono" id="header-today">—</span></div>
       <div class="meta-item"><span class="meta-label">GC</span><span class="meta-value">HITT</span></div>
-      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v3.0</span></div>
+      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v3.5</span></div>
       <div class="notif-bell" onclick="toggleNotifications()" id="notif-bell" style="margin-left:12px;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         <div class="notif-badge" id="notif-count" style="display:none;">0</div>
@@ -1560,6 +1722,7 @@
   <button class="view-tab active" data-view="zones">Zone Workflows</button>
   <button class="view-tab" data-view="modelpop">Model Population</button>
   <button class="view-tab" data-view="changelog">Change Log</button>
+  <button class="view-tab" data-view="schedintel">Schedule Intel</button>
   <button class="view-tab" data-view="reports">Reports</button>
   <button class="view-tab" data-view="directory">Directory</button>
   <button class="view-tab" data-view="plan">Floor Plan Overlay</button>
@@ -1720,6 +1883,25 @@
     <div id="changelog-list" style="display:flex;flex-direction:column;gap:4px;"></div>
   </div>
 
+  <!-- SCHEDULE INTEL VIEW (v3.5) -->
+  <div class="view-panel" id="panel-schedintel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div>
+        <h2 style="font-size:18px;font-weight:700;color:var(--ink);">Schedule Intelligence</h2>
+        <p style="font-size:12px;color:var(--text-tertiary);margin-top:2px;">Coordination cadence, which trade is holding each gate, and what happens if a date moves.</p>
+      </div>
+      <button class="zone-footer-btn" onclick="openWhatIf()" style="padding:8px 16px;font-size:12px;">Run a what-if</button>
+    </div>
+
+    <div class="cycle-card" id="cycle-strip"></div>
+
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin:22px 0 10px;">
+      <h3 style="font-size:14px;font-weight:700;color:var(--ink);">Critical path by zone</h3>
+      <span style="font-size:11px;color:var(--text-tertiary);">Ranked by how hard the trade is holding the gate</span>
+    </div>
+    <div id="critical-path-body"></div>
+  </div>
+
   <!-- REPORTS VIEW -->
   <div class="view-panel" id="panel-reports">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
@@ -1756,6 +1938,28 @@
         <button class="zone-footer-btn" onclick="generateReport()" style="padding:8px 18px;font-size:12px;">Generate Report</button>
       </div>
     </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;">
+        <div>
+          <h3 style="font-size:15px;font-weight:700;color:var(--ink);">Meeting Prep Summary</h3>
+          <p style="font-size:12px;color:var(--text-tertiary);margin-top:3px;max-width:560px;">
+            Everything you need to walk into a coordination meeting: gates coming up, what is overdue, what is due this cycle,
+            open blockers by responsible party, and what moved since the last meeting. Built for printing or saving as a PDF.
+          </p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:end;">
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-tertiary);display:block;margin-bottom:4px;">Meeting date</label>
+            <input type="date" class="filter-select" id="meeting-cycle-date">
+          </div>
+          <button class="zone-footer-btn" onclick="generateMeetingPrep()" style="padding:8px 18px;font-size:12px;">Build Summary</button>
+          <button class="zone-footer-btn ghost" onclick="printMeetingPrep()" style="padding:8px 18px;font-size:12px;">Print / Save PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="meeting-doc" style="display:none;"></div>
     <div id="report-output"></div>
   </div>
 
@@ -1814,8 +2018,8 @@ Cleveland Electric, Electrical, Sarah Lee, BIM Lead, sarah@clevelandelec.com, 40
 </div>
 
 <footer>
-  Virtual Engineering Consultants · BIM Coordination Services · Template v2.0 · June 2026<br>
-  Zone × Stage workflow · Model population tracking · Hold vs Performance detection · Date engine · Change log
+  Virtual Engineering Consultants · BIM Coordination Services · Template v3.5<br>
+  Zone × Stage workflow · Role permissions · Company library · Schedule intelligence · Meeting prep
 </footer>
 
 <!-- ZONE DETAIL MODAL -->
@@ -2063,6 +2267,27 @@ Cleveland Electric, Electrical, Sarah Lee, BIM Lead, sarah@clevelandelec.com, 40
 </div>
 
 </div><!-- end project-view -->
+
+<!-- ═══════════════════════════════════════ -->
+<!-- WHAT-IF MODAL (v3.5) -->
+<!-- ═══════════════════════════════════════ -->
+<div class="modal-backdrop" id="whatif-modal">
+  <div class="modal" style="max-width:720px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">What-if</div>
+        <div class="modal-sub" id="whatif-sub">—</div>
+      </div>
+      <button class="modal-close" onclick="closeWhatIf()">✕</button>
+    </div>
+    <div class="modal-body" id="whatif-inputs"></div>
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closeWhatIf()">Close</button>
+      <button class="btn ghost" onclick="runWhatIf()">Run scenario</button>
+      <button class="btn" id="whatif-apply" onclick="applyWhatIf()" style="display:none;">Apply to schedule</button>
+    </div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════ -->
 <!-- USER MANAGEMENT MODAL (v3.1) -->
@@ -4690,6 +4915,7 @@ document.querySelectorAll('.view-tab').forEach(tab => {
     if (tab.dataset.view === 'modelpop') renderModelPop();
     if (tab.dataset.view === 'changelog') renderChangeLog();
     if (tab.dataset.view === 'directory') renderDirectory();
+    if (tab.dataset.view === 'schedintel') renderScheduleIntel();
   };
   tab.addEventListener('click', tab._handler);
 });
@@ -5833,6 +6059,8 @@ function routeAfterLogin() {
 }
 
 function paintIdentity() {
+  const today = document.getElementById('header-today');
+  if (today) today.textContent = fmtFull(TODAY);
   const u = CURRENT_USER;
   if (!u) return;
   const initials = (u.name || u.email || '?').split(/\s+/).map(s => s[0]).slice(0, 2).join('').toUpperCase();
@@ -6828,6 +7056,844 @@ window.revokeUser = revokeUser;
 window.openInviteForm = openInviteForm;
 window.saveInvite = saveInvite;
 window.deleteInvite = deleteInvite;
+
+/* ============================================================
+   V3.5 — PHASE 3: SCHEDULE INTELLIGENCE
+   1. Date shift engine (meeting cadence math)
+   2. Critical path by zone
+   3. What-if scenario modeling
+   4. Meeting prep auto-summary (printable)
+   ============================================================ */
+
+/* ---------- 1. CYCLE / DATE ENGINE ---------- */
+
+const DAY_INDEX = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+// Coordination meeting weekdays for the active project. Defaults to Wed/Fri,
+// the DC6 cadence, when a project has not set its own.
+function meetingWeekdays() {
+  const cfg = (allProjects[activeProjectId] || {}).config || {};
+  const raw = cfg.meetingDays;
+  if (!raw) return [3, 5];
+  const list = Array.isArray(raw) ? raw : Object.values(raw);
+  const out = list.map(m => {
+    const name = String(typeof m === 'string' ? m : (m.day || '')).trim().toLowerCase().slice(0, 3);
+    return DAY_INDEX[name];
+  }).filter(v => v !== undefined);
+  return out.length ? Array.from(new Set(out)).sort((a, b) => a - b) : [3, 5];
+}
+
+function startOfDay(dt) {
+  const x = new Date(dt);
+  x.setHours(0, 0, 0, 0);
+  return x;
+}
+
+// The nth coordination meeting strictly after `from`.
+function nextCycleDate(from, n = 1) {
+  const days = meetingWeekdays();
+  let cur = startOfDay(from || TODAY);
+  let hits = 0;
+  for (let i = 0; i < 400 && hits < n; i++) {
+    cur = new Date(cur.getTime() + 86400000);
+    if (days.includes(cur.getDay())) hits++;
+  }
+  return cur;
+}
+
+// The nth coordination meeting strictly before `from`.
+function prevCycleDate(from, n = 1) {
+  const days = meetingWeekdays();
+  let cur = startOfDay(from || TODAY);
+  let hits = 0;
+  for (let i = 0; i < 400 && hits < n; i++) {
+    cur = new Date(cur.getTime() - 86400000);
+    if (days.includes(cur.getDay())) hits++;
+  }
+  return cur;
+}
+
+function upcomingCycles(count = 6, from) {
+  const out = [];
+  let cur = from || TODAY;
+  for (let i = 0; i < count; i++) { cur = nextCycleDate(cur, 1); out.push(cur); }
+  return out;
+}
+
+function cyclesBetween(a, b) {
+  if (!a || !b) return 0;
+  const days = meetingWeekdays();
+  const from = startOfDay(a < b ? a : b);
+  const to = startOfDay(a < b ? b : a);
+  let cur = new Date(from), n = 0;
+  for (let i = 0; i < 2000 && cur < to; i++) {
+    cur = new Date(cur.getTime() + 86400000);
+    if (days.includes(cur.getDay())) n++;
+  }
+  return (a <= b) ? n : -n;
+}
+
+// DC6 issue priority standard, expressed as cycle math:
+//   High / Blocker  → due next cycle
+//   Medium          → due the cycle after
+//   Low             → due two coordination meetings before the area sign-off
+function dueForPriority(priority, from, signoffDate) {
+  const base = from || TODAY;
+  if (priority === 'blocker' || priority === 'high') return nextCycleDate(base, 1);
+  if (priority === 'medium') return nextCycleDate(base, 2);
+  if (priority === 'low') {
+    if (signoffDate) {
+      const target = prevCycleDate(signoffDate, 2);
+      return target > base ? target : nextCycleDate(base, 3);
+    }
+    return nextCycleDate(base, 3);
+  }
+  return nextCycleDate(base, 2);
+}
+
+function toDateInput(dt) {
+  if (!dt) return '';
+  const p = n => String(n).padStart(2, '0');
+  return `${dt.getFullYear()}-${p(dt.getMonth() + 1)}-${p(dt.getDate())}`;
+}
+
+// Serialize SCHEDULE back to Firebase. Mirrors what updateStageDate does,
+// pulled out so the shift engine and the date editor share one implementation.
+function saveSchedule() {
+  const out = {};
+  for (const zid of Object.keys(SCHEDULE)) {
+    out[zid] = {};
+    for (const sid of Object.keys(SCHEDULE[zid])) {
+      if (sid === 'fieldActivities') {
+        out[zid][sid] = (SCHEDULE[zid][sid] || []).map(fa => ({ ...fa, start: fa.start.toISOString() }));
+      } else {
+        const s = SCHEDULE[zid][sid];
+        out[zid][sid] = { start: s.start ? s.start.toISOString() : null, finish: s.finish ? s.finish.toISOString() : null, duration: s.duration };
+      }
+    }
+  }
+  fbSave('schedule', out);
+}
+
+// Reads a saved schedule back in. The original build wrote schedule changes to
+// Firebase but never loaded them again, so edits vanished on reload.
+function loadScheduleFromDb(projectId) {
+  return db.ref(`projects/${projectId}/schedule`).once('value').then((snap) => {
+    const data = snap.val();
+    if (!data) return false;
+    for (const zid of Object.keys(data)) {
+      if (!SCHEDULE[zid]) SCHEDULE[zid] = {};
+      for (const sid of Object.keys(data[zid])) {
+        if (sid === 'fieldActivities') {
+          SCHEDULE[zid][sid] = (data[zid][sid] || []).map(fa => ({ ...fa, start: new Date(fa.start) }));
+        } else {
+          const s = data[zid][sid];
+          if (!s) continue;
+          SCHEDULE[zid][sid] = {
+            start: s.start ? new Date(s.start) : null,
+            finish: s.finish ? new Date(s.finish) : null,
+            duration: s.duration
+          };
+        }
+      }
+    }
+    return true;
+  }).catch(() => false);
+}
+
+// Move one stage's finish and carry every downstream stage with it, preserving
+// each stage's duration. Sign-off always lands on a coordination meeting day.
+function computeShift(zoneId, stageId, newFinish) {
+  const zoneSched = SCHEDULE[zoneId];
+  if (!zoneSched || !zoneSched[stageId]) return null;
+
+  const idx = STAGES.findIndex(s => s.id === stageId);
+  if (idx < 0) return null;
+
+  const oldFinish = zoneSched[stageId].finish;
+  const deltaMs = startOfDay(newFinish) - startOfDay(oldFinish);
+  if (!deltaMs) return { rows: [], deltaDays: 0, fieldRows: [], signoff: null };
+
+  const rows = [];
+  let cursor = startOfDay(newFinish);
+
+  for (let i = idx; i < STAGES.length; i++) {
+    const sid = STAGES[i].id;
+    const s = zoneSched[sid];
+    if (!s) continue;
+
+    let start, finish;
+    if (i === idx) {
+      start = s.start;
+      finish = cursor;
+    } else {
+      const dur = Math.max(0, Math.round((s.finish - s.start) / 86400000));
+      start = new Date(cursor);
+      finish = new Date(cursor.getTime() + dur * 86400000);
+    }
+
+    // Sign-off is a milestone tied to the meeting cadence
+    if (sid === 'signoff') {
+      const days = meetingWeekdays();
+      let snap = startOfDay(finish);
+      for (let k = 0; k < 14 && !days.includes(snap.getDay()); k++) snap = new Date(snap.getTime() + 86400000);
+      finish = snap;
+      start = snap;
+    }
+
+    rows.push({
+      stageId: sid,
+      stageName: STAGES[i].name,
+      oldStart: s.start, oldFinish: s.finish,
+      newStart: start, newFinish: finish,
+      deltaDays: Math.round((finish - s.finish) / 86400000)
+    });
+    cursor = finish;
+  }
+
+  const fieldRows = (zoneSched.fieldActivities || []).map(fa => ({
+    label: fa.label,
+    oldStart: fa.start,
+    newStart: new Date(fa.start.getTime() + deltaMs),
+    deltaDays: Math.round(deltaMs / 86400000)
+  }));
+
+  const signoffRow = rows.find(r => r.stageId === 'signoff');
+  return {
+    rows,
+    fieldRows,
+    deltaDays: Math.round(deltaMs / 86400000),
+    signoff: signoffRow ? signoffRow.newFinish : null,
+    oldSignoff: signoffRow ? signoffRow.oldFinish : null
+  };
+}
+
+function applyShift(zoneId, plan) {
+  if (!can('schedule.edit')) { denied('change schedule dates'); return; }
+  if (!plan || !plan.rows.length) return;
+  const company = document.getElementById('company-selector').value;
+
+  for (const r of plan.rows) {
+    const s = SCHEDULE[zoneId][r.stageId];
+    s.start = r.newStart;
+    s.finish = r.newFinish;
+    s.duration = Math.max(0, Math.round((s.finish - s.start) / 86400000));
+  }
+  const fa = SCHEDULE[zoneId].fieldActivities || [];
+  for (let i = 0; i < fa.length; i++) {
+    if (plan.fieldRows[i]) fa[i].start = plan.fieldRows[i].newStart;
+  }
+
+  saveSchedule();
+  addChangeLogEntry(company, 'status',
+    `Shifted ${ZONES.find(z => z.id === zoneId)?.name || zoneId} schedule by ${plan.deltaDays} day${Math.abs(plan.deltaDays) === 1 ? '' : 's'}; sign-off now ${fmt(plan.signoff)}`);
+  renderAll();
+  renderScheduleIntel();
+}
+
+// Bulk apply the cycle-based due date standard to open issues
+function applyCycleDueDates() {
+  if (!can('issue.edit.any')) { denied('set due dates on issues'); return; }
+  const open = ISSUES.filter(i => i.status !== 'resolved' && i.status !== 'wont-fix');
+  if (!open.length) { alert('No open issues to date.'); return; }
+
+  let changed = 0;
+  const proposals = open.map(i => {
+    const signoff = SCHEDULE[i.zone] && SCHEDULE[i.zone].signoff ? SCHEDULE[i.zone].signoff.start : null;
+    const due = dueForPriority(i.priority, TODAY, signoff);
+    return { issue: i, due };
+  });
+
+  if (!confirm(
+    `Apply the cycle due date standard to ${open.length} open issue${open.length === 1 ? '' : 's'}?\n\n` +
+    `Meeting days: ${meetingWeekdays().map(d => DAY_NAMES[d]).join(', ')}\n\n` +
+    `High and Blocker → next cycle\n` +
+    `Medium → the cycle after\n` +
+    `Low → two meetings before the area sign-off\n\n` +
+    `This overwrites existing due dates.`
+  )) return;
+
+  for (const p of proposals) {
+    p.issue.due = toDateInput(p.due);
+    changed++;
+  }
+  saveIssues();
+  addChangeLogEntry(document.getElementById('company-selector').value, 'status',
+    `Applied cycle due date standard to ${changed} open issues`);
+  renderAll();
+  renderScheduleIntel();
+  alert(`Dated ${changed} issues off the coordination cycle.`);
+}
+
+/* ---------- 2. CRITICAL PATH BY ZONE ---------- */
+
+// Which trade is actually holding this zone's gate, and why.
+function zoneBottleneck(zoneId) {
+  let trades = [];
+  try { trades = getTradeNamesForZone(zoneId); } catch (e) { return null; }
+  if (!trades.length) return null;
+
+  const zoneStatus = zoneOverallStatus(zoneId);
+  const liveWork =
+    ISSUES.some(i => i.zone === zoneId && i.status !== 'resolved' && i.status !== 'wont-fix') ||
+    (() => { try { return BLOCKERS.some(b => b.zone === zoneId && b.status === 'open'); } catch (e) { return false; } })();
+
+  // A finished zone with nothing open is not holding anything
+  if (zoneStatus === 'complete' && !liveWork) return null;
+
+  const signoffDate = SCHEDULE[zoneId] && SCHEDULE[zoneId].signoff ? SCHEDULE[zoneId].signoff.start : null;
+  const signoffs = (window.SIGNOFFS && window.SIGNOFFS[zoneId]) || {};
+  const scored = [];
+
+  for (const t of trades) {
+    let score = 0;
+    const reasons = [];
+
+    let blockers = [];
+    try { blockers = BLOCKERS.filter(b => b.zone === zoneId && b.trade === t && b.status === 'open'); } catch (e) {}
+    if (blockers.length) {
+      score += blockers.length * 40;
+      reasons.push(`${blockers.length} open blocker${blockers.length === 1 ? '' : 's'}`);
+    }
+
+    const openIssues = ISSUES.filter(i =>
+      i.zone === zoneId && i.trade === t && i.status !== 'resolved' && i.status !== 'wont-fix');
+    const blockerIssues = openIssues.filter(i => i.priority === 'blocker');
+    if (blockerIssues.length) {
+      score += blockerIssues.length * 30;
+      reasons.push(`${blockerIssues.length} blocker-priority issue${blockerIssues.length === 1 ? '' : 's'}`);
+    }
+
+    const overdue = openIssues.filter(i => i.due && parseDateInput(i.due) < TODAY);
+    if (overdue.length) {
+      score += overdue.length * 12;
+      reasons.push(`${overdue.length} overdue`);
+    }
+
+    const others = openIssues.length - blockerIssues.length - overdue.length;
+    if (others > 0) score += others * 4;
+
+    // Model population only counts once someone has actually tracked it.
+    // A default of 0 means nobody has entered a number, not that the trade is behind.
+    const mp = (MODEL_POP[zoneId] || {})[t];
+    const tracked = mp && (mp.updatedAt || mp.updatedBy || mp.updated || (typeof mp.pct === 'number' && mp.pct > 0));
+    const pct = tracked && typeof mp.pct === 'number' ? mp.pct : null;
+    if (pct !== null && pct < 100) {
+      score += (100 - pct) / 4;
+      if (pct < 80) reasons.push(`model ${pct}% populated`);
+    }
+
+    const gateSoon = zoneStatus !== 'complete' && signoffDate && cyclesBetween(TODAY, signoffDate) <= 4;
+    if (gateSoon && !signoffs[t]) {
+      score += 15;
+      reasons.push('not signed off');
+    }
+
+    // Something concrete has to be wrong before a trade is named as the bottleneck.
+    // An unsigned gate on its own is every trade on the project, which names nobody.
+    const hardSignal = blockers.length > 0 || blockerIssues.length > 0 || overdue.length > 0 ||
+                       (pct !== null && pct < 80);
+
+    scored.push({ trade: t, score, reasons, hardSignal, blockers: blockers.length, openIssues: openIssues.length, pct });
+  }
+
+  const real = scored.filter(x => x.hardSignal);
+  if (!real.length) return null;
+  real.sort((a, b) => b.score - a.score);
+  const scoredAll = scored.slice().sort((a, b) => b.score - a.score);
+  const top = real[0];
+  if (!top || top.score === 0) return null;
+
+  const runnerUp = real[1];
+  return {
+    trade: top.trade,
+    score: Math.round(top.score),
+    reasons: top.reasons,
+    margin: runnerUp ? Math.round(top.score - runnerUp.score) : top.score,
+    all: scoredAll,
+    signoffDate,
+    cyclesToGate: signoffDate ? cyclesBetween(TODAY, signoffDate) : null
+  };
+}
+
+function renderCriticalPath() {
+  const host = document.getElementById('critical-path-body');
+  if (!host) return;
+
+  const rows = ZONES.map(z => ({ zone: z, status: zoneOverallStatus(z.id), bn: zoneBottleneck(z.id) }))
+    .filter(r => r.status !== 'complete' || r.bn);
+
+  if (!rows.length) {
+    host.innerHTML = `<div style="padding:28px;text-align:center;color:var(--text-tertiary);font-size:13px;">
+      Nothing is holding a gate right now. Every zone is either complete or clear.</div>`;
+    return;
+  }
+
+  rows.sort((a, b) => (b.bn ? b.bn.score : 0) - (a.bn ? a.bn.score : 0));
+
+  host.innerHTML = `
+    <div class="cp-table">
+      <div class="cp-head">
+        <div>Zone</div><div>Holding the gate</div><div>Why</div><div>Sign-off</div><div>Cycles left</div><div></div>
+      </div>
+      ${rows.map(r => {
+        const cy = r.bn && r.bn.cyclesToGate !== null ? r.bn.cyclesToGate : null;
+        const urgent = cy !== null && cy <= 2;
+        return `
+        <div class="cp-row ${r.bn ? (urgent ? 'urgent' : '') : 'clear'}">
+          <div>
+            <div class="cp-zone">${r.zone.name}</div>
+            <div class="cp-sub">${r.zone.segment}</div>
+          </div>
+          <div>${r.bn
+            ? `<span class="cp-trade">${r.bn.trade}</span>`
+            : '<span class="cp-sub">Clear</span>'}</div>
+          <div class="cp-sub">${r.bn ? r.bn.reasons.join(' · ') || 'Open work remaining' : '—'}</div>
+          <div class="mono cp-sub">${r.bn && r.bn.signoffDate ? fmt(r.bn.signoffDate) : '—'}</div>
+          <div class="mono ${urgent ? 'cp-urgent' : 'cp-sub'}">${cy === null ? '—' : (cy < 0 ? `${Math.abs(cy)} past` : cy)}</div>
+          <div><button class="btn ghost" style="font-size:11px;padding:4px 10px;" onclick="openWhatIf('${r.zone.id}')">What-if</button></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+/* ---------- 3. WHAT-IF SCENARIO MODELING ---------- */
+
+let whatIfZone = null;
+
+function openWhatIf(zoneId) {
+  whatIfZone = zoneId || (ZONES[0] && ZONES[0].id);
+  document.getElementById('whatif-modal').classList.add('show');
+  renderWhatIfInputs();
+}
+
+function closeWhatIf() {
+  document.getElementById('whatif-modal').classList.remove('show');
+  whatIfZone = null;
+}
+
+function renderWhatIfInputs() {
+  const zone = ZONES.find(z => z.id === whatIfZone);
+  if (!zone) return;
+  document.getElementById('whatif-sub').textContent = `${zone.name} · ${zone.segment}`;
+
+  let blockers = [];
+  try { blockers = BLOCKERS.filter(b => b.zone === whatIfZone && b.status === 'open'); } catch (e) {}
+
+  const zoneSched = SCHEDULE[whatIfZone] || {};
+  const stageOpts = STAGES.filter(s => zoneSched[s.id])
+    .map(s => `<option value="${s.id}">${s.name} — currently finishes ${fmt(zoneSched[s.id].finish)}</option>`).join('');
+
+  document.getElementById('whatif-inputs').innerHTML = `
+    <div class="form-section">
+      <div class="form-section-title">Scenario</div>
+      <div class="form-group">
+        <label class="form-label">What are you testing</label>
+        <select class="form-select" id="whatif-mode" onchange="renderWhatIfMode()">
+          <option value="blocker">A blocker resolves on a date</option>
+          <option value="stage">A stage finishes on a different date</option>
+        </select>
+      </div>
+      <div id="whatif-mode-fields"></div>
+    </div>
+    <div id="whatif-result"></div>
+  `;
+
+  window._whatIfBlockers = blockers;
+  window._whatIfStageOpts = stageOpts;
+  renderWhatIfMode();
+}
+
+function renderWhatIfMode() {
+  const mode = document.getElementById('whatif-mode').value;
+  const host = document.getElementById('whatif-mode-fields');
+  const zoneSched = SCHEDULE[whatIfZone] || {};
+  const blockers = window._whatIfBlockers || [];
+
+  if (mode === 'blocker') {
+    if (!blockers.length) {
+      host.innerHTML = `<div class="perm-note">No open blockers in this zone. Switch to the stage scenario, or log a blocker first.</div>`;
+      return;
+    }
+    host.innerHTML = `
+      <div class="form-row" style="margin-bottom:0;">
+        <div>
+          <label class="form-label">Blocker</label>
+          <select class="form-select" id="whatif-blocker">
+            ${blockers.map(b => `<option value="${b.id}">${b.title || b.blockerType} — ${b.trade || 'unassigned'}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Assume it resolves on</label>
+          <input type="date" class="form-input" id="whatif-date" value="${toDateInput(nextCycleDate(TODAY, 2))}">
+        </div>
+      </div>`;
+  } else {
+    const firstStage = STAGES.find(s => zoneSched[s.id]);
+    host.innerHTML = `
+      <div class="form-row" style="margin-bottom:0;">
+        <div>
+          <label class="form-label">Stage</label>
+          <select class="form-select" id="whatif-stage">${window._whatIfStageOpts}</select>
+        </div>
+        <div>
+          <label class="form-label">New finish date</label>
+          <input type="date" class="form-input" id="whatif-date" value="${firstStage ? toDateInput(zoneSched[firstStage.id].finish) : ''}">
+        </div>
+      </div>`;
+  }
+}
+
+function runWhatIf() {
+  const mode = document.getElementById('whatif-mode').value;
+  const dateVal = document.getElementById('whatif-date').value;
+  if (!dateVal) { alert('Pick a date first.'); return; }
+  const target = parseDateInput(dateVal);
+
+  let stageId, premise;
+  if (mode === 'blocker') {
+    const bid = document.getElementById('whatif-blocker').value;
+    const b = (window._whatIfBlockers || []).find(x => String(x.id) === String(bid));
+    if (!b) { alert('Pick a blocker.'); return; }
+    // A blocker holds base modelling for its trade. Base cannot finish before it clears.
+    stageId = 'base';
+    const cur = SCHEDULE[whatIfZone].base;
+    if (target <= cur.finish) {
+      document.getElementById('whatif-result').innerHTML = `
+        <div class="perm-note" style="background:var(--green-bg);border-color:transparent;color:var(--green);">
+          <strong>No impact.</strong> Resolving by ${fmt(target)} still lands inside the current base modelling window,
+          which finishes ${fmt(cur.finish)}. The gate does not move.
+        </div>`;
+      return;
+    }
+    premise = `${b.title || b.blockerType} clears on ${fmt(target)}`;
+  } else {
+    stageId = document.getElementById('whatif-stage').value;
+    premise = `${STAGES.find(s => s.id === stageId).name} finishes ${fmt(target)}`;
+  }
+
+  const plan = computeShift(whatIfZone, stageId, target);
+  if (!plan || !plan.rows.length) {
+    document.getElementById('whatif-result').innerHTML = `<div class="perm-note">Nothing downstream to move.</div>`;
+    return;
+  }
+  window._whatIfPlan = plan;
+
+  const gateDelta = plan.oldSignoff && plan.signoff
+    ? Math.round((plan.signoff - plan.oldSignoff) / 86400000) : 0;
+
+  document.getElementById('whatif-result').innerHTML = `
+    <div class="form-section" style="margin-top:16px;">
+      <div class="form-section-title">If ${premise}</div>
+
+      <div class="whatif-headline ${gateDelta > 0 ? 'bad' : gateDelta < 0 ? 'good' : ''}">
+        <div>
+          <div class="whatif-headline-label">Sign-off moves</div>
+          <div class="whatif-headline-value">
+            ${plan.oldSignoff ? fmt(plan.oldSignoff) : '—'} → <strong>${plan.signoff ? fmt(plan.signoff) : '—'}</strong>
+          </div>
+        </div>
+        <div class="whatif-delta">${gateDelta > 0 ? '+' : ''}${gateDelta} day${Math.abs(gateDelta) === 1 ? '' : 's'}</div>
+      </div>
+
+      <div class="cp-table" style="margin-top:14px;">
+        <div class="cp-head" style="grid-template-columns:1.6fr 1fr 1fr 0.7fr;">
+          <div>Stage</div><div>Now</div><div>Projected</div><div>Δ</div>
+        </div>
+        ${plan.rows.map(r => `
+          <div class="cp-row" style="grid-template-columns:1.6fr 1fr 1fr 0.7fr;">
+            <div class="cp-zone" style="font-size:13px;">${r.stageName}</div>
+            <div class="mono cp-sub">${fmt(r.oldFinish)}</div>
+            <div class="mono" style="font-weight:600;">${fmt(r.newFinish)}</div>
+            <div class="mono ${r.deltaDays > 0 ? 'cp-urgent' : 'cp-sub'}">${r.deltaDays > 0 ? '+' : ''}${r.deltaDays}</div>
+          </div>`).join('')}
+      </div>
+
+      ${plan.fieldRows.length ? `
+        <div class="form-section-title" style="margin-top:18px;">Field activities that slip</div>
+        <div class="cp-table">
+          ${plan.fieldRows.map(f => `
+            <div class="cp-row" style="grid-template-columns:2fr 1fr 1fr;">
+              <div class="cp-sub">${f.label}</div>
+              <div class="mono cp-sub">${fmt(f.oldStart)}</div>
+              <div class="mono" style="font-weight:600;">${fmt(f.newStart)}</div>
+            </div>`).join('')}
+        </div>` : ''}
+    </div>`;
+
+  const applyBtn = document.getElementById('whatif-apply');
+  if (applyBtn) applyBtn.style.display = can('schedule.edit') ? '' : 'none';
+}
+
+function applyWhatIf() {
+  if (!window._whatIfPlan) { alert('Run a scenario first.'); return; }
+  if (!confirm('Write this scenario into the real schedule?\n\nEvery downstream stage and field activity in this zone moves.')) return;
+  applyShift(whatIfZone, window._whatIfPlan);
+  closeWhatIf();
+}
+
+/* ---------- 4. MEETING PREP AUTO-SUMMARY (printable) ---------- */
+
+function buildMeetingSummary(cycleDateStr) {
+  const cycle = cycleDateStr ? parseDateInput(cycleDateStr) : nextCycleDate(TODAY, 1);
+  const prev = prevCycleDate(cycle, 1);
+  const cfg = (allProjects[activeProjectId] || {}).config || {};
+
+  const open = ISSUES.filter(i => i.status !== 'resolved' && i.status !== 'wont-fix');
+  const overdue = open.filter(i => i.due && parseDateInput(i.due) < startOfDay(TODAY));
+  const dueThis = open.filter(i => i.due && !overdue.includes(i) && parseDateInput(i.due) <= cycle);
+
+  let openBlockers = [];
+  try { openBlockers = BLOCKERS.filter(b => b.status === 'open'); } catch (e) {}
+
+  const sinceLast = (CHANGE_LOG || []).filter(e => e.timestamp && new Date(e.timestamp) >= prev);
+
+  const gates = ZONES.map(z => {
+    const so = SCHEDULE[z.id] && SCHEDULE[z.id].signoff ? SCHEDULE[z.id].signoff.start : null;
+    let trades = [];
+    try { trades = getTradeNamesForZone(z.id); } catch (e) {}
+    const signed = trades.filter(t => ((window.SIGNOFFS || {})[z.id] || {})[t]).length;
+    return { zone: z, signoff: so, cycles: so ? cyclesBetween(TODAY, so) : null, signed, total: trades.length, status: zoneOverallStatus(z.id) };
+  }).filter(g => g.signoff && g.cycles !== null && g.cycles <= 6 && g.status !== 'complete')
+    .sort((a, b) => a.cycles - b.cycles);
+
+  const bottlenecks = ZONES.map(z => ({ zone: z, bn: zoneBottleneck(z.id) }))
+    .filter(x => x.bn)
+    .sort((a, b) => b.bn.score - a.bn.score)
+    .slice(0, 8);
+
+  const byCourt = {};
+  for (const i of open) {
+    const c = i.court || 'Unassigned';
+    (byCourt[c] = byCourt[c] || []).push(i);
+  }
+
+  return { cycle, prev, cfg, open, overdue, dueThis, openBlockers, sinceLast, gates, bottlenecks, byCourt };
+}
+
+function generateMeetingPrep() {
+  if (!can('report.generate')) { denied('generate reports'); return; }
+  const input = document.getElementById('meeting-cycle-date');
+  const s = buildMeetingSummary(input && input.value ? input.value : null);
+  const doc = document.getElementById('meeting-doc');
+
+  const issueLine = i => `
+    <div class="mp-item">
+      <div class="mp-item-main">
+        <span class="mp-pri mp-pri-${i.priority || 'medium'}">${(i.priority || 'medium').toUpperCase()}</span>
+        ${i.title || 'Untitled'}
+      </div>
+      <div class="mp-item-meta">
+        ${ZONES.find(z => z.id === i.zone)?.name || i.zone || '—'}
+        ${i.trade ? ' · ' + i.trade : ''}
+        ${i.due ? ' · due ' + fmt(parseDateInput(i.due)) : ''}
+      </div>
+    </div>`;
+
+  doc.innerHTML = `
+    <div class="mp-page">
+      <div class="mp-header">
+        <div>
+          <div class="mp-brand"><span class="vec-logo"></span></div>
+          <div class="mp-title">Coordination Meeting Prep</div>
+          <div class="mp-sub">${s.cfg.name || activeProjectId || 'Project'} · ${s.cfg.gc || ''}</div>
+        </div>
+        <div class="mp-meta">
+          <div><span>Meeting</span><strong>${fmtFull(s.cycle)}</strong></div>
+          <div><span>Previous cycle</span><strong>${fmtFull(s.prev)}</strong></div>
+          <div><span>Prepared</span><strong>${fmtFull(TODAY)}</strong></div>
+        </div>
+      </div>
+
+      <div class="mp-kpis">
+        <div class="mp-kpi"><span>${s.open.length}</span>Open issues</div>
+        <div class="mp-kpi ${s.overdue.length ? 'bad' : ''}"><span>${s.overdue.length}</span>Overdue</div>
+        <div class="mp-kpi"><span>${s.dueThis.length}</span>Due this cycle</div>
+        <div class="mp-kpi ${s.openBlockers.length ? 'bad' : ''}"><span>${s.openBlockers.length}</span>Open blockers</div>
+        <div class="mp-kpi"><span>${s.gates.length}</span>Gates within 6 cycles</div>
+      </div>
+
+      <div class="mp-section">
+        <h3>Sign-off gates — past due and upcoming</h3>
+        ${s.gates.length ? `
+          <table class="mp-table">
+            <thead><tr><th>Zone</th><th>Sign-off</th><th>Cycles out</th><th>Signed</th><th>Holding the gate</th></tr></thead>
+            <tbody>
+              ${s.gates.map(g => {
+                const bn = zoneBottleneck(g.zone.id);
+                return `<tr class="${g.cycles <= 2 ? 'mp-urgent' : ''}">
+                  <td><strong>${g.zone.name}</strong><br><span class="mp-dim">${g.zone.segment}</span></td>
+                  <td class="mono">${fmt(g.signoff)}</td>
+                  <td class="mono">${g.cycles < 0 ? Math.abs(g.cycles) + ' past' : g.cycles}</td>
+                  <td class="mono">${g.signed}/${g.total}</td>
+                  <td>${bn ? bn.trade + '<br><span class="mp-dim">' + bn.reasons.join(' · ') + '</span>' : '<span class="mp-dim">clear</span>'}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>` : '<p class="mp-dim">No sign-off gates inside the next six cycles.</p>'}
+      </div>
+
+      <div class="mp-section">
+        <h3>Overdue — needs an answer today</h3>
+        ${s.overdue.length ? s.overdue.slice(0, 40).map(issueLine).join('') : '<p class="mp-dim">Nothing overdue.</p>'}
+      </div>
+
+      <div class="mp-section">
+        <h3>Due this cycle</h3>
+        ${s.dueThis.length ? s.dueThis.slice(0, 40).map(issueLine).join('') : '<p class="mp-dim">Nothing due before this meeting.</p>'}
+      </div>
+
+      <div class="mp-section">
+        <h3>Open blockers by responsible party</h3>
+        ${s.openBlockers.length ? `
+          <table class="mp-table">
+            <thead><tr><th>Blocker</th><th>With</th><th>Trade held</th><th>Zone</th><th>Age</th></tr></thead>
+            <tbody>
+              ${s.openBlockers.map(b => `
+                <tr>
+                  <td><strong>${b.title || b.blockerType}</strong><br><span class="mp-dim">${b.holding || ''}</span></td>
+                  <td>${b.party || '—'}</td>
+                  <td>${b.trade || '—'}</td>
+                  <td>${ZONES.find(z => z.id === b.zone)?.name || b.zone || '—'}</td>
+                  <td class="mono">${b.dateSubmitted ? daysSince(b.dateSubmitted) + 'd' : '—'}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>` : '<p class="mp-dim">No open blockers.</p>'}
+      </div>
+
+      <div class="mp-section">
+        <h3>Whose court</h3>
+        <table class="mp-table">
+          <thead><tr><th>Court</th><th>Open</th><th>Blocker priority</th><th>Overdue</th></tr></thead>
+          <tbody>
+            ${Object.keys(s.byCourt).sort((a, b) => s.byCourt[b].length - s.byCourt[a].length).map(c => {
+              const list = s.byCourt[c];
+              return `<tr>
+                <td><strong>${c}</strong></td>
+                <td class="mono">${list.length}</td>
+                <td class="mono">${list.filter(i => i.priority === 'blocker').length}</td>
+                <td class="mono">${list.filter(i => i.due && parseDateInput(i.due) < startOfDay(TODAY)).length}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mp-section">
+        <h3>Movement since ${fmt(s.prev)}</h3>
+        ${s.sinceLast.length ? `
+          <div class="mp-log">
+            ${s.sinceLast.slice(0, 30).map(e => `
+              <div class="mp-log-row">
+                <span class="mono mp-dim">${fmtDateTime(e.timestamp)}</span>
+                <span><strong>${e.company || '—'}</strong> ${e.description || ''}</span>
+              </div>`).join('')}
+          </div>` : '<p class="mp-dim">No logged activity since the last cycle.</p>'}
+      </div>
+
+      <div class="mp-foot">
+        Virtual Engineering Consultants · BIM Coordination · Generated ${fmtFull(TODAY)} from live coordination data
+      </div>
+    </div>`;
+
+  doc.style.display = 'block';
+  doc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function printMeetingPrep() {
+  const doc = document.getElementById('meeting-doc');
+  if (!doc || doc.style.display === 'none' || !doc.innerHTML.trim()) {
+    alert('Generate the summary first.');
+    return;
+  }
+  window.print();
+}
+
+/* ---------- SCHEDULE INTEL PANEL ---------- */
+
+function renderScheduleIntel() {
+  const cycleHost = document.getElementById('cycle-strip');
+  if (!cycleHost) return;
+
+  const days = meetingWeekdays().map(d => DAY_NAMES[d]);
+  const next = upcomingCycles(6);
+
+  cycleHost.innerHTML = `
+    <div class="cycle-meta">
+      <div>
+        <div class="cycle-label">Coordination cadence</div>
+        <div class="cycle-days">${days.join(' · ')}</div>
+      </div>
+      <button class="btn ghost" style="font-size:11px;padding:5px 12px;" onclick="applyCycleDueDates()">
+        Apply cycle due dates to open issues
+      </button>
+    </div>
+    <div class="cycle-track">
+      ${next.map((d, i) => `
+        <div class="cycle-pip ${i === 0 ? 'now' : ''}">
+          <div class="cycle-pip-day">${DAY_NAMES[d.getDay()].slice(0, 3)}</div>
+          <div class="cycle-pip-date mono">${fmt(d)}</div>
+          <div class="cycle-pip-idx">${i === 0 ? 'next cycle' : `+${i}`}</div>
+        </div>`).join('')}
+    </div>`;
+
+  renderCriticalPath();
+}
+
+window.nextCycleDate = nextCycleDate;
+window.prevCycleDate = prevCycleDate;
+window.dueForPriority = dueForPriority;
+window.applyCycleDueDates = applyCycleDueDates;
+window.zoneBottleneck = zoneBottleneck;
+window.renderScheduleIntel = renderScheduleIntel;
+window.renderCriticalPath = renderCriticalPath;
+window.openWhatIf = openWhatIf;
+window.closeWhatIf = closeWhatIf;
+window.renderWhatIfMode = renderWhatIfMode;
+window.runWhatIf = runWhatIf;
+window.applyWhatIf = applyWhatIf;
+window.generateMeetingPrep = generateMeetingPrep;
+window.printMeetingPrep = printMeetingPrep;
+window.saveSchedule = saveSchedule;
+
+// Bottleneck badge on the zone cards
+const _p3RenderZones = renderZones;
+renderZones = function () {
+  _p3RenderZones();
+  document.querySelectorAll('#zone-grid .zone-card').forEach((card, idx) => {
+    const btn = card.querySelector('.zone-footer-btn[data-zoneid]');
+    if (!btn) return;
+    const zid = btn.getAttribute('data-zoneid');
+    const bn = zoneBottleneck(zid);
+    if (!bn) return;
+    const callout = card.querySelector('.stage-callout');
+    if (!callout || card.querySelector('.bottleneck-chip')) return;
+    const chip = document.createElement('div');
+    chip.className = 'bottleneck-chip' + (bn.cyclesToGate !== null && bn.cyclesToGate <= 2 ? ' urgent' : '');
+    chip.innerHTML = `<span class="bottleneck-dot"></span><strong>${bn.trade}</strong> is holding this gate · ${bn.reasons[0] || 'open work'}`;
+    callout.insertAdjacentElement('afterend', chip);
+  });
+};
+
+// Load the saved schedule when a project opens
+const _p3OpenProject = openProject;
+openProject = function (pid) {
+  _p3OpenProject(pid);
+  setTimeout(() => {
+    loadScheduleFromDb(pid).then((loaded) => {
+      if (loaded) renderAll();
+      renderScheduleIntel();
+    });
+  }, 600);
+};
+
+// Keep the date editor and the shift engine writing through one path
+const _p3UpdateStageDate = updateStageDate;
+updateStageDate = function (zoneId, stageId, field, value) {
+  _p3UpdateStageDate(zoneId, stageId, field, value);
+  renderScheduleIntel();
+};
 
 /* ============================================================
    V3.1 — INITIALIZATION
