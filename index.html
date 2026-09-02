@@ -1360,6 +1360,16 @@
   .project-stat-val { color: var(--ink); font-variant-numeric: tabular-nums; }
   .project-stat-label { color: var(--text-tertiary); }
 
+  .card-delete {
+    position: absolute; top: 12px; right: 12px;
+    padding: 4px 10px; border-radius: 6px; cursor: pointer;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-tertiary); font-family: inherit; font-size: 11px; font-weight: 600;
+    opacity: 0; transition: opacity .12s, color .12s, border-color .12s;
+  }
+  .project-card:hover .card-delete { opacity: 1; }
+  .card-delete:hover { color: var(--red); border-color: var(--red); background: var(--red-bg); }
+
   /* ---------- AUTH (relit for the light theme) ---------- */
   .auth-wrap { background: var(--bg); }
   .auth-card { max-width: 420px; }
@@ -1459,6 +1469,7 @@
       <button class="hub-btn hub-btn-secondary" onclick="openCloneDialog()" id="hub-clone-project">Clone Project</button>
       <button class="hub-btn hub-btn-secondary" onclick="openLibraryManager()" id="hub-library">VEC Library</button>
       <button class="hub-btn hub-btn-secondary" onclick="openUsersManager()" id="hub-users">Users</button>
+      <button class="hub-btn hub-btn-secondary" onclick="importLegacyDC6()" id="hub-legacy" title="Pull the original DC6 data out of the old root level paths into a project">Import Legacy DC6</button>
     </div>
   </div>
   <div style="max-width:1600px;margin:0 auto;padding:0 32px;display:flex;justify-content:flex-end;align-items:center;gap:12px;">
@@ -5706,7 +5717,7 @@ function friendlyAuthError(err) {
     'auth/invalid-email': 'That email address is not valid.',
     'auth/user-not-found': 'No account for that email. Request access instead.',
     'auth/wrong-password': 'Wrong password.',
-    'auth/invalid-credential': 'Email or password is incorrect.',
+    'auth/invalid-credential': 'That email and password did not match. If you have never signed in here before, use Request access below to create your account.',
     'auth/email-already-in-use': 'That email already has an account. Sign in instead.',
     'auth/weak-password': 'Password must be at least 8 characters.',
     'auth/too-many-requests': 'Too many attempts. Wait a minute and try again.',
@@ -5951,6 +5962,7 @@ function applyPermissions() {
   show('hub-clone-project', can('project.clone'));
   show('hub-library', can('library.edit'));
   show('hub-users', can('user.manage'));
+  show('hub-legacy', can('project.create'));
   const adminActions = document.getElementById('hub-admin-actions');
   if (adminActions) {
     const anyAdmin = can('project.create') || can('project.clone') || can('library.edit') || can('user.manage');
@@ -6055,7 +6067,105 @@ renderProjectHub = function () {
       </div>`;
   }
   applyPermissions();
+  decorateProjectCards();
 };
+
+/* ============================================================
+   V3.1 — PROJECT DELETE + LEGACY DC6 IMPORT (VEC admin only)
+   ============================================================ */
+function deleteProject(pid, displayName) {
+  if (!can('project.delete')) { denied('delete projects'); return; }
+  const name = displayName || pid;
+  const typed = prompt(
+    `Delete "${name}" permanently?\n\n` +
+    `This removes every issue, blocker, sign-off, directory entry and change log entry in it. ` +
+    `It cannot be undone.\n\nType the project id to confirm:\n${pid}`
+  );
+  if (typed === null) return;
+  if (typed.trim() !== pid) { alert('That did not match. Nothing was deleted.'); return; }
+
+  db.ref('projects/' + pid).remove()
+    .then(() => {
+      delete allProjects[pid];
+      if (activeProjectId === pid) { activeProjectId = null; backToHub(); }
+      else loadProjectList();
+    })
+    .catch((e) => alert('Delete failed: ' + e.message));
+}
+
+// Adds a Delete control to each project card. The hub renderer builds cards as
+// plain markup, so the button is injected after the fact rather than forking it.
+function decorateProjectCards() {
+  if (!can('project.delete')) return;
+  document.querySelectorAll('#project-grid .project-card').forEach(card => {
+    if (card.querySelector('.card-delete')) return;
+    const m = (card.getAttribute('onclick') || '').match(/openProject\('([^']+)'\)/);
+    if (!m) return;
+    const pid = m[1];
+    const nameEl = card.querySelector('.project-card-name');
+    const btn = document.createElement('button');
+    btn.className = 'card-delete';
+    btn.title = 'Delete this project';
+    btn.textContent = 'Delete';
+    btn.onclick = (e) => { e.stopPropagation(); deleteProject(pid, nameEl ? nameEl.textContent : pid); };
+    card.style.position = 'relative';
+    card.appendChild(btn);
+  });
+}
+
+// The original DC6 data predates the multi project rewrite and still sits at the
+// root of the database. This lifts it into projects/qts-atl2-dc6.
+function importLegacyDC6() {
+  if (!can('project.create')) { denied('create projects'); return; }
+  const legacyPaths = ['modelpop', 'blockers', 'issues', 'directory', 'changelog', 'schedule', 'zonemaps', 'signoffs'];
+
+  // Read each path independently. Once the database rules are published some of
+  // these legacy paths may be unreadable, and one refusal must not kill the import.
+  Promise.all(legacyPaths.map(pth =>
+    db.ref(pth).once('value')
+      .then(snap => [pth, snap.val()])
+      .catch(() => [pth, null])
+  ))
+    .then((pairs) => {
+      const found = pairs.filter(([, v]) => v !== null && v !== undefined);
+      if (found.length === 0) {
+        alert('No legacy data found at the root of the database. Nothing to import.');
+        return;
+      }
+      const summary = found.map(([p, v]) => {
+        const n = Array.isArray(v) ? v.length : (typeof v === 'object' ? Object.keys(v).length : 1);
+        return `  ${p}: ${n} record${n === 1 ? '' : 's'}`;
+      }).join('\n');
+
+      if (!confirm(`Found legacy DC6 data at the root:\n\n${summary}\n\nCopy it into a project called "QTS ATL2 DC6"?\n\nThe root copies are left untouched.`)) return;
+
+      const pid = 'qts-atl2-dc6';
+      const updates = {};
+      for (const [p, v] of found) updates[`projects/${pid}/${p}`] = v;
+      updates[`projects/${pid}/config`] = {
+        name: 'QTS ATL2 DC6',
+        gc: 'HITT Contracting',
+        owner: 'QTS Realty Trust',
+        architect: 'DLR Group',
+        vdc: 'VEC',
+        zones: ZONES.map(z => ({ id: z.id, name: z.name, segment: z.segment, level: z.level })),
+        importedAt: new Date().toISOString(),
+        lastActivity: new Date().toLocaleDateString()
+      };
+
+      db.ref().update(updates)
+        .then(() => {
+          alert('DC6 imported. It will appear in the hub now.');
+          loadProjectList();
+          if (can('library.use')) harvestLibrary(false);
+        })
+        .catch(e => alert('Import failed: ' + e.message));
+    })
+    .catch(e => alert('Could not read the legacy data: ' + e.message));
+}
+
+window.deleteProject = deleteProject;
+window.importLegacyDC6 = importLegacyDC6;
 
 const _origOpenProject = openProject;
 openProject = function (projectId) {
