@@ -3,15 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VEC BIM Coordination Dashboard — QTS ATL2 DC6 v2.0</title>
+<title>VEC — BIM Coordination Platform</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Proxima Nova is VEC's brand face. If VEC has an Adobe Fonts (Typekit) licence,
+     drop the kit stylesheet here and the stack below picks it up automatically:
+     <link rel="stylesheet" href="https://use.typekit.net/YOUR_KIT_ID.css">
+     Until then Figtree stands in — same geometric humanist proportions. -->
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script>
   if (window.pdfjsLib) {
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -449,6 +454,123 @@
   .zone-footer-btn.ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
   .zone-footer-btn.ghost:hover { background: white; color: var(--vec-navy); }
 
+  /* ===== V3.1 AUTH ===== */
+  .auth-wrap {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 24px; background: linear-gradient(160deg, var(--vec-navy) 0%, #071A31 100%);
+  }
+  .auth-card {
+    width: 100%; max-width: 400px; background: var(--surface);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); overflow: hidden;
+  }
+  .auth-head { padding: 28px 32px 20px; border-bottom: 1px solid var(--border); }
+  .auth-brand {
+    display: inline-flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--vec-teal); margin-bottom: 10px;
+  }
+  .auth-brand::before { content: ""; width: 24px; height: 2px; background: var(--vec-teal); }
+  .auth-title { font-size: 20px; font-weight: 700; color: var(--vec-navy); }
+  .auth-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 3px; }
+  .auth-body { padding: 24px 32px 28px; }
+  .auth-field { margin-bottom: 14px; }
+  .auth-field label {
+    display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 5px;
+  }
+  .auth-field input {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border-strong);
+    border-radius: var(--radius); font-family: inherit; font-size: 14px; background: var(--surface);
+    color: var(--text-primary);
+  }
+  .auth-field input:focus { outline: none; border-color: var(--vec-teal); box-shadow: 0 0 0 3px rgba(19,168,168,0.15); }
+  .auth-btn {
+    width: 100%; padding: 11px; border: none; border-radius: var(--radius); cursor: pointer;
+    font-family: inherit; font-size: 14px; font-weight: 700; background: var(--vec-navy); color: #fff;
+  }
+  .auth-btn:hover { background: var(--vec-blue); }
+  .auth-btn.ghost { background: transparent; color: var(--vec-blue); font-weight: 600; font-size: 12px; padding: 8px; }
+  .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .auth-msg { font-size: 12px; padding: 9px 12px; border-radius: var(--radius); margin-bottom: 14px; display: none; }
+  .auth-msg.error { display: block; background: var(--red-bg); color: var(--red); }
+  .auth-msg.info { display: block; background: var(--blue-bg); color: var(--blue); }
+  .auth-alt { text-align: center; margin-top: 14px; font-size: 12px; color: var(--text-tertiary); }
+  .auth-alt a { color: var(--vec-blue); font-weight: 600; text-decoration: none; cursor: pointer; }
+
+  /* ===== V3.1 IDENTITY CHIP + ROLE BADGE ===== */
+  .role-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 9px;
+    font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    background: rgba(255,255,255,0.18); color: #fff;
+  }
+  .role-badge.dark { background: var(--surface-2); color: var(--text-secondary); }
+  .identity-chip {
+    display: flex; align-items: center; gap: 8px; color: #fff; font-size: 12px; font-weight: 600;
+  }
+  .identity-avatar {
+    width: 26px; height: 26px; border-radius: 50%; background: var(--vec-teal);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: var(--vec-navy);
+  }
+  .linkish {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+    color: rgba(255,255,255,0.75); padding: 3px 10px; font-size: 10px; font-family: inherit;
+    font-weight: 600; cursor: pointer;
+  }
+  .linkish:hover { background: rgba(255,255,255,0.2); color: #fff; }
+
+  /* ===== V3.1 PERMISSION STATES ===== */
+  [data-perm-hide] { display: none !important; }
+  .perm-locked { opacity: 0.55; pointer-events: none; }
+  .perm-note {
+    display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--radius);
+    background: var(--surface-2); border: 1px solid var(--border); color: var(--text-secondary);
+    font-size: 12px; margin-bottom: 14px;
+  }
+  .perm-note strong { color: var(--text-primary); }
+
+  /* ===== V3.1 USERS PANEL ===== */
+  .user-row {
+    display: grid; grid-template-columns: 1.4fr 1.2fr 1fr 1.4fr auto;
+    gap: 10px; align-items: center; padding: 12px 16px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    margin-bottom: 6px;
+  }
+  .user-row.pending { border-left: 3px solid var(--yellow); }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--vec-navy); }
+  .user-email { font-size: 11px; color: var(--text-tertiary); font-family: 'JetBrains Mono', monospace; }
+  .users-head {
+    display: grid; grid-template-columns: 1.4fr 1.2fr 1fr 1.4fr auto; gap: 10px;
+    padding: 0 16px 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-tertiary);
+  }
+
+  /* ===== V3.1 COMPANY LIBRARY ===== */
+  .lib-search {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border-strong);
+    border-radius: var(--radius); font-family: inherit; font-size: 13px; margin-bottom: 12px;
+  }
+  .lib-list { max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
+  .lib-item {
+    display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+    border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface);
+    cursor: pointer;
+  }
+  .lib-item:hover { border-color: var(--vec-teal); background: var(--surface-2); }
+  .lib-item.added { opacity: 0.45; pointer-events: none; }
+  .lib-swatch { width: 8px; height: 34px; border-radius: 3px; flex-shrink: 0; }
+  .lib-name { font-size: 13px; font-weight: 600; color: var(--vec-navy); }
+  .lib-meta { font-size: 11px; color: var(--text-tertiary); }
+  .lib-count {
+    font-size: 10px; font-weight: 700; color: var(--text-tertiary);
+    background: var(--surface-2); border-radius: 10px; padding: 2px 8px; white-space: nowrap;
+  }
+  .lib-chip {
+    padding: 4px 12px; border-radius: 4px; border: 1px solid var(--vec-teal);
+    background: var(--surface); color: var(--vec-blue); font-size: 11px; cursor: pointer;
+    font-family: inherit; font-weight: 600;
+  }
+  .lib-chip:hover { background: var(--blue-bg); }
+
   /* ===== FLOOR PLAN OVERLAY ===== */
   .plan-workspace {
     display: grid;
@@ -683,35 +805,742 @@
   @media (max-width: 1200px) {
     .kpi-row { grid-template-columns: repeat(3, 1fr); }
   }
+  /* ── PROJECT HUB ── */
+  .hub-container {
+    min-height: 100vh; background: var(--bg);
+  }
+  .hub-header {
+    background: linear-gradient(135deg, var(--vec-navy) 0%, var(--vec-navy-2) 100%);
+    padding: 32px 48px; color: white;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .hub-brand { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--vec-teal); }
+  .hub-title { font-size: 28px; font-weight: 700; margin-top: 6px; letter-spacing: -0.5px; }
+  .hub-subtitle { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+  .hub-actions { display: flex; gap: 10px; }
+  .hub-btn {
+    padding: 10px 20px; border-radius: 8px; border: none;
+    font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .hub-btn-primary { background: var(--vec-teal); color: #000; }
+  .hub-btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
+  .hub-body .hub-btn-secondary { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
+  .hub-body .hub-btn-secondary:hover { background: var(--surface-2); }
+  .hub-body { max-width: 1200px; margin: 0 auto; padding: 32px 48px; }
+  .hub-section-title {
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--text-tertiary); margin-bottom: 16px;
+  }
+  .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  .project-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px 24px; cursor: pointer; transition: all 0.2s;
+  }
+  .project-card:hover { border-color: var(--vec-teal); box-shadow: 0 4px 16px rgba(0,0,0,0.06); transform: translateY(-2px); }
+  .project-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .project-card-name { font-size: 17px; font-weight: 700; color: var(--vec-navy); }
+  .project-card-meta { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+  .project-card-stats { display: flex; gap: 12px; margin-top: 12px; }
+  .project-stat {
+    flex: 1; background: var(--surface-2); border-radius: 6px; padding: 8px 10px; text-align: center;
+  }
+  .project-stat-val { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--vec-navy); }
+  .project-stat-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin-top: 2px; }
+  .project-card-activity { font-size: 10px; color: var(--text-tertiary); margin-top: 12px; font-family: 'JetBrains Mono', monospace; }
+
+  /* Notification bell */
+  .notif-bell { position: relative; cursor: pointer; padding: 4px; }
+  .notif-badge {
+    position: absolute; top: -2px; right: -4px;
+    background: var(--red); color: white; font-size: 9px; font-weight: 700;
+    min-width: 16px; height: 16px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .notif-dropdown {
+    position: absolute; top: 100%; right: 0; width: 320px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 999; display: none; max-height: 400px; overflow-y: auto;
+  }
+  .notif-dropdown.show { display: block; }
+  .notif-item {
+    padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 12px; cursor: pointer;
+  }
+  .notif-item:hover { background: var(--surface-2); }
+  .notif-item.unread { border-left: 3px solid var(--vec-teal); }
+
+  /* Aging badges */
+  .age-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px; display: inline-block;
+  }
+  .age-fresh { background: var(--green-bg); color: var(--green); }
+  .age-warning { background: var(--yellow-bg); color: var(--yellow); }
+  .age-overdue { background: var(--red-bg); color: var(--red); }
+  .age-critical { background: var(--red); color: white; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+  /* Comments */
+  .comment-thread { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px; }
+  .comment-item { padding: 8px 0; border-bottom: 1px solid var(--surface-2); }
+  .comment-header { display: flex; justify-content: space-between; font-size: 11px; }
+  .comment-author { font-weight: 600; color: var(--vec-navy); }
+  .comment-time { color: var(--text-tertiary); font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+  .comment-text { font-size: 12px; margin-top: 4px; line-height: 1.5; color: var(--text-secondary); }
+  .comment-mention { background: var(--blue-bg); color: var(--blue); padding: 1px 4px; border-radius: 3px; font-weight: 600; }
+  .comment-input-wrap { display: flex; gap: 8px; margin-top: 10px; }
+  .comment-input {
+    flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;
+    font-family: inherit; font-size: 12px; outline: none;
+  }
+  .comment-input:focus { border-color: var(--vec-teal); }
+
+  /* Sign-off */
+  .signoff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .signoff-item {
+    display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+    background: var(--surface-2); border-radius: 6px; font-size: 12px;
+  }
+  .signoff-item.signed { background: var(--green-bg); }
+  .signoff-check { width: 18px; height: 18px; cursor: pointer; }
+  .signoff-info { flex: 1; }
+  .signoff-name { font-weight: 600; }
+  .signoff-ts { font-size: 9px; color: var(--text-tertiary); font-family: 'JetBrains Mono', monospace; }
+  .signoff-progress { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .signoff-ring { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--vec-navy); }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .header-inner { flex-direction: column; gap: 12px; }
+    .header-meta { flex-wrap: wrap; gap: 12px; }
+    .title { font-size: 20px; }
+    .view-tabs { overflow-x: auto; padding: 12px 16px 0; }
+    .hub-header { padding: 20px; flex-direction: column; gap: 16px; }
+    .hub-body { padding: 20px; }
+    .project-grid { grid-template-columns: 1fr; }
+    main { padding: 16px; }
+    .zone-cards-grid { grid-template-columns: 1fr; }
+    .kpi-strip { grid-template-columns: repeat(3, 1fr); }
+    .form-row { flex-direction: column; }
+  }
+  /* ═══════════════════════════════════════════════════════════
+     V3.2 DESIGN LAYER — light canvas, single blue accent.
+     ► SWAP THE BRAND BLOCK BELOW WHEN YOU HAVE THE REAL HEXES.
+     Everything downstream reads from these four values.
+     ═══════════════════════════════════════════════════════════ */
+  :root {
+    --brand:        #1662F4;   /* VEC blue, sampled from the logo */
+    --brand-deep:   #0D47C4;   /* hover / pressed */
+    --brand-tint:   #E9F0FE;   /* washes, active nav, selected rows */
+    --ink:          #0F1726;   /* headings */
+
+    --font-sans: 'proxima-nova', 'Proxima Nova', 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --logo: url('data:image/png;base64,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');
+
+    /* Everything below derives from the four above */
+    --vec-navy:   var(--ink);
+    --vec-navy-2: var(--ink);
+    --vec-blue:   var(--brand);
+    --vec-teal:   var(--brand);
+    --vec-light:  var(--brand-tint);
+
+    --bg:          #F7F8FA;
+    --surface:     #FFFFFF;
+    --surface-2:   #F2F4F7;
+    --border:      #E4E7EC;
+    --border-strong: #CFD4DC;
+
+    --text-primary:   #0F1419;
+    --text-secondary: #4B5563;
+    --text-tertiary:  #8A94A3;
+
+    --green: #067647;  --green-bg: #E7F6EE;
+    --yellow:#B54708;  --yellow-bg:#FEF3E2;
+    --red:   #B42318;  --red-bg:   #FDE9E7;
+    --gray:  #8A94A3;  --gray-bg:  #F2F4F7;
+    --blue:  var(--brand); --blue-bg: var(--brand-tint);
+
+    --court-owner: #7839EE;
+    --court-design: var(--brand);
+    --court-gc: #B54708;
+    --court-trade: #067647;
+    --court-vec: var(--ink);
+    --court-external: #667085;
+
+    --shadow-sm: 0 1px 2px rgba(16,24,40,0.04);
+    --shadow:    0 1px 3px rgba(16,24,40,0.06), 0 1px 2px rgba(16,24,40,0.04);
+    --shadow-lg: 0 12px 32px -8px rgba(16,24,40,0.16), 0 4px 8px -4px rgba(16,24,40,0.06);
+
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  body { font-family: var(--font-sans); font-size: 14px; letter-spacing: -0.006em; }
+  .mono, .form-input, .form-select { font-family: inherit; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+  /* VEC wordmark */
+  .vec-logo {
+    display: inline-block; height: 22px; width: 55px; flex-shrink: 0;
+    background: var(--logo) left center / contain no-repeat;
+  }
+  .vec-logo.lg { height: 30px; width: 75px; }
+  .brand-mark, .hub-brand, .auth-brand { display: inline-flex; align-items: center; gap: 10px; }
+  .brand-mark::before, .hub-brand::before, .auth-brand::before { display: none !important; }
+  .brand-lockup { display: flex; align-items: center; gap: 11px; }
+  .brand-rule { width: 1px; height: 20px; background: var(--border); }
+  main { max-width: 1600px; margin: 0 auto; padding: 24px 32px 56px; }
+
+  /* ---------- HEADER ---------- */
+  .header {
+    background: var(--surface);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+    box-shadow: none;
+    padding: 20px 32px 16px;
+  }
+  .header-inner { align-items: center; }
+  .brand-mark { color: var(--text-tertiary); font-size: 10.5px; letter-spacing: 0.14em; }
+  .brand-mark::before { background: var(--brand); width: 18px; }
+  .brand-mark a { color: var(--brand) !important; font-weight: 700; }
+  .title { font-size: 22px; color: var(--ink); letter-spacing: -0.022em; margin-top: 5px; }
+  .subtitle { color: var(--text-tertiary); font-size: 12.5px; }
+  .header-meta { gap: 24px; align-items: center; }
+  .meta-label { color: var(--text-tertiary); }
+  .meta-value { color: var(--text-primary); }
+  .notif-bell svg { stroke: var(--text-secondary) !important; }
+
+  /* ---------- IDENTITY BAR ---------- */
+  .identity-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 32px;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  }
+  .identity-bar .identity-chip { color: var(--text-primary); }
+  .identity-bar .identity-avatar { background: var(--brand); color: #fff; }
+  .identity-bar #identity-company { color: var(--text-tertiary) !important; }
+  .identity-bar .role-badge { background: var(--brand-tint); color: var(--brand-deep); }
+  .identity-bar .idbar-note { font-size: 10.5px; color: var(--text-tertiary); }
+  .identity-bar .linkish {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text-secondary); border-radius: 6px; padding: 4px 11px;
+  }
+  .identity-bar .linkish:hover { background: var(--surface-2); color: var(--ink); border-color: var(--border-strong); }
+  .identity-bar select {
+    background-color: var(--surface) !important;
+    background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%238A94A3%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E') !important;
+    background-repeat: no-repeat !important;
+    background-position: right 10px center !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-primary) !important;
+    border-radius: 6px; font-weight: 600; padding: 5px 30px 5px 10px !important;
+  }
+
+  /* ---------- TABS ---------- */
+  .view-tabs {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 32px; gap: 2px; position: sticky; top: 0; z-index: 40;
+  }
+  .view-tab {
+    padding: 13px 14px; font-size: 13px; font-weight: 600;
+    color: var(--text-tertiary); border-bottom: 2px solid transparent;
+    letter-spacing: -0.005em;
+  }
+  .view-tab:hover { color: var(--ink); }
+  .view-tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+
+  /* ---------- CONTROLS ---------- */
+  .control-bar {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 12px 16px; box-shadow: var(--shadow-sm);
+  }
+  .filter-select, .form-select, .form-input, .lib-search, .form-textarea {
+    border: 1px solid var(--border-strong); border-radius: var(--radius);
+    background: var(--surface); color: var(--text-primary);
+    font-family: inherit; transition: border-color .12s, box-shadow .12s;
+  }
+  .filter-select:focus, .form-select:focus, .form-input:focus,
+  .lib-search:focus, .form-textarea:focus {
+    outline: none; border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(22,98,244,0.14);
+  }
+  .clear-btn, .plan-mode-btn, .plan-page-btn {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--surface); color: var(--text-secondary); font-weight: 600;
+  }
+  .clear-btn:hover, .plan-mode-btn:hover { background: var(--surface-2); color: var(--ink); border-color: var(--border-strong); }
+  .plan-mode-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+
+  /* ---------- KPI ROW ---------- */
+  .kpi-row { gap: 12px; }
+  .kpi {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 16px 18px; box-shadow: var(--shadow-sm);
+    position: relative; overflow: hidden;
+  }
+  .kpi::before { display: none; }
+  .kpi-label {
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--text-tertiary);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .kpi-label::before {
+    content: ""; width: 7px; height: 7px; border-radius: 2px;
+    background: var(--kpi-color, var(--brand));
+  }
+  .kpi-value {
+    font-size: 30px; font-weight: 700; color: var(--ink);
+    letter-spacing: -0.03em; line-height: 1.1; margin-top: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi-sub { font-size: 11.5px; color: var(--text-tertiary); margin-top: 3px; }
+
+  /* ---------- COURTS ---------- */
+  .courts-strip {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 16px 18px; box-shadow: var(--shadow-sm);
+  }
+  .courts-title { font-size: 12px; font-weight: 700; color: var(--ink); letter-spacing: -0.005em; }
+  .court-tile {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 10px 12px; transition: all .12s;
+  }
+  .court-tile:hover { border-color: var(--court-color); transform: none; box-shadow: var(--shadow); }
+  .court-tile.active { box-shadow: 0 0 0 2px var(--court-color); border-color: var(--court-color); background: var(--surface); }
+  .courts-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .court-tile-name {
+    font-size: 11px; font-weight: 600; color: var(--text-secondary);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden; min-height: 28px;
+  }
+  .court-tile-count {
+    color: var(--court-color); font-variant-numeric: tabular-nums;
+    font-size: 20px; font-weight: 700; letter-spacing: -0.02em;
+  }
+  .court-tile.empty { opacity: 1; }
+  .court-tile.empty .court-tile-count { color: var(--text-tertiary); }
+  .court-tile.empty .court-tile-name { color: var(--text-tertiary); }
+  .court-tile-blockers { font-size: 10px; font-weight: 600; color: var(--red); }
+
+  /* Wider modal for the grouped forms */
+  #issue-form-modal .modal, #blocker-form-modal .modal { max-width: 680px; }
+
+  .info-strip {
+    background: transparent; border: none; padding: 4px 2px;
+    color: var(--text-tertiary); font-size: 11.5px;
+  }
+
+  /* ═══════════ ZONE CARDS — rebuilt ═══════════ */
+  .zone-grid { gap: 16px; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); }
+  .zone-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+    border-left: 1px solid var(--border);
+    transition: box-shadow .14s, border-color .14s, transform .14s;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .zone-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); border-color: var(--border-strong); }
+  .zone-card.complete, .zone-card.in-progress,
+  .zone-card.upcoming, .zone-card.overdue { border-left: 1px solid var(--border); }
+
+  .zone-accent { height: 3px; background: var(--zone-color, var(--gray)); }
+  .zone-card.complete    { --zone-color: var(--green); }
+  .zone-card.in-progress { --zone-color: var(--brand); }
+  .zone-card.overdue     { --zone-color: var(--red); }
+  .zone-card.upcoming    { --zone-color: var(--border-strong); }
+
+  .zone-header { padding: 16px 18px 12px; border-bottom: none; }
+  .zone-name { font-size: 16px; font-weight: 700; color: var(--ink); letter-spacing: -0.018em; }
+  .zone-segment { font-size: 11.5px; color: var(--text-tertiary); margin-top: 3px; }
+  .zone-status {
+    padding: 3px 9px; border-radius: 5px; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap;
+  }
+  .zone-status.complete { background: var(--green-bg); color: var(--green); }
+  .zone-status.in-progress { background: var(--brand-tint); color: var(--brand-deep); }
+  .zone-status.upcoming { background: var(--gray-bg); color: var(--text-secondary); }
+  .zone-status.overdue { background: var(--red-bg); color: var(--red); }
+
+  .zone-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .zone-stat { padding: 10px 12px; border-right: 1px solid var(--border); }
+  .zone-stat:last-child { border-right: none; }
+  .zone-stat-label {
+    font-size: 9.5px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--text-tertiary);
+  }
+  .zone-stat-value {
+    font-size: 13px; font-weight: 700; color: var(--ink); margin-top: 3px;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+  }
+  .zone-stat-value.warn { color: var(--red); }
+  .zone-stat-value.ok { color: var(--green); }
+
+  /* Stage rail */
+  .workflow { padding: 16px 18px 6px; }
+  .workflow-track { gap: 0; }
+  .workflow-step-dot {
+    width: 22px; height: 22px; font-size: 10px; font-weight: 700;
+    border: 1.5px solid var(--border-strong); background: var(--surface);
+    color: var(--text-tertiary);
+  }
+  .workflow-step.complete .workflow-step-dot { background: var(--green); border-color: var(--green); color: #fff; }
+  .workflow-step.in-progress .workflow-step-dot {
+    background: var(--brand); border-color: var(--brand); color: #fff;
+    box-shadow: 0 0 0 3px var(--brand-tint);
+  }
+  .workflow-step.overdue .workflow-step-dot { background: var(--red); border-color: var(--red); color: #fff; }
+  .workflow-step-line { height: 2px; background: var(--border); top: 11px; }
+  .workflow-step-label {
+    font-size: 9.5px; font-weight: 600; color: var(--text-tertiary);
+    margin-top: 7px; letter-spacing: 0;
+  }
+  .workflow-step-date { font-size: 9.5px; color: var(--text-tertiary); opacity: .8; }
+  .workflow-step.in-progress .workflow-step-label { color: var(--brand); }
+  .workflow-step.overdue .workflow-step-label { color: var(--red); }
+
+  .stage-callout {
+    margin: 4px 18px 14px; padding: 10px 12px; border-radius: var(--radius);
+    background: var(--surface-2); border: 1px solid var(--border); border-left: 3px solid var(--zone-color, var(--brand));
+    font-size: 12px; color: var(--text-secondary);
+  }
+  .stage-callout.complete { background: var(--green-bg); border-color: transparent; border-left-color: var(--green); }
+  .stage-callout.overdue { background: var(--red-bg); border-color: transparent; border-left-color: var(--red); }
+  .stage-callout.upcoming { background: var(--surface-2); border-left-color: var(--border-strong); }
+  .stage-callout strong { color: var(--ink); font-weight: 600; }
+
+  .trade-progress-section { padding: 0 18px 14px; border-top: none; }
+  .trade-progress-title {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--text-tertiary);
+  }
+  .trade-progress-grid { gap: 5px; margin-top: 9px; }
+  .trade-pip {
+    padding: 4px 9px; border-radius: 20px; font-size: 11px; font-weight: 500;
+    background: var(--surface-2); color: var(--text-secondary);
+    border: 1px solid transparent;
+  }
+  .trade-pip.complete { background: var(--green-bg); color: var(--green); }
+  .trade-pip.in-progress { background: var(--brand-tint); color: var(--brand-deep); }
+  .trade-pip.blocked { background: var(--red-bg); color: var(--red); }
+  .trade-pip-dot { width: 6px; height: 6px; }
+
+  .zone-footer {
+    margin-top: auto; padding: 12px 18px; border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .zone-issue-count { font-size: 11.5px; color: var(--text-secondary); font-weight: 500; }
+  .issue-badge {
+    background: var(--red); color: #fff; border-radius: 20px;
+    padding: 1px 8px; font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;
+  }
+  .issue-badge.zero { background: var(--surface-2); color: var(--text-tertiary); }
+
+  .signoff-mini {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--text-tertiary); font-weight: 500;
+  }
+  .signoff-mini-bar {
+    width: 46px; height: 5px; border-radius: 3px; background: var(--surface-2); overflow: hidden;
+  }
+  .signoff-mini-fill { height: 100%; background: var(--green); border-radius: 3px; }
+
+  /* ---------- BUTTONS ---------- */
+  .zone-footer-btn, .btn, .hub-btn {
+    border-radius: var(--radius); font-weight: 600; font-family: inherit;
+    transition: background .12s, border-color .12s, color .12s;
+    letter-spacing: -0.005em;
+  }
+  .zone-footer-btn { background: var(--brand); color: #fff; border: 1px solid var(--brand); padding: 6px 14px; font-size: 12px; }
+  .zone-footer-btn:hover { background: var(--brand-deep); border-color: var(--brand-deep); }
+  .zone-footer-btn.ghost { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
+  .zone-footer-btn.ghost:hover { background: var(--surface-2); color: var(--ink); border-color: var(--border-strong); }
+  .btn { background: var(--brand); color: #fff; border: 1px solid var(--brand); }
+  .btn:hover { background: var(--brand-deep); border-color: var(--brand-deep); }
+  .btn.ghost { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
+  .btn.ghost:hover { background: var(--surface-2); color: var(--ink); border-color: var(--border-strong); }
+  .btn.danger { background: var(--surface); color: var(--red); border: 1px solid var(--border); }
+  .btn.danger:hover { background: var(--red-bg); border-color: var(--red); }
+
+  /* ═══════════ MODALS — rebuilt ═══════════ */
+  .modal-backdrop {
+    background: rgba(15,20,25,0.45); backdrop-filter: blur(3px);
+    align-items: flex-start; padding: 48px 24px;
+  }
+  .modal {
+    border-radius: 14px; box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border); overflow: hidden;
+    max-height: calc(100vh - 96px); display: flex; flex-direction: column;
+  }
+  .modal-header {
+    padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
+    background: var(--surface); align-items: flex-start;
+  }
+  .modal-title { font-size: 17px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+  .modal-sub { font-size: 12.5px; color: var(--text-tertiary); margin-top: 3px; }
+  .modal-close {
+    width: 30px; height: 30px; border-radius: 7px; border: 1px solid transparent;
+    background: transparent; color: var(--text-tertiary); font-size: 15px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .modal-close:hover { background: var(--surface-2); color: var(--ink); border-color: var(--border); }
+  .modal-body { padding: 22px 24px; overflow-y: auto; background: var(--surface); }
+  .modal-footer {
+    padding: 14px 24px; border-top: 1px solid var(--border);
+    background: var(--surface-2); display: flex; gap: 8px; justify-content: flex-end;
+  }
+
+  /* ---------- FORMS ---------- */
+  .form-group { margin-bottom: 16px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .form-label {
+    display: block; font-size: 11px; font-weight: 600; color: var(--text-secondary);
+    letter-spacing: 0; text-transform: none; margin-bottom: 6px;
+  }
+  .form-input, .form-select, .form-textarea {
+    width: 100%; padding: 9px 11px; font-size: 13.5px;
+  }
+  .form-textarea { min-height: 84px; resize: vertical; line-height: 1.55; }
+  .form-select {
+    -webkit-appearance: none; appearance: none; padding-right: 32px;
+    background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%238A94A3%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E');
+    background-repeat: no-repeat; background-position: right 11px center;
+  }
+  /* Grouped sections inside form modals */
+  .form-section {
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 16px; margin-bottom: 16px; background: var(--surface);
+  }
+  .form-section-title {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--text-tertiary); margin-bottom: 14px;
+    padding-bottom: 9px; border-bottom: 1px solid var(--border);
+  }
+
+  /* ---------- SIGN-OFF PANEL ---------- */
+  .signoff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+  .signoff-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+    border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface);
+  }
+  .signoff-item.signed { background: var(--green-bg); border-color: rgba(6,118,71,0.25); }
+  .signoff-check { width: 16px; height: 16px; accent-color: var(--green); cursor: pointer; }
+  .signoff-name { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+  .signoff-ts { font-size: 10.5px; color: var(--text-tertiary); margin-top: 1px; }
+  .signoff-ring {
+    font-size: 11px; font-weight: 700; color: var(--text-secondary);
+    background: var(--surface-2); border-radius: 20px; padding: 3px 10px;
+  }
+
+  /* ---------- HUB ---------- */
+  .hub-container, #hub-view { background: var(--bg); }
+  .hub-header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    color: var(--text-primary); padding: 26px 32px 20px;
+  }
+  .hub-brand { color: var(--text-tertiary); letter-spacing: 0.14em; font-size: 10.5px; }
+  .hub-title { color: var(--ink); font-size: 26px; letter-spacing: -0.028em; }
+  .hub-subtitle { color: var(--text-tertiary); }
+  .hub-btn { border-radius: var(--radius); padding: 8px 16px; font-size: 13px; border: 1px solid var(--border); }
+  .hub-btn-primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .hub-btn-primary:hover { background: var(--brand-deep); border-color: var(--brand-deep); }
+  .hub-btn-secondary { background: var(--surface); color: var(--text-secondary); }
+  .hub-btn-secondary:hover { background: var(--surface-2); color: var(--ink); border-color: var(--border-strong); }
+  .project-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm); transition: box-shadow .14s, transform .14s, border-color .14s;
+  }
+  .project-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); border-color: var(--border-strong); }
+  .project-card-name { color: var(--ink); font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+  .project-card-meta { color: var(--text-tertiary); font-size: 12px; }
+  .project-stat-val { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .project-stat-label { color: var(--text-tertiary); }
+
+  /* ---------- AUTH (relit for the light theme) ---------- */
+  .auth-wrap { background: var(--bg); }
+  .auth-card { max-width: 420px; }
+  .auth-brand { white-space: nowrap; margin-bottom: 14px; }
+  .auth-brand .vec-logo.lg { height: 26px; width: 65px; }
+  .auth-card { border: 1px solid var(--border); box-shadow: var(--shadow-lg); }
+  .auth-brand::before { background: var(--brand); }
+  .auth-brand { color: var(--brand); }
+  .auth-title { color: var(--ink); font-size: 22px; letter-spacing: -0.024em; }
+  .auth-btn { background: var(--brand); }
+  .auth-btn:hover { background: var(--brand-deep); }
+  .auth-field input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(22,98,244,0.14); }
+
+  .role-badge { background: var(--brand-tint); color: var(--brand-deep); }
+  .lib-item:hover { border-color: var(--brand); }
+  .lib-chip { border-color: var(--border); color: var(--text-secondary); }
+  .lib-chip:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-tint); }
+
+  footer {
+    border-top: 1px solid var(--border); background: var(--surface);
+    color: var(--text-tertiary); font-size: 11.5px; padding: 20px 32px;
+  }
+
+
 </style>
 </head>
 <body>
 
+<!-- ═══════════════════════════════════════ -->
+<!-- AUTH GATE (v3.1) -->
+<!-- ═══════════════════════════════════════ -->
+<div id="auth-view" class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-head">
+      <div class="auth-brand"><span class="vec-logo lg"></span><span class="brand-rule"></span>BIM Coordination Platform</div>
+      <div class="auth-title" id="auth-title">Sign in</div>
+      <div class="auth-sub" id="auth-sub">Use your project email address</div>
+    </div>
+    <div class="auth-body">
+      <div class="auth-msg" id="auth-msg"></div>
+
+      <!-- SIGN IN / SIGN UP -->
+      <div id="auth-form">
+        <div class="auth-field" id="auth-name-field" style="display:none;">
+          <label>Full Name</label>
+          <input type="text" id="auth-name" autocomplete="name" placeholder="Jane Doe">
+        </div>
+        <div class="auth-field" id="auth-company-field" style="display:none;">
+          <label>Company</label>
+          <input type="text" id="auth-company" autocomplete="organization" placeholder="e.g. McKenney's">
+        </div>
+        <div class="auth-field">
+          <label>Email</label>
+          <input type="email" id="auth-email" autocomplete="email" placeholder="you@company.com">
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="auth-password" autocomplete="current-password" placeholder="••••••••">
+        </div>
+        <button class="auth-btn" id="auth-submit" onclick="submitAuth()">Sign in</button>
+        <button class="auth-btn ghost" onclick="sendReset()" id="auth-reset-btn">Forgot password?</button>
+        <div class="auth-alt" id="auth-alt">
+          No account? <a onclick="setAuthMode('signup')">Request access</a>
+        </div>
+      </div>
+
+      <!-- PENDING ACCESS -->
+      <div id="auth-pending" style="display:none;">
+        <div style="text-align:center;padding:10px 0 18px;">
+          <div style="font-size:36px;margin-bottom:10px;">⏳</div>
+          <div style="font-size:14px;font-weight:700;color:var(--vec-navy);margin-bottom:6px;">Access pending</div>
+          <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">
+            Your account was created and is waiting on a VEC administrator to assign your company and role.
+            You'll get in as soon as it's approved.
+          </div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:12px;font-family:'JetBrains Mono',monospace;" id="auth-pending-email"></div>
+        </div>
+        <button class="auth-btn" onclick="location.reload()">Check again</button>
+        <button class="auth-btn ghost" onclick="doSignOut()">Sign out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- PROJECT HUB (shown when no project selected) -->
+<!-- ═══════════════════════════════════════ -->
+<div id="hub-view" class="hub-container" style="display:none;">
+  <div class="hub-header">
+    <div>
+      <div class="hub-brand"><span class="vec-logo lg"></span><span class="brand-rule"></span>BIM Coordination Platform</div>
+      <div class="hub-title">Project Hub</div>
+      <div class="hub-subtitle" id="hub-subtitle">Select a project or create a new one</div>
+    </div>
+    <div class="hub-actions" id="hub-admin-actions" style="display:none;">
+      <button class="hub-btn hub-btn-primary" onclick="openWizard()" id="hub-new-project">+ New Project</button>
+      <button class="hub-btn hub-btn-secondary" onclick="openCloneDialog()" id="hub-clone-project">Clone Project</button>
+      <button class="hub-btn hub-btn-secondary" onclick="openLibraryManager()" id="hub-library">VEC Library</button>
+      <button class="hub-btn hub-btn-secondary" onclick="openUsersManager()" id="hub-users">Users</button>
+    </div>
+  </div>
+  <div style="max-width:1600px;margin:0 auto;padding:0 32px;display:flex;justify-content:flex-end;align-items:center;gap:12px;">
+    <span style="font-size:11px;color:var(--text-tertiary);" id="hub-identity">—</span>
+    <button class="hub-btn hub-btn-secondary" style="padding:4px 12px;font-size:11px;" onclick="doSignOut()">Sign out</button>
+  </div>
+  <div class="hub-body">
+    <div class="hub-section-title">Active Projects</div>
+    <div class="project-grid" id="project-grid">
+      <div style="padding:40px;text-align:center;color:var(--text-tertiary);grid-column:1/-1;">Loading projects...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SETUP WIZARD (for creating new projects) -->
+<!-- ═══════════════════════════════════════ -->
+<div id="wizard-view" style="display:none;">
+  <div class="hub-header">
+    <div>
+      <div class="hub-brand"><span class="vec-logo lg"></span><span class="brand-rule"></span>BIM Coordination Platform</div>
+      <div class="hub-title" id="wizard-title">New Project Setup</div>
+      <div class="hub-subtitle">Step <span id="wizard-step-num">1</span> of 6</div>
+    </div>
+    <div class="hub-actions">
+      <button class="hub-btn hub-btn-secondary" onclick="closeWizard()">Cancel</button>
+    </div>
+  </div>
+  <div class="hub-body" style="max-width:800px;">
+    <div id="wizard-content"></div>
+    <div style="display:flex;gap:10px;margin-top:24px;justify-content:flex-end;" id="wizard-nav"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- PROJECT DASHBOARD (existing dashboard wrapped) -->
+<!-- ═══════════════════════════════════════ -->
+<div id="project-view" style="display:none;">
+
 <header class="header">
   <div class="header-inner">
     <div>
-      <div class="brand-mark">VEC · BIM Coordination</div>
-      <div class="title">QTS ATL2 DC6 — Coordination Dashboard</div>
+      <div class="brand-mark"><a href="#" onclick="backToHub()" title="All projects" style="text-decoration:none;"><span class="vec-logo"></span></a><span class="brand-rule"></span><span id="project-name-header">QTS ATL2 DC6</span></div>
+      <div class="title" id="project-title-header">QTS ATL2 DC6 — Coordination Dashboard</div>
       <div class="subtitle">Zone-stage workflow · Live coordination tracking · Floor plan overlay</div>
     </div>
     <div class="header-meta">
       <div class="meta-item"><span class="meta-label">Today</span><span class="meta-value mono">22-Apr-2026</span></div>
       <div class="meta-item"><span class="meta-label">GC</span><span class="meta-value">HITT</span></div>
-      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v2.0</span></div>
+      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v3.0</span></div>
+      <div class="notif-bell" onclick="toggleNotifications()" id="notif-bell" style="margin-left:12px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div class="notif-badge" id="notif-count" style="display:none;">0</div>
+        <div class="notif-dropdown" id="notif-dropdown">
+          <div style="padding:10px 14px;font-size:11px;font-weight:700;border-bottom:1px solid var(--border);color:var(--text-secondary);">Notifications</div>
+          <div id="notif-list"><div style="padding:20px;text-align:center;color:var(--text-tertiary);font-size:12px;">No new notifications</div></div>
+        </div>
+      </div>
     </div>
   </div>
 </header>
 
-<!-- Company Selector Bar -->
-<div style="background:var(--vec-navy-2);padding:6px 32px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--vec-teal);">
+<!-- Identity Bar -->
+<div class="identity-bar">
   <div style="display:flex;align-items:center;gap:12px;">
-    <span style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);">Logged in as</span>
+    <div class="identity-chip" id="identity-chip">
+      <div class="identity-avatar" id="identity-avatar">–</div>
+      <div>
+        <div id="identity-name">—</div>
+        <div id="identity-company">—</div>
+      </div>
+      <span class="role-badge" id="identity-role">—</span>
+    </div>
+    <span class="idbar-note" style="display:none;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;" id="actas-label">Acting as</span>
     <select id="company-selector" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:4px;color:white;padding:4px 10px;font-size:12px;font-family:inherit;font-weight:600;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27white%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;padding-right:28px;">
     </select>
   </div>
   <div style="display:flex;gap:12px;align-items:center;">
-    <span style="font-size:10px;color:rgba(255,255,255,0.4);font-family:'JetBrains Mono',monospace;">All changes tracked with company attribution</span>
-    <button onclick="document.querySelectorAll('.view-tab').forEach(t=>t.classList.remove('active'));document.querySelector('.view-tab[data-view=\'directory\']').classList.add('active');document.querySelectorAll('.view-panel').forEach(p=>p.classList.remove('active'));document.getElementById('panel-directory').classList.add('active');" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;color:rgba(255,255,255,0.7);padding:3px 10px;font-size:10px;font-family:inherit;font-weight:600;cursor:pointer;">Manage Trades & Contacts</button>
+    <span class="idbar-note mono">All changes tracked with company attribution</span>
+    <button onclick="document.querySelectorAll('.view-tab').forEach(t=>t.classList.remove('active'));document.querySelector('.view-tab[data-view=\'directory\']').classList.add('active');document.querySelectorAll('.view-panel').forEach(p=>p.classList.remove('active'));document.getElementById('panel-directory').classList.add('active');" class="linkish">Manage Trades &amp; Contacts</button>
+    <button class="linkish" onclick="backToHub()">Projects</button>
+    <button class="linkish" onclick="doSignOut()">Sign out</button>
   </div>
 </div>
 
@@ -926,7 +1755,8 @@
         <h2 style="font-size:18px;font-weight:700;color:var(--vec-navy);">Project Directory</h2>
         <p style="font-size:12px;color:var(--text-tertiary);margin-top:2px;">Manage trades, companies, contacts, and construction document links. Changes here update the "Logged in as" dropdown and all trade references.</p>
       </div>
-      <button class="zone-footer-btn" onclick="addNewCompany()" style="padding:8px 16px;font-size:11px;">+ Add Company</button>
+      <button class="zone-footer-btn" onclick="openLibrary('directory')" style="padding:8px 16px;font-size:11px;">+ Add from VEC Library</button>
+      <button class="zone-footer-btn ghost" onclick="addNewCompany()" style="padding:8px 16px;font-size:11px;">+ Blank Company</button>
       <button class="zone-footer-btn ghost" onclick="openImportModal()" style="padding:8px 16px;font-size:11px;">Paste / Import</button>
     </div>
     <div id="directory-grid"></div>
@@ -1006,54 +1836,55 @@ Cleveland Electric, Electrical, Sarah Lee, BIM Lead, sarah@clevelandelec.com, 40
       <button class="modal-close" onclick="closeBlockerForm()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="form-row">
-        <div>
-          <label class="form-label">Blocker Type</label>
-          <select class="form-select" id="blocker-type">
-            <option value="rfi">RFI Pending</option>
-            <option value="submittal">Submittal Missing</option>
-            <option value="ofci">OFCI Delay</option>
-          </select>
+
+      <div class="form-section">
+        <div class="form-section-title">What's blocked</div>
+        <div class="form-group">
+          <label class="form-label">Title / reference #</label>
+          <input type="text" class="form-input" id="blocker-title" placeholder="e.g. RFI #247 — Structural steel clearance">
         </div>
-        <div>
-          <label class="form-label">Trade Affected</label>
-          <select class="form-select" id="blocker-trade"></select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Title / Reference #</label>
-        <input type="text" class="form-input" id="blocker-title" placeholder="e.g. RFI #247 — Structural steel clearance">
-      </div>
-      <div class="form-row">
-        <div>
-          <label class="form-label">With / Responsible Party</label>
-          <select class="form-select" id="blocker-party">
-            <option value="QTS / Owner">QTS / Owner</option>
-            <option value="DLR Group">DLR Group / Architect</option>
-            <option value="HITT">HITT / GC</option>
-            <option value="Structural Engineer">Structural Engineer</option>
-            <option value="Mechanical Engineer">Mechanical Engineer</option>
-            <option value="Electrical Engineer">Electrical Engineer</option>
-            <option value="Plumbing Engineer">Plumbing Engineer</option>
-            <option value="Fire Protection Engineer">Fire Protection Engineer</option>
-            <option value="Trade — BIM">Trade — BIM</option>
-            <option value="Trade — Field">Trade — Field</option>
-            <option value="External">External / Vendor</option>
-          </select>
-        </div>
-        <div>
-          <label class="form-label">Date Submitted / Requested</label>
-          <input type="date" class="form-input" id="blocker-date-submitted">
+        <div class="form-row" style="margin-bottom:0;">
+          <div>
+            <label class="form-label">Blocker type</label>
+            <select class="form-select" id="blocker-type">
+              <option value="rfi">RFI Pending</option>
+              <option value="submittal">Submittal Missing</option>
+              <option value="ofci">OFCI Delay</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Trade affected</label>
+            <select class="form-select" id="blocker-trade"></select>
+          </div>
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">What It's Holding Up</label>
-        <input type="text" class="form-input" id="blocker-holding" placeholder="e.g. Base model population for Mechanical in Zone B">
+
+      <div class="form-section">
+        <div class="form-section-title">Who has it</div>
+        <div class="form-row" style="margin-bottom:0;">
+          <div>
+            <label class="form-label">Responsible party</label>
+            <select class="form-select" id="blocker-party"></select>
+          </div>
+          <div>
+            <label class="form-label">Date submitted</label>
+            <input type="date" class="form-input" id="blocker-date-submitted">
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Description / Notes</label>
-        <textarea class="form-textarea" id="blocker-desc" placeholder="Additional context..."></textarea>
+
+      <div class="form-section" style="margin-bottom:0;">
+        <div class="form-section-title">Impact</div>
+        <div class="form-group">
+          <label class="form-label">What it's holding up</label>
+          <input type="text" class="form-input" id="blocker-holding" placeholder="e.g. Base model population for Mechanical in Zone B">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Notes</label>
+          <textarea class="form-textarea" id="blocker-desc" placeholder="Additional context..."></textarea>
+        </div>
       </div>
+
     </div>
     <div class="modal-footer">
       <button class="btn ghost" onclick="closeBlockerForm()">Cancel</button>
@@ -1092,86 +1923,107 @@ Cleveland Electric, Electrical, Sarah Lee, BIM Lead, sarah@clevelandelec.com, 40
       <button class="modal-close" onclick="closeIssueForm()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Issue Type</label>
-        <select class="form-select" id="form-type"></select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Title</label>
-        <input type="text" class="form-input" id="form-title-input" placeholder="One-line summary">
-      </div>
-      <div class="form-row">
-        <div>
-          <label class="form-label">Stage Tagged</label>
-          <select class="form-select" id="form-stage"></select>
+
+      <div class="form-section">
+        <div class="form-section-title">The issue</div>
+        <div class="form-group">
+          <label class="form-label">Title</label>
+          <input type="text" class="form-input" id="form-title-input" placeholder="One line, the way you'd say it in the meeting">
         </div>
-        <div>
-          <label class="form-label">Trade Tagged</label>
-          <select class="form-select" id="form-trade">
-            <option value="All Trades">All Trades</option>
-          </select>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Issue Type</label>
+          <select class="form-select" id="form-type"></select>
         </div>
       </div>
-      <div class="form-row">
-        <div>
-          <label class="form-label">Court Category</label>
-          <select class="form-select" id="form-court-cat"></select>
+
+      <div class="form-section">
+        <div class="form-section-title">Whose court</div>
+        <div class="form-row">
+          <div>
+            <label class="form-label">Court Category</label>
+            <select class="form-select" id="form-court-cat"></select>
+          </div>
+          <div>
+            <label class="form-label">Court</label>
+            <select class="form-select" id="form-court"></select>
+          </div>
         </div>
-        <div>
-          <label class="form-label">Court</label>
-          <select class="form-select" id="form-court"></select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label class="form-label">Specific Party</label>
-          <select class="form-select" id="form-party"></select>
-        </div>
-        <div>
-          <label class="form-label">Priority</label>
-          <select class="form-select" id="form-priority">
-            <option value="low">Low</option>
-            <option value="medium" selected>Medium</option>
-            <option value="high">High</option>
-            <option value="blocker">Blocker</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label class="form-label">Due Date</label>
-          <input type="date" class="form-input" id="form-due">
-        </div>
-        <div>
-          <label class="form-label">Status</label>
-          <select class="form-select" id="form-status">
-            <option value="open" selected>Open</option>
-            <option value="in-progress">In Progress</option>
-            <option value="resolved">Resolved</option>
-            <option value="wont-fix">Won't Fix</option>
-          </select>
+        <div class="form-row" style="margin-bottom:0;">
+          <div>
+            <label class="form-label">Specific Party</label>
+            <select class="form-select" id="form-party"></select>
+          </div>
+          <div>
+            <label class="form-label">Trade Tagged</label>
+            <select class="form-select" id="form-trade">
+              <option value="All Trades">All Trades</option>
+            </select>
+          </div>
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">What's Needed</label>
-        <textarea class="form-textarea" id="form-needed"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">What It's Holding Up</label>
-        <input type="text" class="form-input" id="form-blocking">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Link to Document (ACC, RFI, Submittal, etc.)</label>
-        <input type="url" class="form-input" id="form-doc-url" placeholder="https://acc.autodesk.com/docs/...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Attach Image / Screenshot</label>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <input type="file" id="form-image" accept="image/*" style="font-size:11px;" onchange="previewIssueImage(this)">
-          <button type="button" class="btn ghost" onclick="document.getElementById('form-image').value='';document.getElementById('form-image-preview').innerHTML='';" style="font-size:10px;padding:3px 8px;">Clear</button>
+
+      <div class="form-section">
+        <div class="form-section-title">Priority and timing</div>
+        <div class="form-row">
+          <div>
+            <label class="form-label">Priority</label>
+            <select class="form-select" id="form-priority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+              <option value="blocker">Blocker</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Status</label>
+            <select class="form-select" id="form-status">
+              <option value="open" selected>Open</option>
+              <option value="in-progress">In Progress</option>
+              <option value="resolved">Resolved</option>
+              <option value="wont-fix">Won't Fix</option>
+            </select>
+          </div>
         </div>
-        <div id="form-image-preview" style="margin-top:6px;"></div>
+        <div class="form-row" style="margin-bottom:0;">
+          <div>
+            <label class="form-label">Due Date</label>
+            <input type="date" class="form-input" id="form-due">
+          </div>
+          <div>
+            <label class="form-label">Stage Tagged</label>
+            <select class="form-select" id="form-stage"></select>
+          </div>
+        </div>
       </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Detail</div>
+        <div class="form-group">
+          <label class="form-label">What's needed</label>
+          <textarea class="form-textarea" id="form-needed" placeholder="What has to happen for this to close"></textarea>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">What it's holding up</label>
+          <input type="text" class="form-input" id="form-blocking" placeholder="e.g. Sign-off on Level 2 Data Hall 2100">
+        </div>
+      </div>
+
+      <div class="form-section" style="margin-bottom:0;">
+        <div class="form-section-title">Attachments</div>
+        <div class="form-group">
+          <label class="form-label">Link to document (ACC, RFI, submittal)</label>
+          <input type="url" class="form-input" id="form-doc-url" placeholder="https://acc.autodesk.com/docs/...">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Screenshot</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="file" id="form-image" accept="image/*" style="font-size:12px;" onchange="previewIssueImage(this)">
+            <button type="button" class="btn ghost" onclick="document.getElementById('form-image').value='';document.getElementById('form-image-preview').innerHTML='';" style="font-size:11px;padding:4px 10px;">Clear</button>
+          </div>
+          <div id="form-image-preview" style="margin-top:8px;"></div>
+        </div>
+      </div>
+
     </div>
     <div class="modal-footer">
       <button class="btn ghost" onclick="closeIssueForm()">Cancel</button>
@@ -1195,6 +2047,71 @@ Cleveland Electric, Electrical, Sarah Lee, BIM Lead, sarah@clevelandelec.com, 40
       <button class="btn danger" id="detail-delete" style="margin-right: auto;">Delete</button>
       <button class="btn ghost" onclick="closeIssueDetail()">Close</button>
       <button class="btn" id="detail-edit">Edit</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end project-view -->
+
+<!-- ═══════════════════════════════════════ -->
+<!-- USER MANAGEMENT MODAL (v3.1) -->
+<!-- ═══════════════════════════════════════ -->
+<div class="modal-backdrop" id="users-modal">
+  <div class="modal" style="max-width:1000px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">User Access</div>
+        <div class="modal-sub">Assign each account a company and a role. Pending accounts have no access until assigned.</div>
+      </div>
+      <button class="modal-close" onclick="closeUsersManager()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center;">
+        <input class="lib-search" id="users-search" placeholder="Search name, email, or company..." oninput="renderUsersManager()" style="margin-bottom:0;">
+        <button class="btn ghost" onclick="openInviteForm()" style="white-space:nowrap;">+ Pre-assign Email</button>
+      </div>
+      <div id="invite-form" style="display:none;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:10px;">Pre-assign an email address</div>
+        <div style="display:grid;grid-template-columns:1.6fr 1.2fr 1fr auto;gap:8px;align-items:end;">
+          <div><label class="form-label">Email</label><input class="form-input" id="invite-email" placeholder="person@company.com"></div>
+          <div><label class="form-label">Company</label><select class="form-select" id="invite-company"></select></div>
+          <div><label class="form-label">Role</label><select class="form-select" id="invite-role"></select></div>
+          <button class="btn" onclick="saveInvite()">Save</button>
+        </div>
+        <div style="font-size:11px;color:var(--text-tertiary);margin-top:8px;">When this person signs up with that email, the company and role are applied automatically.</div>
+      </div>
+      <div class="users-head">
+        <div>User</div><div>Company</div><div>Role</div><div>Project Access</div><div></div>
+      </div>
+      <div id="users-list"></div>
+      <div id="invites-list" style="margin-top:18px;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closeUsersManager()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- VEC COMPANY LIBRARY MODAL (v3.1) -->
+<!-- ═══════════════════════════════════════ -->
+<div class="modal-backdrop" id="library-modal">
+  <div class="modal" style="max-width:760px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="library-title">VEC Company Library</div>
+        <div class="modal-sub" id="library-sub">Every company VEC has worked with, harvested from past project directories.</div>
+      </div>
+      <button class="modal-close" onclick="closeLibrary()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input class="lib-search" id="library-search" placeholder="Search company or trade..." oninput="renderLibraryList()">
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;" id="library-filters"></div>
+      <div class="lib-list" id="library-list"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn ghost" id="library-harvest" onclick="harvestLibrary(true)" style="margin-right:auto;">Rescan Projects</button>
+      <button class="btn ghost" onclick="closeLibrary()">Close</button>
     </div>
   </div>
 </div>
@@ -1788,8 +2705,18 @@ function renderZones() {
     } catch(e) { console.warn('Trade pip error for zone', z.id, e); }
 
     const openIssues = openIssuesForZone(z.id).length;
+    let openBlockers = 0;
+    try { openBlockers = BLOCKERS.filter(b => b.zone === z.id && b.status === 'open').length; } catch (e) {}
+
+    let zoneTrades = [];
+    try { zoneTrades = getTradeNamesForZone(z.id); } catch (e) { zoneTrades = []; }
+    const signoffs = (window.SIGNOFFS && window.SIGNOFFS[z.id]) || {};
+    const signedCount = zoneTrades.filter(t => signoffs[t]).length;
+    const signedPct = zoneTrades.length ? Math.round((signedCount / zoneTrades.length) * 100) : 0;
 
     card.innerHTML = `
+      <div class="zone-accent"></div>
+
       <div class="zone-header">
         <div class="zone-header-row1">
           <div>
@@ -1798,15 +2725,24 @@ function renderZones() {
           </div>
           <span class="zone-status ${overall}">${statusLabel(overall)}</span>
         </div>
-        <div class="zone-meta-row">
-          <div class="zone-meta-item">
-            <span class="zone-meta-label">Sign-Off</span>
-            <span class="zone-meta-value">${fmt(SCHEDULE[z.id].signoff.start)}</span>
-          </div>
-          <div class="zone-meta-item">
-            <span class="zone-meta-label">Field Start</span>
-            <span class="zone-meta-value">${fmt(earliestFieldStart(z.id))}</span>
-          </div>
+      </div>
+
+      <div class="zone-stats">
+        <div class="zone-stat">
+          <div class="zone-stat-label">Sign-Off</div>
+          <div class="zone-stat-value mono">${fmt(SCHEDULE[z.id].signoff.start)}</div>
+        </div>
+        <div class="zone-stat">
+          <div class="zone-stat-label">Field Start</div>
+          <div class="zone-stat-value mono">${fmt(earliestFieldStart(z.id))}</div>
+        </div>
+        <div class="zone-stat">
+          <div class="zone-stat-label">Open</div>
+          <div class="zone-stat-value ${openIssues === 0 ? 'ok' : ''}">${openIssues}</div>
+        </div>
+        <div class="zone-stat">
+          <div class="zone-stat-label">Blockers</div>
+          <div class="zone-stat-value ${openBlockers > 0 ? 'warn' : 'ok'}">${openBlockers}</div>
         </div>
       </div>
 
@@ -1818,17 +2754,17 @@ function renderZones() {
 
       <div class="trade-progress-section">
         <div class="trade-progress-header">
-          <div class="trade-progress-title">Trade Progress (Hybrid View)</div>
+          <div class="trade-progress-title">Trades in this zone</div>
         </div>
         <div class="trade-progress-grid">${tradePipsHTML}</div>
       </div>
 
       <div class="zone-footer">
-        <div class="zone-issue-count">
-          Open Issues
-          <span class="issue-badge ${openIssues === 0 ? 'zero' : ''}">${openIssues}</span>
+        <div class="signoff-mini" title="${signedCount} of ${zoneTrades.length} trades signed off">
+          <span class="signoff-mini-bar"><span class="signoff-mini-fill" style="width:${signedPct}%"></span></span>
+          ${signedCount}/${zoneTrades.length} signed
         </div>
-        <button class="zone-footer-btn" data-zoneid="${z.id}">View Details</button>
+        <button class="zone-footer-btn" data-zoneid="${z.id}">Open zone</button>
       </div>
     `;
 
@@ -1916,7 +2852,7 @@ function openZoneModal(zoneId) {
                       <span style="font-weight:600;font-size:12px;">${b.title}</span>
                     </div>
                     <div style="font-size:11px;color:var(--text-tertiary);">
-                      Trade: <strong>${b.trade}</strong> · With: <strong>${b.withParty}</strong> · <span class="mono">${age}d outstanding</span>
+                      Trade: <strong>${b.trade}</strong> · With: <strong>${b.withParty}</strong> · <span class="mono">${age}d outstanding</span> ${ageBadge(b.dateLogged)}
                     </div>
                     ${b.description ? `<div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">${b.description}</div>` : ''}
                   </div>
@@ -1940,6 +2876,7 @@ function openZoneModal(zoneId) {
         return `<div class="trade-pip ${statusClass}"><span class="trade-pip-dot"></span>${t}${tradeBlockers.length > 0 ? ` (${tradeBlockers.length})` : ''}</div>`;
       }).join("")}</div>
     </div>
+    ${renderSignoffPanel(zoneId)}
   `;
 
   // Resolved issues section
@@ -1983,7 +2920,7 @@ function renderIssueCard(issue) {
       </div>
       <div class="issue-row2">
         <span class="court-chip ${colorClass}">${issue.court} · ${issue.party}</span>
-        <span><strong>${age}d</strong> in court</span>
+        <span><strong>${age}d</strong> in court ${ageBadge((issue.history && issue.history[0]) ? issue.history[0].date : null)}</span>
         ${stageObj ? `<span>Stage: <strong>${stageObj.short}</strong></span>` : ""}
         ${issue.trade ? `<span>Trade: <strong>${issue.trade}</strong></span>` : ""}
       </div>
@@ -2240,12 +3177,16 @@ function openIssueDetail(id) {
     </div>
     <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);">
       <label class="form-label">Add Comment</label>
-      <textarea class="form-textarea" id="comment-input" placeholder="Status update, follow-up, escalation..."></textarea>
+      <div style="position:relative;">
+        <textarea class="form-textarea" id="comment-input" placeholder="Status update, follow-up... Use @company to mention" oninput="showMentionDropdown(this,'mention-dd-issue')"></textarea>
+        <div id="mention-dd-issue" class="mention-dropdown" style="display:none;position:absolute;bottom:100%;left:0;width:100%;max-height:180px;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.1);z-index:999;"></div>
+      </div>
       <div style="margin-top: 8px; display: flex; gap: 6px;">
-        <button class="btn ghost" onclick="addComment('${issue.id}', 'comment')">Comment</button>
-        <button class="btn ghost" onclick="addComment('${issue.id}', 'escalate')" style="border-color: var(--red); color: var(--red);">Escalate</button>
+        <button class="btn ghost" onclick="postIssueComment('${issue.id}', 'comment')">Comment</button>
+        <button class="btn ghost" onclick="postIssueComment('${issue.id}', 'escalate')" style="border-color: var(--red); color: var(--red);">Escalate</button>
       </div>
     </div>
+    ${renderCommentThread('issue', issue.id)}
   `;
 
   document.getElementById("detail-edit").onclick = () => {
@@ -2263,17 +3204,22 @@ function openIssueDetail(id) {
   document.getElementById("issue-detail-modal").classList.add("show");
 }
 
-function addComment(id, type) {
+function postIssueComment(id, type) {
   const text = document.getElementById("comment-input").value.trim();
   if (!text) return;
+  const company = document.getElementById('company-selector').value;
   const issue = ISSUES.find(i => i.id === id);
   const now = new Date().toISOString().slice(0, 16);
   if (!issue.history) issue.history = [];
-  issue.history.push({ date: now, actor: "VEC", type, text });
+  issue.history.push({ date: now, actor: company, type, text });
+  // Also add to comments thread
+  addCommentToItem('issue', id, text);
   closeIssueDetail();
   openIssueDetail(id);
   renderAll();
 }
+// Keep old name for backward compat
+function addComment(id, type) { postIssueComment(id, type); }
 function closeIssueDetail() { document.getElementById("issue-detail-modal").classList.remove("show"); }
 
 /* ============================================================
@@ -2562,6 +3508,7 @@ window.addComment = addComment;
 window.openZoneModal = openZoneModal;
 window.closeZoneModal = closeZoneModal;
 window.clearAllFilters = clearAllFilters;
+window.postIssueComment = postIssueComment;
 
 /* ============================================================
    V2.0 — BLOCKER TRACKING SYSTEM
@@ -2598,7 +3545,19 @@ function openBlockerForm(zoneId, editingId = null) {
   // Clear form
   document.getElementById('blocker-type').value = 'rfi';
   document.getElementById('blocker-title').value = '';
-  document.getElementById('blocker-party').value = 'DLR Group';
+  // Populate party dropdown from Directory
+  const partySel = document.getElementById('blocker-party');
+  partySel.innerHTML = '';
+  for (const d of DIRECTORY) {
+    const o = document.createElement('option');
+    o.value = d.company || d.role;
+    o.textContent = d.company ? `${d.company} (${d.role})` : d.role;
+    partySel.appendChild(o);
+  }
+  const extOpt = document.createElement('option');
+  extOpt.value = 'External / Vendor'; extOpt.textContent = 'External / Vendor';
+  partySel.appendChild(extOpt);
+  
   document.getElementById('blocker-date-submitted').value = '';
   document.getElementById('blocker-holding').value = '';
   document.getElementById('blocker-desc').value = '';
@@ -2699,6 +3658,7 @@ function openBlockerDetail(id) {
         `).join('')}
       </div>
     ` : ''}
+    ${renderCommentThread('blocker', b.id)}
   `;
   
   document.getElementById('blocker-detail-resolve').onclick = () => {
@@ -2860,13 +3820,21 @@ function holdBg(status) {
 function populateModelPopFilters() {
   const sel = document.getElementById('mp-zone-filter');
   const rptZone = document.getElementById('report-zone');
-  for (const z of ZONES) {
-    const o1 = document.createElement('option');
-    o1.value = z.id; o1.textContent = z.name;
-    sel.appendChild(o1);
-    const o2 = document.createElement('option');
-    o2.value = z.id; o2.textContent = z.name;
-    rptZone.appendChild(o2);
+  if (sel) {
+    sel.innerHTML = '<option value="all">All Zones</option>';
+    for (const z of ZONES) {
+      const o = document.createElement('option');
+      o.value = z.id; o.textContent = z.name;
+      sel.appendChild(o);
+    }
+  }
+  if (rptZone) {
+    rptZone.innerHTML = '<option value="all">All Zones</option>';
+    for (const z of ZONES) {
+      const o = document.createElement('option');
+      o.value = z.id; o.textContent = z.name;
+      rptZone.appendChild(o);
+    }
   }
 }
 
@@ -3268,7 +4236,6 @@ function refreshTrades() {
     for (const e of getTradesForZone(z.id)) {
       const key = tradeDisplayName(e);
       if (!MODEL_POP[z.id][key]) {
-        // Try to migrate from old trade name
         const oldKey = e.role;
         if (MODEL_POP[z.id][oldKey]) {
           MODEL_POP[z.id][key] = MODEL_POP[z.id][oldKey];
@@ -3276,6 +4243,56 @@ function refreshTrades() {
           MODEL_POP[z.id][key] = { pct: 0, lastUpdated: null, lastUpdatedBy: null };
         }
       }
+    }
+  }
+  // Rebuild courts from Directory
+  rebuildCourtsFromDirectory();
+}
+
+function rebuildCourtsFromDirectory() {
+  // Rebuild COURT_CATEGORIES from the current Directory
+  const ownerCourts = [];
+  const designCourts = [];
+  const gcCourts = [];
+  const tradeCourts = [];
+  
+  for (const d of DIRECTORY) {
+    const display = d.company ? `${d.company} / ${d.role}` : d.role;
+    if (!display) continue;
+    
+    if ((d.role || '').includes('Owner')) {
+      ownerCourts.push(display);
+    } else if ((d.role || '').includes('General Contractor') || (d.role || '').includes('GC')) {
+      gcCourts.push(display);
+    } else if (d.isTrade === true) {
+      tradeCourts.push(display);
+    } else if (d.isTrade === false && !(d.role || '').includes('VDC')) {
+      designCourts.push(display);
+    }
+  }
+  
+  // Only rebuild if we have directory entries
+  if (DIRECTORY.length > 4) {
+    COURT_CATEGORIES.length = 0;
+    COURT_CATEGORIES.push(
+      { id: "owner", name: "Owner", color: "owner", courts: ownerCourts.length > 0 ? ownerCourts : ["Owner"] },
+      { id: "design", name: "Design", color: "design", courts: designCourts.length > 0 ? designCourts : ["Architect"] },
+      { id: "gc", name: "GC", color: "gc", courts: gcCourts.length > 0 ? gcCourts : ["GC"] },
+      { id: "trade", name: "Trade", color: "trade", courts: tradeCourts.length > 0 ? tradeCourts : ["Trade — BIM","Trade — Field"] },
+      { id: "vec", name: "VEC", color: "vec", courts: ["VEC"] },
+      { id: "external", name: "External", color: "external", courts: ["External"] }
+    );
+    
+    // Rebuild derived arrays
+    ALL_COURTS.length = 0;
+    for (const cat of COURT_CATEGORIES) {
+      for (const name of cat.courts) {
+        ALL_COURTS.push({ name, category: cat.id, color: cat.color });
+      }
+    }
+    // Rebuild lookup
+    for (const c of ALL_COURTS) {
+      COURT_BY_NAME[c.name] = c;
     }
   }
 }
@@ -3775,6 +4792,1943 @@ const origDeleteHandler = (id) => {
 };
 
 console.log('🔥 Firebase connected — all changes sync in real time');
+
+/* ============================================================
+   V3.0 — MULTI-PROJECT HUB
+   ============================================================ */
+let activeProjectId = null;
+let allProjects = {};
+
+function backToHub() {
+  document.getElementById('project-view').style.display = 'none';
+  document.getElementById('wizard-view').style.display = 'none';
+  document.getElementById('hub-view').style.display = 'block';
+  activeProjectId = null;
+  loadProjectList();
+}
+
+function loadProjectList() {
+  db.ref('projects').once('value', (snap) => {
+    allProjects = snap.val() || {};
+    renderProjectHub();
+  });
+  // Also check for legacy DC6 data at root and migrate if needed
+  if (!allProjects['qts-atl2-dc6']) {
+    db.ref('modelpop').once('value', (snap) => {
+      if (snap.val()) migrateDC6();
+    });
+  }
+}
+
+function renderProjectHub() {
+  const grid = document.getElementById('project-grid');
+  const company = document.getElementById('company-selector')?.value || 'VEC';
+  
+  // Show admin actions for VEC
+  const adminActions = document.getElementById('hub-admin-actions');
+  if (adminActions) adminActions.style.display = 'flex'; // Show for all for now
+  
+  const projectIds = Object.keys(allProjects);
+  
+  if (projectIds.length === 0) {
+    grid.innerHTML = `
+      <div style="padding:60px;text-align:center;color:var(--text-tertiary);grid-column:1/-1;">
+        <div style="font-size:48px;margin-bottom:16px;">📋</div>
+        <div style="font-size:16px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;">No projects yet</div>
+        <div style="font-size:13px;margin-bottom:20px;">Create your first project or migrate existing DC6 data</div>
+        <button class="hub-btn hub-btn-primary" onclick="openWizard()">+ Create Project</button>
+        <button class="hub-btn hub-btn-secondary" onclick="migrateDC6()" style="margin-left:8px;">Migrate DC6 Data</button>
+      </div>`;
+    return;
+  }
+  
+  grid.innerHTML = projectIds.map(pid => {
+    const p = allProjects[pid];
+    const config = p.config || {};
+    const zones = config.zones ? (Array.isArray(config.zones) ? config.zones : Object.values(config.zones)) : [];
+    const issues = p.issues ? (Array.isArray(p.issues) ? p.issues : Object.values(p.issues)) : [];
+    const openIssues = issues.filter(i => i.status !== 'resolved' && i.status !== 'wont-fix').length;
+    const blockers = p.blockers ? (Array.isArray(p.blockers) ? p.blockers : Object.values(p.blockers)) : [];
+    const openBlockers = blockers.filter(b => b.status === 'open').length;
+    
+    return `
+      <div class="project-card" onclick="openProject('${pid}')">
+        <div class="project-card-header">
+          <div>
+            <div class="project-card-name">${config.name || pid}</div>
+            <div class="project-card-meta">${config.gc || ''} · ${config.owner || ''} · ${config.architect || ''}</div>
+          </div>
+        </div>
+        <div class="project-card-stats">
+          <div class="project-stat">
+            <div class="project-stat-val">${zones.length || '—'}</div>
+            <div class="project-stat-label">Zones</div>
+          </div>
+          <div class="project-stat">
+            <div class="project-stat-val">${openIssues}</div>
+            <div class="project-stat-label">Open Issues</div>
+          </div>
+          <div class="project-stat">
+            <div class="project-stat-val">${openBlockers}</div>
+            <div class="project-stat-label">Blockers</div>
+          </div>
+        </div>
+        <div class="project-card-activity">Last active: ${config.lastActivity || 'Unknown'}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openProject(projectId) {
+  activeProjectId = projectId;
+  document.getElementById('hub-view').style.display = 'none';
+  document.getElementById('wizard-view').style.display = 'none';
+  document.getElementById('project-view').style.display = 'block';
+  
+  const config = allProjects[projectId]?.config || {};
+  document.getElementById('project-name-header').textContent = config.name || projectId;
+  document.getElementById('project-title-header').textContent = (config.name || projectId) + ' — Coordination Dashboard';
+  
+  // Update header meta
+  const gcEl = document.querySelector('.meta-value.mono');
+  // Update last activity
+  db.ref(`projects/${projectId}/config/lastActivity`).set(new Date().toLocaleDateString());
+  
+  // For non-DC6 projects, rebuild ZONES from config
+  if (projectId !== 'qts-atl2-dc6' && config.zones && config.zones.length > 0) {
+    const configZones = Array.isArray(config.zones) ? config.zones : Object.values(config.zones);
+    // Replace ZONES array contents
+    ZONES.length = 0;
+    for (const z of configZones) {
+      ZONES.push({
+        id: z.id || z.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        name: z.name || 'Unnamed Zone',
+        segment: z.segment || '',
+        level: z.level || ''
+      });
+    }
+    // Build empty schedule for new zones
+    for (const z of ZONES) {
+      if (!SCHEDULE[z.id]) {
+        const baseDate = new Date();
+        SCHEDULE[z.id] = {};
+        for (const stage of STAGES) {
+          SCHEDULE[z.id][stage.id] = {
+            start: new Date(baseDate),
+            finish: new Date(baseDate.getTime() + 14 * 86400000),
+            duration: 14
+          };
+        }
+        SCHEDULE[z.id].fieldActivities = [];
+      }
+    }
+    // Rebuild MODEL_POP for new zones
+    for (const z of ZONES) {
+      if (!MODEL_POP[z.id]) MODEL_POP[z.id] = {};
+    }
+  }
+  
+  // Load project-specific data from Firebase
+  loadProjectData(projectId);
+  
+  // Re-render everything with the correct zones
+  setTimeout(() => {
+    populateModelPopFilters();
+    refreshTrades();
+    renderAll();
+  }, 500);
+}
+
+function loadProjectData(projectId) {
+  const base = `projects/${projectId}`;
+  
+  db.ref(`${base}/modelpop`).once('value', (snap) => {
+    const data = snap.val();
+    if (data) {
+      for (const zid of Object.keys(data)) {
+        if (MODEL_POP[zid]) {
+          for (const t of Object.keys(data[zid])) {
+            if (!MODEL_POP[zid][t]) MODEL_POP[zid][t] = {};
+            Object.assign(MODEL_POP[zid][t], data[zid][t]);
+          }
+        }
+      }
+    }
+    if (document.getElementById('panel-modelpop')?.classList.contains('active')) renderModelPop();
+  });
+  
+  db.ref(`${base}/blockers`).once('value', (snap) => {
+    const data = snap.val();
+    if (data) BLOCKERS = Array.isArray(data) ? data : Object.values(data);
+    renderAll();
+  });
+  
+  db.ref(`${base}/issues`).once('value', (snap) => {
+    const data = snap.val();
+    if (data) {
+      const arr = Array.isArray(data) ? data : Object.values(data);
+      // Merge with existing issues (don't overwrite hardcoded ones)
+      for (const issue of arr) {
+        if (!ISSUES.find(i => i.id === issue.id)) ISSUES.push(issue);
+      }
+    }
+    renderAll();
+  });
+  
+  db.ref(`${base}/directory`).once('value', (snap) => {
+    const data = snap.val();
+    if (data) {
+      const arr = Array.isArray(data) ? data : Object.values(data);
+      if (arr.length > 0) {
+        DIRECTORY = arr;
+        const nonTradeRoles = ['VDC Provider','General Contractor','Owner','Architect','Architect / MEP Engineer'];
+        for (const d of DIRECTORY) {
+          if (!d.id) d.id = 'co-' + Math.random().toString(36).slice(2,8);
+          if (d.isTrade === undefined) d.isTrade = !nonTradeRoles.some(r => (d.role || '').includes(r));
+          if (d.zones === undefined) d.zones = null;
+          if (!d.contacts) d.contacts = [];
+          if (!d.color) d.color = '#666';
+        }
+        populateCompanySelector();
+        refreshTrades();
+      }
+    }
+  });
+  
+  db.ref(`${base}/changelog`).once('value', (snap) => {
+    const data = snap.val();
+    if (data) CHANGE_LOG = Array.isArray(data) ? data : Object.values(data);
+  });
+  
+  db.ref(`${base}/signoffs`).once('value', (snap) => {
+    const data = snap.val();
+    if (data) window.SIGNOFFS = data;
+  });
+  
+  db.ref(`${base}/notifications`).once('value', (snap) => {
+    const data = snap.val();
+    if (data) {
+      window.NOTIFICATIONS = Array.isArray(data) ? data : Object.values(data);
+      updateNotifBadge();
+    }
+  });
+}
+
+// Override save functions to use project paths
+const _origFbSave = fbSave;
+fbSave = function(path, data) {
+  if (activeProjectId) {
+    _origFbSave(`projects/${activeProjectId}/${path}`, data);
+  } else {
+    _origFbSave(path, data);
+  }
+};
+
+/* ============================================================
+   DC6 MIGRATION — moves root-level data under /projects/qts-atl2-dc6/
+   ============================================================ */
+function migrateDC6() {
+  console.log('Migrating DC6 data...');
+  const projectId = 'qts-atl2-dc6';
+  
+  // Create config
+  const config = {
+    name: 'QTS ATL2 DC6',
+    gc: 'HITT Contracting',
+    owner: 'QTS Realty Trust',
+    architect: 'DLR Group',
+    vdc: 'VEC',
+    meetingDays: ['Wed', 'Fri'],
+    zones: ZONES.map(z => ({ id: z.id, name: z.name, segment: z.segment, level: z.level })),
+    lastActivity: new Date().toLocaleDateString()
+  };
+  
+  db.ref(`projects/${projectId}/config`).set(config);
+  
+  // Copy existing root data to project path
+  const paths = ['modelpop', 'blockers', 'issues', 'directory', 'changelog', 'schedule', 'zonemaps'];
+  for (const p of paths) {
+    db.ref(p).once('value', (snap) => {
+      const data = snap.val();
+      if (data) {
+        db.ref(`projects/${projectId}/${p}`).set(data);
+      }
+    });
+  }
+  
+  // Add to allProjects and refresh
+  setTimeout(() => {
+    loadProjectList();
+  }, 2000);
+  
+  alert('DC6 data migrated! It will appear in the project hub momentarily.');
+}
+
+/* ============================================================
+   SETUP WIZARD
+   ============================================================ */
+let wizardData = { step: 1, config: {}, zones: [], trades: [], designTeam: [], milestones: {} };
+
+function openWizard(cloneFrom) {
+  wizardData = {
+    step: 1,
+    config: { name: '', gc: '', owner: '', architect: '', meetingDays: [] },
+    zones: [],
+    trades: [],
+    designTeam: [],
+    milestones: {}
+  };
+  
+  if (cloneFrom && allProjects[cloneFrom]) {
+    const src = allProjects[cloneFrom].config || {};
+    wizardData.config = { ...src, name: src.name + ' (Copy)' };
+    if (src.zones) wizardData.zones = JSON.parse(JSON.stringify(Array.isArray(src.zones) ? src.zones : Object.values(src.zones)));
+    if (src.designTeam) wizardData.designTeam = JSON.parse(JSON.stringify(src.designTeam));
+    if (src.meetingDays) wizardData.config.meetingDays = JSON.parse(JSON.stringify(src.meetingDays));
+  }
+  
+  document.getElementById('hub-view').style.display = 'none';
+  document.getElementById('wizard-view').style.display = 'block';
+  renderWizardStep();
+}
+
+function closeWizard() {
+  document.getElementById('wizard-view').style.display = 'none';
+  document.getElementById('hub-view').style.display = 'block';
+}
+
+function renderWizardStep() {
+  const step = wizardData.step;
+  document.getElementById('wizard-step-num').textContent = step;
+  const content = document.getElementById('wizard-content');
+  const nav = document.getElementById('wizard-nav');
+  const c = wizardData.config;
+  const maxStep = 6;
+  
+  if (step === 1) {
+    content.innerHTML = `
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">Project Information</h2>
+      <p style="color:var(--text-tertiary);margin-bottom:20px;">Basic project details.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div style="grid-column:span 2"><label class="form-label">Project Name</label><input class="form-input" value="${c.name||''}" onchange="wizardData.config.name=this.value" placeholder="e.g. QTS ATL2 DC6"></div>
+        <div><label class="form-label">General Contractor</label><input class="form-input" value="${c.gc||''}" onchange="wizardData.config.gc=this.value"></div>
+        <div><label class="form-label">Owner</label><input class="form-input" value="${c.owner||''}" onchange="wizardData.config.owner=this.value"></div>
+      </div>
+    `;
+  } else if (step === 2) {
+    content.innerHTML = `
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">Design Team</h2>
+      <p style="color:var(--text-tertiary);margin-bottom:12px;">Add design team companies and contacts.</p>
+      <div style="margin-bottom:16px;">
+        <label class="form-label" style="margin-bottom:6px;">Quick Add Common Roles</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          ${['Architect','MEP Engineer','Structural Engineer','Civil Engineer','Landscape Architect','Interior Designer','Lighting Designer','AV / IT Consultant','Commissioning Agent','Geotechnical Engineer'].filter(r => !wizardData.designTeam.some(dt => dt.role === r)).map(r => `
+            <button onclick="wizardData.designTeam.push({role:'${r}',name:'',company:'',email:''});renderWizardStep()" style="padding:4px 12px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);font-size:11px;cursor:pointer;font-family:inherit;">+ ${r}</button>
+          `).join('')}
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:6px;margin-bottom:6px;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-tertiary);padding:0 0 4px;">
+        <div>Company</div><div>Role / Discipline</div><div>Contact Name</div><div>Email</div><div></div>
+      </div>
+      ${wizardData.designTeam.map((dt, i) => `
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:6px;margin-bottom:6px;align-items:center;">
+          <input class="form-input" value="${dt.company||''}" placeholder="Company" onchange="wizardData.designTeam[${i}].company=this.value" style="font-size:12px;padding:6px 8px;">
+          <input class="form-input" value="${dt.role||''}" placeholder="e.g. Architect, MEP" onchange="wizardData.designTeam[${i}].role=this.value" style="font-size:12px;padding:6px 8px;">
+          <input class="form-input" value="${dt.name||''}" placeholder="Contact name" onchange="wizardData.designTeam[${i}].name=this.value" style="font-size:12px;padding:6px 8px;">
+          <input class="form-input" value="${dt.email||''}" placeholder="Email" onchange="wizardData.designTeam[${i}].email=this.value" style="font-size:12px;padding:6px 8px;">
+          <button onclick="wizardData.designTeam.splice(${i},1);renderWizardStep()" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;">✕</button>
+        </div>
+      `).join('')}
+      <button onclick="wizardData.designTeam.push({role:'',name:'',company:'',email:''});renderWizardStep()" style="margin-top:8px;background:var(--blue-bg);color:var(--blue);border:1px dashed var(--blue);border-radius:6px;padding:8px 16px;cursor:pointer;font-family:inherit;font-weight:600;font-size:12px;width:100%;">+ Add Design Team Member</button>
+    `;
+  } else if (step === 3) {
+    content.innerHTML = `
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">Define Zones</h2>
+      <p style="color:var(--text-tertiary);margin-bottom:20px;">Add the coordination zones for this project.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 120px auto;gap:6px;margin-bottom:6px;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-tertiary);padding:0 0 4px;">
+        <div>Zone Name</div><div>Segment</div><div>Level</div><div></div>
+      </div>
+      ${wizardData.zones.map((z, i) => `
+        <div style="display:grid;grid-template-columns:1fr 1fr 120px auto;gap:6px;margin-bottom:6px;align-items:center;">
+          <input class="form-input" value="${z.name||''}" placeholder="Zone name" onchange="wizardData.zones[${i}].name=this.value" style="font-size:12px;padding:6px 8px;">
+          <input class="form-input" value="${z.segment||''}" placeholder="Segment" onchange="wizardData.zones[${i}].segment=this.value" style="font-size:12px;padding:6px 8px;">
+          <input class="form-input" value="${z.level||''}" placeholder="Level" onchange="wizardData.zones[${i}].level=this.value" style="font-size:12px;padding:6px 8px;">
+          <button onclick="wizardData.zones.splice(${i},1);renderWizardStep()" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;">✕</button>
+        </div>
+      `).join('')}
+      <button onclick="wizardData.zones.push({id:'z-'+Date.now(),name:'',segment:'',level:''});renderWizardStep()" style="margin-top:8px;background:var(--blue-bg);color:var(--blue);border:1px dashed var(--blue);border-radius:6px;padding:8px 16px;cursor:pointer;font-family:inherit;font-weight:600;font-size:12px;width:100%;">+ Add Zone</button>
+    `;
+  } else if (step === 4) {
+    content.innerHTML = `
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">Trades</h2>
+      <p style="color:var(--text-tertiary);margin-bottom:12px;">Add the trade subcontractors on this project.</p>
+      <div style="margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <label class="form-label" style="margin-bottom:0;">Quick Add From VEC Library</label>
+          <button onclick="openLibrary('wizard')" style="padding:4px 12px;border-radius:4px;border:1px solid var(--vec-teal);background:var(--surface);color:var(--vec-blue);font-size:11px;cursor:pointer;font-family:inherit;font-weight:600;">Browse all companies →</button>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;" id="wizard-library-chips">
+          ${libraryQuickChips()}
+        </div>
+        <label class="form-label" style="margin-bottom:6px;">Quick Add Common Trades</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          ${['Structural','Mechanical','Electrical','Plumbing','Fire Suppression','Fire Alarm / VESDA','Elevator','Low Voltage / Telecom','Envelope','Civil','Controls / BAS','Concrete','Steel','Roofing','Insulation'].filter(t => !wizardData.trades.some(wt => (wt.role||wt.name) === t)).map(t => `
+            <button onclick="wizardData.trades.push({name:'${t}',company:'',role:'${t}',selected:true});renderWizardStep()" style="padding:4px 12px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);font-size:11px;cursor:pointer;font-family:inherit;">+ ${t}</button>
+          `).join('')}
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-bottom:6px;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-tertiary);padding:0 0 4px;">
+        <div>Company Name</div><div>Trade / Discipline</div><div></div>
+      </div>
+      ${wizardData.trades.filter(t => t.selected !== false).map((t, i) => `
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-bottom:6px;align-items:center;">
+          <input class="form-input" value="${t.company||''}" placeholder="e.g. McKenneys" onchange="wizardData.trades[${i}].company=this.value" style="font-size:12px;padding:6px 8px;">
+          <input class="form-input" value="${t.role||t.name||''}" placeholder="e.g. Mechanical SM" onchange="wizardData.trades[${i}].role=this.value;wizardData.trades[${i}].name=this.value;" style="font-size:12px;padding:6px 8px;">
+          <button onclick="wizardData.trades.splice(${i},1);renderWizardStep()" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;">✕</button>
+        </div>
+      `).join('')}
+      <button onclick="wizardData.trades.push({name:'',company:'',role:'',selected:true});renderWizardStep()" style="margin-top:8px;background:var(--blue-bg);color:var(--blue);border:1px dashed var(--blue);border-radius:6px;padding:8px 16px;cursor:pointer;font-family:inherit;font-weight:600;font-size:12px;width:100%;">+ Add Trade</button>
+    `;
+  } else if (step === 5) {
+    if (!c.meetingDays || !Array.isArray(c.meetingDays)) c.meetingDays = [];
+    if (c.meetingDays.length > 0 && typeof c.meetingDays[0] === 'string') {
+      c.meetingDays = c.meetingDays.map(d => ({ day: d, time: '09:00' }));
+    }
+    
+    content.innerHTML = `
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">Meeting Cadence</h2>
+      <p style="color:var(--text-tertiary);margin-bottom:20px;">Set coordination meeting days and times.</p>
+      <label class="form-label">Select Meeting Days</label>
+      <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+        ${['Monday','Tuesday','Wednesday','Thursday','Friday'].map(d => {
+          const existing = c.meetingDays.find(m => m.day === d);
+          return `
+            <div onclick="let days=wizardData.config.meetingDays;const idx=days.findIndex(m=>m.day==='${d}');if(idx>=0)days.splice(idx,1);else days.push({day:'${d}',time:'09:00'});renderWizardStep()" 
+              style="padding:10px 20px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;border:1px solid ${existing?'var(--vec-teal)':'var(--border)'};background:${existing?'var(--blue-bg)':'var(--surface)'};color:${existing?'var(--vec-teal)':'var(--text-tertiary)'};">
+              ${d}</div>`;
+        }).join('')}
+      </div>
+      ${c.meetingDays.length > 0 ? `
+        <label class="form-label">Set Time for Each Meeting</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          ${c.meetingDays.map((m, i) => `
+            <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;">
+              <span style="font-size:14px;font-weight:600;min-width:100px;">${m.day}</span>
+              <input type="time" class="form-input" value="${m.time||'09:00'}" onchange="wizardData.config.meetingDays[${i}].time=this.value" style="flex:1;padding:8px 10px;">
+            </div>
+          `).join('')}
+        </div>
+      ` : '<div style="font-size:12px;color:var(--text-tertiary);font-style:italic;">Click a day above to add it.</div>'}
+    `;
+  } else if (step === 6) {
+    const trades = wizardData.trades.filter(t => t.selected !== false && (t.company || t.role || t.name));
+    content.innerHTML = `
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:20px;">Review & Launch</h2>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;">
+        <div style="font-size:14px;margin-bottom:6px;"><strong>Project:</strong> ${c.name || '—'}</div>
+        <div style="font-size:13px;margin-bottom:6px;color:var(--text-secondary);"><strong>GC:</strong> ${c.gc || '—'} &nbsp;·&nbsp; <strong>Owner:</strong> ${c.owner || '—'}</div>
+        <div style="font-size:13px;margin-bottom:6px;color:var(--text-secondary);"><strong>Design Team:</strong> ${wizardData.designTeam.filter(d=>d.company||d.role).map(d => `${d.company || '—'} (${d.role})`).join(', ') || '—'}</div>
+        <div style="font-size:13px;margin-bottom:6px;color:var(--text-secondary);"><strong>Zones (${wizardData.zones.filter(z=>z.name).length}):</strong> ${wizardData.zones.filter(z=>z.name).map(z=>z.name).join(', ') || '—'}</div>
+        <div style="font-size:13px;margin-bottom:6px;color:var(--text-secondary);"><strong>Trades (${trades.length}):</strong> ${trades.map(t => t.company ? `${t.company} (${t.role||t.name})` : (t.role||t.name)).join(', ') || '—'}</div>
+        <div style="font-size:13px;color:var(--text-secondary);"><strong>Meetings:</strong> ${(c.meetingDays||[]).map(m => typeof m === 'object' ? `${m.day} @ ${m.time}` : m).join(', ') || '—'}</div>
+      </div>
+    `;
+  }
+  
+  // Navigation with visible back button
+  nav.innerHTML = '';
+  if (step > 1) {
+    const backBtn = document.createElement('button');
+    backBtn.className = 'hub-btn hub-btn-secondary';
+    backBtn.textContent = '← Back';
+    backBtn.onclick = () => { wizardData.step--; renderWizardStep(); };
+    nav.appendChild(backBtn);
+  }
+  const spacer = document.createElement('div');
+  spacer.style.flex = '1';
+  nav.appendChild(spacer);
+  if (step < maxStep) {
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'hub-btn hub-btn-primary';
+    nextBtn.textContent = 'Continue →';
+    nextBtn.onclick = () => { wizardData.step++; renderWizardStep(); };
+    nav.appendChild(nextBtn);
+  }
+  if (step === maxStep) {
+    const launchBtn = document.createElement('button');
+    launchBtn.className = 'hub-btn hub-btn-primary';
+    launchBtn.style.cssText = 'background:var(--vec-teal);font-size:14px;padding:12px 32px;';
+    launchBtn.textContent = 'Launch Project →';
+    launchBtn.onclick = launchNewProject;
+    nav.appendChild(launchBtn);
+  }
+}
+
+function launchNewProject() {
+  const c = wizardData.config;
+  if (!c.name) { alert('Project name required.'); return; }
+  
+  const projectId = c.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/,'');
+  
+  const config = {
+    ...c,
+    vdc: 'VEC',
+    zones: wizardData.zones.filter(z => z.name).map(z => ({
+      id: z.id || z.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      name: z.name,
+      segment: z.segment || '',
+      level: z.level || ''
+    })),
+    designTeam: wizardData.designTeam.filter(d => d.role),
+    createdAt: new Date().toISOString(),
+    lastActivity: new Date().toLocaleDateString()
+  };
+  
+  const selectedTrades = wizardData.trades.filter(t => t.selected);
+  const defaultDir = [
+    { id: 'vec', company: 'VEC', role: 'VDC Provider', isTrade: false, trades: ['All'], zones: [], contacts: [], docUrl: '', color: '#0B2545' },
+    { id: 'gc', company: c.gc || '', role: 'General Contractor', isTrade: false, trades: ['All'], zones: [], contacts: [], docUrl: '', color: '#BF6B00' },
+    { id: 'owner', company: c.owner || '', role: 'Owner', isTrade: false, trades: [], zones: [], contacts: [], docUrl: '', color: '#6F42C1' },
+    ...wizardData.designTeam.filter(d => d.role).map((d, i) => ({
+      id: 'design-' + i, company: d.company || '', role: d.role, isTrade: false, trades: [], zones: [],
+      contacts: d.name ? [{ name: d.name, title: d.role, email: d.email || '', phone: '' }] : [],
+      docUrl: '', color: ['#0969DA','#06b6d4','#8b5cf6','#14b8a6'][i % 4]
+    })),
+    ...selectedTrades.map((t, i) => ({
+      id: 'trade-' + i, company: t.company || '', role: t.role || t.name, isTrade: true, trades: [t.name], zones: null, contacts: [], docUrl: '',
+      color: ['#ec4899','#3b82f6','#f59e0b','#10b981','#ef4444','#f97316','#64748b','#8b5cf6','#06b6d4'][i % 9]
+    }))
+  ];
+  
+  db.ref(`projects/${projectId}/config`).set(config);
+  db.ref(`projects/${projectId}/directory`).set(defaultDir);
+  db.ref(`projects/${projectId}/modelpop`).set({});
+  db.ref(`projects/${projectId}/blockers`).set([]);
+  db.ref(`projects/${projectId}/issues`).set([]);
+  db.ref(`projects/${projectId}/changelog`).set([]);
+  
+  // Wait for Firebase to write, then open the new project
+  setTimeout(() => {
+    db.ref('projects').once('value', (snap) => {
+      allProjects = snap.val() || {};
+      closeWizard();
+      openProject(projectId);
+    });
+  }, 1500);
+}
+
+function openCloneDialog() {
+  const projectIds = Object.keys(allProjects);
+  if (projectIds.length === 0) { alert('No projects to clone.'); return; }
+  const choices = projectIds.map(pid => `${pid}: ${allProjects[pid]?.config?.name || pid}`).join('\n');
+  const pick = prompt('Enter project ID to clone:\n\n' + choices);
+  if (pick && allProjects[pick]) openWizard(pick);
+}
+
+window.backToHub = backToHub;
+window.openWizard = openWizard;
+window.closeWizard = closeWizard;
+window.openProject = openProject;
+window.launchNewProject = launchNewProject;
+window.openCloneDialog = openCloneDialog;
+window.migrateDC6 = migrateDC6;
+
+/* ============================================================
+   V3.0 — COMMENTS & @MENTIONS
+   ============================================================ */
+window.NOTIFICATIONS = [];
+
+function addCommentToItem(type, itemId, text) {
+  const company = document.getElementById('company-selector').value;
+  const now = new Date().toISOString();
+  
+  // Parse @mentions — supports @[Company Name] bracket format and @SingleWord
+  const mentions = [];
+  const bracketRegex = /@\[([^\]]+)\]/g;
+  const simpleRegex = /@(\w+)/g;
+  let match;
+  while ((match = bracketRegex.exec(text)) !== null) {
+    mentions.push(match[1]);
+  }
+  // Also check for simple @word mentions not in brackets
+  while ((match = simpleRegex.exec(text)) !== null) {
+    if (!mentions.includes(match[1])) mentions.push(match[1]);
+  }
+  
+  const comment = { author: company, text, date: now, mentions };
+  
+  if (type === 'issue') {
+    const issue = ISSUES.find(i => i.id === itemId);
+    if (issue) {
+      if (!issue.comments) issue.comments = [];
+      issue.comments.push(comment);
+      saveIssues();
+    }
+  } else if (type === 'blocker') {
+    const blocker = BLOCKERS.find(b => b.id === itemId);
+    if (blocker) {
+      if (!blocker.comments) blocker.comments = [];
+      blocker.comments.push(comment);
+      saveBlockers();
+    }
+  }
+  
+  // Create notifications for mentioned companies
+  for (const mentioned of mentions) {
+    const notif = {
+      id: 'N-' + Date.now() + Math.random().toString(36).slice(2,4),
+      for: mentioned,
+      from: company,
+      type,
+      itemId,
+      text: `${company} mentioned you: "${text.substring(0, 80)}"`,
+      date: now,
+      read: false
+    };
+    window.NOTIFICATIONS.push(notif);
+  }
+  
+  if (activeProjectId) {
+    fbSave('notifications', window.NOTIFICATIONS);
+  }
+  updateNotifBadge();
+  
+  addChangeLogEntry(company, 'status', `Comment on ${type} ${itemId}: "${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`);
+}
+
+function renderCommentThread(type, itemId) {
+  let comments = [];
+  if (type === 'issue') {
+    const issue = ISSUES.find(i => i.id === itemId);
+    comments = (issue?.comments) || [];
+  } else if (type === 'blocker') {
+    const blocker = BLOCKERS.find(b => b.id === itemId);
+    comments = (blocker?.comments) || [];
+  }
+  
+  // Get directory companies for @mention dropdown
+  const companies = DIRECTORY.map(d => d.company || d.role).filter(Boolean);
+  
+  return `
+    <div class="comment-thread">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:8px;">Comments (${comments.length})</div>
+      ${comments.map(c => {
+        const displayText = c.text.replace(/@\[([^\]]+)\]/g, '<span class="comment-mention">@$1</span>').replace(/@(\w+)/g, '<span class="comment-mention">@$1</span>');
+        return `
+          <div class="comment-item">
+            <div class="comment-header">
+              <span class="comment-author">${c.author}</span>
+              <span class="comment-time">${fmtDateTime(c.date)}</span>
+            </div>
+            <div class="comment-text">${displayText}</div>
+          </div>
+        `;
+      }).join('')}
+      <div class="comment-input-wrap">
+        <div style="flex:1;position:relative;">
+          <input class="comment-input" id="comment-input-${type}-${itemId}" placeholder="Add comment... Use @ to mention" oninput="showMentionDropdown(this,'mention-dd-${type}-${itemId}')" onblur="setTimeout(()=>document.getElementById('mention-dd-${type}-${itemId}').style.display='none',200)">
+          <div id="mention-dd-${type}-${itemId}" style="display:none;position:absolute;bottom:100%;left:0;width:100%;max-height:180px;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.1);z-index:999;"></div>
+        </div>
+        <button class="btn" style="padding:6px 14px;font-size:11px;" onclick="const inp=document.getElementById('comment-input-${type}-${itemId}');if(inp.value.trim()){addCommentToItem('${type}','${itemId}',inp.value);inp.value='';closeIssueDetail();if('${type}'==='issue')openIssueDetail('${itemId}');if('${type}'==='blocker')openBlockerDetail('${itemId}');}">Post</button>
+      </div>
+    </div>
+  `;
+}
+
+window.addCommentToItem = addCommentToItem;
+
+function showMentionDropdown(inputEl, dropdownId) {
+  const dd = document.getElementById(dropdownId);
+  if (!dd) return;
+  const text = inputEl.value;
+  const cursorPos = inputEl.selectionStart;
+  
+  const beforeCursor = text.substring(0, cursorPos);
+  const atIdx = beforeCursor.lastIndexOf('@');
+  
+  if (atIdx === -1) {
+    dd.style.display = 'none';
+    return;
+  }
+  
+  // Check if we're inside a completed bracket mention
+  const afterAt = beforeCursor.substring(atIdx);
+  if (afterAt.includes(']')) {
+    dd.style.display = 'none';
+    return;
+  }
+  
+  // Get the query text after @ (skip [ if present)
+  let query = afterAt.substring(1);
+  if (query.startsWith('[')) query = query.substring(1);
+  query = query.toLowerCase();
+  
+  // Get companies from directory
+  const companies = DIRECTORY.map(d => {
+    const display = d.company && d.role ? `${d.company} — ${d.role}` : (d.company || d.role || '');
+    return { display, name: d.company || d.role || '' };
+  }).filter(c => c.display && c.display.toLowerCase().includes(query));
+  
+  if (companies.length === 0 || query.length > 30) {
+    dd.style.display = 'none';
+    return;
+  }
+  
+  dd.style.display = 'block';
+  dd.innerHTML = companies.slice(0, 8).map(c => `
+    <div style="padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--surface-2);" 
+      onmousedown="event.preventDefault();insertMention(document.getElementById('${inputEl.id}'),'${c.name}',${atIdx});document.getElementById('${dropdownId}').style.display='none';">
+      <strong>${c.display}</strong>
+    </div>
+  `).join('');
+}
+
+function insertMention(inputEl, name, atIdx) {
+  const before = inputEl.value.substring(0, atIdx);
+  const afterCursor = inputEl.value.substring(inputEl.selectionStart);
+  inputEl.value = before + '@[' + name + '] ' + afterCursor;
+  inputEl.focus();
+  const newPos = atIdx + name.length + 4;
+  inputEl.setSelectionRange(newPos, newPos);
+}
+
+window.showMentionDropdown = showMentionDropdown;
+window.insertMention = insertMention;
+
+/* ============================================================
+   V3.0 — NOTIFICATIONS
+   ============================================================ */
+function toggleNotifications() {
+  const dd = document.getElementById('notif-dropdown');
+  dd.classList.toggle('show');
+  if (dd.classList.contains('show')) renderNotifications();
+}
+
+function updateNotifBadge() {
+  const company = document.getElementById('company-selector')?.value || 'VEC';
+  const unread = (window.NOTIFICATIONS || []).filter(n => n.for === company && !n.read).length;
+  const badge = document.getElementById('notif-count');
+  if (badge) {
+    badge.textContent = unread;
+    badge.style.display = unread > 0 ? 'flex' : 'none';
+  }
+}
+
+function renderNotifications() {
+  const company = document.getElementById('company-selector')?.value || 'VEC';
+  const myNotifs = (window.NOTIFICATIONS || []).filter(n => n.for === company).slice(0, 20);
+  const list = document.getElementById('notif-list');
+  
+  if (myNotifs.length === 0) {
+    list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-tertiary);font-size:12px;">No notifications</div>';
+    return;
+  }
+  
+  list.innerHTML = myNotifs.map(n => `
+    <div class="notif-item ${n.read ? '' : 'unread'}" onclick="navigateToNotif('${n.id}','${n.type}','${n.itemId}')">
+      <div style="font-size:11px;font-weight:600;color:var(--vec-navy);">${n.from}</div>
+      <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">${n.text}</div>
+      <div style="font-size:9px;color:var(--text-tertiary);margin-top:4px;font-family:'JetBrains Mono',monospace;">${fmtDateTime(n.date)}</div>
+    </div>
+  `).join('');
+}
+
+function navigateToNotif(notifId, type, itemId) {
+  markNotifRead(notifId);
+  document.getElementById('notif-dropdown').classList.remove('show');
+  if (type === 'issue') {
+    openIssueDetail(itemId);
+  } else if (type === 'blocker') {
+    openBlockerDetail(itemId);
+  }
+}
+window.navigateToNotif = navigateToNotif;
+
+function markNotifRead(notifId) {
+  const n = (window.NOTIFICATIONS || []).find(x => x.id === notifId);
+  if (n) n.read = true;
+  if (activeProjectId) fbSave('notifications', window.NOTIFICATIONS);
+  updateNotifBadge();
+  renderNotifications();
+}
+
+window.toggleNotifications = toggleNotifications;
+window.markNotifRead = markNotifRead;
+
+// Update badge when company selector changes
+document.getElementById('company-selector')?.addEventListener('change', () => { updateNotifBadge(); });
+
+/* ============================================================
+   V3.0 — AGING BADGES
+   ============================================================ */
+function ageBadge(dateStr) {
+  if (!dateStr) return '';
+  const days = Math.max(0, Math.round((new Date() - new Date(dateStr)) / 86400000));
+  if (days < 7) return '';
+  if (days < 14) return `<span class="age-badge age-fresh">${days}d</span>`;
+  if (days < 30) return `<span class="age-badge age-warning">${days}d</span>`;
+  if (days < 60) return `<span class="age-badge age-overdue">${days}d</span>`;
+  return `<span class="age-badge age-critical">${days}d</span>`;
+}
+
+window.ageBadge = ageBadge;
+
+/* ============================================================
+   V3.0 — SIGN-OFF WORKFLOW
+   ============================================================ */
+window.SIGNOFFS = {};
+
+function getSignoffs(zoneId) {
+  return window.SIGNOFFS[zoneId] || {};
+}
+
+function toggleSignoff(zoneId, tradeName) {
+  const company = document.getElementById('company-selector').value;
+  if (!window.SIGNOFFS[zoneId]) window.SIGNOFFS[zoneId] = {};
+  
+  if (window.SIGNOFFS[zoneId][tradeName]) {
+    delete window.SIGNOFFS[zoneId][tradeName];
+  } else {
+    window.SIGNOFFS[zoneId][tradeName] = {
+      signedBy: company,
+      date: new Date().toISOString()
+    };
+  }
+  
+  if (activeProjectId) fbSave('signoffs', window.SIGNOFFS);
+  addChangeLogEntry(company, 'status', `${window.SIGNOFFS[zoneId]?.[tradeName] ? 'Signed off' : 'Removed sign-off'}: ${tradeName} in ${ZONES.find(z => z.id === zoneId)?.name || zoneId}`);
+}
+
+function renderSignoffPanel(zoneId) {
+  const trades = getTradeNamesForZone(zoneId);
+  const signoffs = getSignoffs(zoneId);
+  const signed = trades.filter(t => signoffs[t]);
+  
+  return `
+    <div style="margin-top:18px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);">Sign-Off Status</div>
+        <div class="signoff-ring">${signed.length}/${trades.length} signed</div>
+      </div>
+      <div class="signoff-grid">
+        ${trades.map(t => {
+          const s = signoffs[t];
+          return `
+            <div class="signoff-item ${s ? 'signed' : ''}">
+              <input type="checkbox" class="signoff-check" ${s ? 'checked' : ''} onchange="toggleSignoff('${zoneId}','${t}');this.closest('.modal-body').innerHTML=document.getElementById('zone-modal-body').innerHTML;">
+              <div class="signoff-info">
+                <div class="signoff-name">${t}</div>
+                ${s ? `<div class="signoff-ts">${s.signedBy} · ${fmtDateTime(s.date)}</div>` : '<div class="signoff-ts">Not signed</div>'}
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+window.toggleSignoff = toggleSignoff;
+
+/* ============================================================
+   V3.1 — AUTHENTICATION
+   ============================================================ */
+const AUTH = firebase.auth();
+
+window.CURRENT_USER = null;   // { uid, email, name, company, companyId, role, projects }
+let authMode = 'signin';
+let _authReady = false;
+
+function emailKey(email) {
+  return String(email || '').trim().toLowerCase().replace(/[.#$/\[\]]/g, '_');
+}
+
+function authMsg(text, kind) {
+  const el = document.getElementById('auth-msg');
+  if (!el) return;
+  if (!text) { el.className = 'auth-msg'; el.textContent = ''; return; }
+  el.className = 'auth-msg ' + (kind || 'error');
+  el.textContent = text;
+}
+
+function setAuthMode(mode) {
+  authMode = mode;
+  const isSignup = mode === 'signup';
+  document.getElementById('auth-title').textContent = isSignup ? 'Request access' : 'Sign in';
+  document.getElementById('auth-sub').textContent = isSignup
+    ? 'A VEC administrator approves new accounts'
+    : 'Use your project email address';
+  document.getElementById('auth-name-field').style.display = isSignup ? 'block' : 'none';
+  document.getElementById('auth-company-field').style.display = isSignup ? 'block' : 'none';
+  document.getElementById('auth-submit').textContent = isSignup ? 'Create account' : 'Sign in';
+  document.getElementById('auth-reset-btn').style.display = isSignup ? 'none' : 'block';
+  document.getElementById('auth-password').setAttribute('autocomplete', isSignup ? 'new-password' : 'current-password');
+  document.getElementById('auth-alt').innerHTML = isSignup
+    ? `Already have an account? <a onclick="setAuthMode('signin')">Sign in</a>`
+    : `No account? <a onclick="setAuthMode('signup')">Request access</a>`;
+  authMsg('');
+}
+
+function submitAuth() {
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const btn = document.getElementById('auth-submit');
+
+  if (!email || !password) { authMsg('Email and password are both required.'); return; }
+  if (authMode === 'signup' && password.length < 8) { authMsg('Password must be at least 8 characters.'); return; }
+
+  btn.disabled = true;
+  authMsg('');
+
+  const done = (err) => {
+    btn.disabled = false;
+    if (err) authMsg(friendlyAuthError(err));
+  };
+
+  if (authMode === 'signup') {
+    const name = document.getElementById('auth-name').value.trim();
+    const company = document.getElementById('auth-company').value.trim();
+    if (!name) { done({ code: 'custom/no-name' }); return; }
+    AUTH.createUserWithEmailAndPassword(email, password)
+      .then((cred) => provisionUser(cred.user, { name, company }))
+      .then(() => done())
+      .catch(done);
+  } else {
+    AUTH.signInWithEmailAndPassword(email, password)
+      .then(() => done())
+      .catch(done);
+  }
+}
+
+function friendlyAuthError(err) {
+  const map = {
+    'custom/no-name': 'Enter your full name.',
+    'auth/invalid-email': 'That email address is not valid.',
+    'auth/user-not-found': 'No account for that email. Request access instead.',
+    'auth/wrong-password': 'Wrong password.',
+    'auth/invalid-credential': 'Email or password is incorrect.',
+    'auth/email-already-in-use': 'That email already has an account. Sign in instead.',
+    'auth/weak-password': 'Password must be at least 8 characters.',
+    'auth/too-many-requests': 'Too many attempts. Wait a minute and try again.',
+    'auth/network-request-failed': 'Network problem reaching Firebase. Check your connection.',
+    'auth/operation-not-allowed': 'Email sign-in is not enabled on this Firebase project yet.'
+  };
+  return map[err && err.code] || (err && err.message) || 'Something went wrong.';
+}
+
+function sendReset() {
+  const email = document.getElementById('auth-email').value.trim();
+  if (!email) { authMsg('Enter your email first, then hit reset.'); return; }
+  AUTH.sendPasswordResetEmail(email)
+    .then(() => authMsg('Reset link sent. Check your inbox.', 'info'))
+    .catch((err) => authMsg(friendlyAuthError(err)));
+}
+
+// Creates the users/{uid} record. First ever account becomes VEC Admin.
+// Otherwise an invite for that email is applied, else the account lands pending.
+function provisionUser(fbUser, extra) {
+  // meta/bootstrapped is readable by any signed-in account, unlike /users which is admin only.
+  return db.ref('meta/bootstrapped').once('value').then((snap) => {
+    const isFirst = !snap.exists();
+
+    return db.ref('invites/' + emailKey(fbUser.email)).once('value').catch(() => ({ val: () => null })).then((iSnap) => {
+      const invite = iSnap.val();
+      const profile = {
+        uid: fbUser.uid,
+        email: fbUser.email,
+        name: extra.name || fbUser.displayName || fbUser.email.split('@')[0],
+        company: (invite && invite.company) || extra.company || (isFirst ? 'VEC' : ''),
+        companyId: (invite && invite.companyId) || (isFirst ? 'vec' : ''),
+        role: isFirst ? 'vec_admin' : ((invite && invite.role) || 'pending'),
+        projects: (invite && invite.projects) || (isFirst ? 'all' : {}),
+        // Proof for the database rules that this role came from a real invite
+        inviteKey: invite ? emailKey(fbUser.email) : '',
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString()
+      };
+      return db.ref('users/' + fbUser.uid).set(profile).then(() => {
+        if (isFirst) db.ref('meta/bootstrapped').set({ at: new Date().toISOString(), by: fbUser.email });
+        if (invite) db.ref('invites/' + emailKey(fbUser.email)).remove().catch(() => {});
+        return profile;
+      });
+    });
+  });
+}
+
+function doSignOut() {
+  AUTH.signOut().then(() => location.reload());
+}
+
+function showAuthScreen(pending) {
+  document.getElementById('auth-view').style.display = 'flex';
+  document.getElementById('hub-view').style.display = 'none';
+  document.getElementById('project-view').style.display = 'none';
+  document.getElementById('wizard-view').style.display = 'none';
+  document.getElementById('auth-form').style.display = pending ? 'none' : 'block';
+  document.getElementById('auth-pending').style.display = pending ? 'block' : 'none';
+  if (pending && CURRENT_USER) {
+    document.getElementById('auth-pending-email').textContent = CURRENT_USER.email;
+  }
+}
+
+function hideAuthScreen() {
+  document.getElementById('auth-view').style.display = 'none';
+}
+
+AUTH.onAuthStateChanged((fbUser) => {
+  if (!fbUser) {
+    window.CURRENT_USER = null;
+    showAuthScreen(false);
+    return;
+  }
+  db.ref('users/' + fbUser.uid).once('value').then((snap) => {
+    let profile = snap.val();
+    if (!profile) {
+      // Account exists in Auth but has no profile (created out of band). Provision one now.
+      return provisionUser(fbUser, { name: fbUser.displayName || '', company: '' }).then(startSession);
+    }
+    db.ref('users/' + fbUser.uid + '/lastLogin').set(new Date().toISOString());
+    startSession(profile);
+  }).catch((err) => {
+    console.error('Profile load failed:', err);
+    authMsg('Signed in, but your profile could not be read. Check the database rules.', 'error');
+    showAuthScreen(false);
+  });
+});
+
+function startSession(profile) {
+  window.CURRENT_USER = profile;
+  if (!profile.role || profile.role === 'pending') { showAuthScreen(true); return; }
+  _authReady = true;
+  hideAuthScreen();
+  paintIdentity();
+  if (can('library.use')) harvestLibrary(false);
+  routeAfterLogin();
+}
+
+function routeAfterLogin() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const directProject = urlParams.get('project');
+  if (directProject) {
+    db.ref('projects').once('value', (snap) => {
+      allProjects = snap.val() || {};
+      if (allProjects[directProject] && canOpenProject(directProject)) openProject(directProject);
+      else backToHub();
+    });
+  } else {
+    document.getElementById('hub-view').style.display = 'block';
+    loadProjectList();
+  }
+}
+
+function paintIdentity() {
+  const u = CURRENT_USER;
+  if (!u) return;
+  const initials = (u.name || u.email || '?').split(/\s+/).map(s => s[0]).slice(0, 2).join('').toUpperCase();
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('identity-avatar', initials);
+  set('identity-name', u.name || u.email);
+  set('identity-company', u.company || 'No company assigned');
+  set('identity-role', roleLabel(u.role));
+  set('hub-identity', `${u.name || u.email} · ${u.company || 'No company'} · ${roleLabel(u.role)}`);
+  set('hub-subtitle', can('project.create')
+    ? 'Select a project or create a new one'
+    : 'Projects you have been given access to');
+}
+
+/* ============================================================
+   V3.1 — ROLES & PERMISSIONS
+   ============================================================ */
+const ROLES = {
+  vec_admin:       { label: 'VEC Admin',       blurb: 'Full control including user access and the company library' },
+  vec_coordinator: { label: 'VEC Coordinator', blurb: 'Runs coordination on assigned projects' },
+  gc:              { label: 'GC',              blurb: 'Edits issues, blockers, dates, sign-offs' },
+  design:          { label: 'Design Team',     blurb: 'Responds to issues in their court, comments' },
+  owner:           { label: 'Owner',           blurb: 'Read access plus comments and reports' },
+  trade:           { label: 'Trade Partner',   blurb: 'Edits only their own trade rows and sign-offs' },
+  viewer:          { label: 'Viewer',          blurb: 'Read only' },
+  pending:         { label: 'Pending',         blurb: 'No access until assigned' }
+};
+
+const PERMISSIONS = {
+  vec_admin: ['*'],
+  vec_coordinator: [
+    'project.open', 'project.create', 'project.clone',
+    'directory.edit', 'directory.import', 'library.use', 'library.edit',
+    'issue.create', 'issue.edit.any', 'issue.delete',
+    'blocker.create', 'blocker.edit.any',
+    'schedule.edit', 'modelpop.edit.any', 'signoff.any',
+    'report.generate', 'changelog.export', 'comment.create', 'plan.edit'
+  ],
+  gc: [
+    'project.open', 'library.use',
+    'issue.create', 'issue.edit.any',
+    'blocker.create', 'blocker.edit.any',
+    'schedule.edit', 'modelpop.edit.any', 'signoff.any',
+    'report.generate', 'changelog.export', 'comment.create', 'plan.edit'
+  ],
+  design: ['project.open', 'issue.create', 'issue.edit.own', 'comment.create', 'report.generate'],
+  owner:  ['project.open', 'comment.create', 'report.generate'],
+  trade:  ['project.open', 'issue.create', 'issue.edit.own', 'modelpop.edit.own', 'signoff.own', 'comment.create'],
+  viewer: ['project.open'],
+  pending: []
+};
+
+function roleLabel(role) { return (ROLES[role] || {}).label || role || '—'; }
+
+function can(key) {
+  if (!CURRENT_USER) return false;
+  const list = PERMISSIONS[CURRENT_USER.role] || [];
+  return list.includes('*') || list.includes(key);
+}
+
+function canOpenProject(pid) {
+  if (!CURRENT_USER) return false;
+  if (!can('project.open')) return false;
+  const p = CURRENT_USER.projects;
+  if (p === 'all' || p === true) return true;
+  return !!(p && p[pid]);
+}
+
+// Directory entries belonging to the signed-in user's company
+function myDirEntries() {
+  if (!CURRENT_USER || typeof DIRECTORY === 'undefined') return [];
+  const cid = (CURRENT_USER.companyId || '').toLowerCase();
+  const cname = (CURRENT_USER.company || '').trim().toLowerCase();
+  return DIRECTORY.filter(d =>
+    (cid && String(d.id || '').toLowerCase() === cid) ||
+    (cname && String(d.company || '').trim().toLowerCase() === cname)
+  );
+}
+
+// Every label that could refer to one of my company's trades. Trade labels appear
+// as "Company — Role" in some places and as the bare discipline in older records,
+// so match on all of them.
+function myTradeNames() {
+  const out = new Set();
+  for (const d of myDirEntries()) {
+    if (d.isTrade === false) continue;
+    out.add(tradeDisplayName(d));
+    if (d.role) out.add(d.role);
+    (d.trades || []).forEach(t => { if (t && t !== 'All') out.add(t); });
+  }
+  return Array.from(out);
+}
+
+function canEditTrade(tradeName) {
+  if (can('modelpop.edit.any')) return true;
+  return can('modelpop.edit.own') && myTradeNames().includes(tradeName);
+}
+
+function canSignTrade(tradeName) {
+  if (can('signoff.any')) return true;
+  return can('signoff.own') && myTradeNames().includes(tradeName);
+}
+
+function canEditIssue(issue) {
+  if (can('issue.edit.any')) return true;
+  if (!can('issue.edit.own') || !issue) return false;
+  if (issue.createdByUid && CURRENT_USER && issue.createdByUid === CURRENT_USER.uid) return true;
+  if (issue.trade && myTradeNames().includes(issue.trade)) return true;
+  const myCourts = myDirEntries().map(d => d.role);
+  return !!(issue.court && myCourts.includes(issue.court));
+}
+
+function denied(what) {
+  alert(`Your role (${roleLabel(CURRENT_USER && CURRENT_USER.role)}) can't ${what}.\n\nAsk a VEC administrator if you need this access.`);
+}
+
+// Show/hide by permission. Runs after login and every project open.
+function applyPermissions() {
+  const show = (id, ok) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (ok) el.removeAttribute('data-perm-hide');
+    else el.setAttribute('data-perm-hide', '1');
+  };
+
+  show('hub-new-project', can('project.create'));
+  show('hub-clone-project', can('project.clone'));
+  show('hub-library', can('library.edit'));
+  show('hub-users', can('user.manage'));
+  const adminActions = document.getElementById('hub-admin-actions');
+  if (adminActions) {
+    const anyAdmin = can('project.create') || can('project.clone') || can('library.edit') || can('user.manage');
+    adminActions.style.display = anyAdmin ? 'flex' : 'none';
+  }
+
+  // Directory tab is visible to everyone but only editable with directory.edit
+  const dirPanel = document.getElementById('panel-directory');
+  if (dirPanel) {
+    const editable = can('directory.edit');
+    dirPanel.querySelectorAll('button[onclick*="addNewCompany"], button[onclick*="openImportModal"]')
+      .forEach(b => { b.style.display = editable ? '' : 'none'; });
+    let note = document.getElementById('directory-perm-note');
+    if (!editable && !note) {
+      note = document.createElement('div');
+      note.id = 'directory-perm-note';
+      note.className = 'perm-note';
+      note.innerHTML = `<strong>Read only.</strong> Your role can view the directory but not change it.`;
+      dirPanel.insertBefore(note, dirPanel.children[1] || null);
+    } else if (editable && note) {
+      note.remove();
+    }
+    const grid = document.getElementById('directory-grid');
+    if (grid) grid.classList.toggle('perm-locked', !editable);
+  }
+
+  // Change log export
+  const exportBtn = document.querySelector('#panel-changelog button[onclick*="exportChangeLog"]');
+  if (exportBtn) exportBtn.style.display = can('changelog.export') ? '' : 'none';
+
+  // Reports
+  const genBtn = document.querySelector('#panel-reports button[onclick*="generateReport"]');
+  if (genBtn) genBtn.style.display = can('report.generate') ? '' : 'none';
+
+  // Plan zone mapping
+  ['btn-map', 'btn-clear'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = can('plan.edit') ? '' : 'none';
+  });
+
+  // Zone modal log-issue button
+  const addIssueBtn = document.getElementById('zone-modal-add-issue');
+  if (addIssueBtn) addIssueBtn.style.display = can('issue.create') ? '' : 'none';
+
+  // Act-as selector is admin only
+  const sel = document.getElementById('company-selector');
+  const actasLabel = document.getElementById('actas-label');
+  if (sel) sel.style.display = can('user.manage') ? '' : 'none';
+  if (actasLabel) actasLabel.style.display = can('user.manage') ? '' : 'none';
+}
+
+window.can = can;
+window.applyPermissions = applyPermissions;
+window.setAuthMode = setAuthMode;
+window.submitAuth = submitAuth;
+window.sendReset = sendReset;
+window.doSignOut = doSignOut;
+
+// Enter key submits the auth form
+['auth-email', 'auth-password', 'auth-name', 'auth-company'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitAuth(); });
+});
+
+/* ============================================================
+   V3.1 — PERMISSION WRAPPERS AROUND EXISTING ACTIONS
+   ============================================================ */
+const _origPopulateCompanySelector = populateCompanySelector;
+populateCompanySelector = function () {
+  _origPopulateCompanySelector();
+  const sel = document.getElementById('company-selector');
+  if (!sel || !CURRENT_USER) return;
+  if (can('user.manage')) {
+    // Admin can act as any company; default to their own if it exists
+    const mine = Array.from(sel.options).find(o => o.value === CURRENT_USER.company);
+    if (mine) sel.value = CURRENT_USER.company;
+  } else {
+    sel.innerHTML = '';
+    const o = document.createElement('option');
+    o.value = CURRENT_USER.company || 'Unknown';
+    o.textContent = o.value;
+    sel.appendChild(o);
+  }
+  paintIdentity();
+};
+
+const _origRenderProjectHub = renderProjectHub;
+renderProjectHub = function () {
+  const all = allProjects;
+  const visible = {};
+  for (const pid of Object.keys(all || {})) if (canOpenProject(pid)) visible[pid] = all[pid];
+  allProjects = visible;
+  try { _origRenderProjectHub(); } finally { allProjects = all; }
+
+  if (Object.keys(visible).length === 0 && !can('project.create')) {
+    const grid = document.getElementById('project-grid');
+    if (grid) grid.innerHTML = `
+      <div style="padding:60px;text-align:center;color:var(--text-tertiary);grid-column:1/-1;">
+        <div style="font-size:40px;margin-bottom:14px;">🔒</div>
+        <div style="font-size:15px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">No projects assigned yet</div>
+        <div style="font-size:13px;">A VEC administrator has to grant you access to a project.</div>
+      </div>`;
+  }
+  applyPermissions();
+};
+
+const _origOpenProject = openProject;
+openProject = function (projectId) {
+  if (!canOpenProject(projectId)) { denied('open that project'); return; }
+  _origOpenProject(projectId);
+  setTimeout(applyPermissions, 300);
+};
+
+const _origOpenWizard = openWizard;
+openWizard = function (cloneFrom) {
+  if (!can('project.create')) { denied('create projects'); return; }
+  _origOpenWizard(cloneFrom);
+  // Make sure the library chips have data to draw
+  loadLibrary().then(() => { if (document.getElementById('wizard-view').style.display !== 'none') renderWizardStep(); });
+};
+
+const _origOpenCloneDialog = openCloneDialog;
+openCloneDialog = function () {
+  if (!can('project.clone')) { denied('clone projects'); return; }
+  _origOpenCloneDialog();
+};
+
+const _origAddNewCompany = addNewCompany;
+addNewCompany = function () {
+  if (!can('directory.edit')) { denied('edit the directory'); return; }
+  _origAddNewCompany();
+};
+
+const _origRemoveCompany = removeCompany;
+removeCompany = function (idx) {
+  if (!can('directory.edit')) { denied('edit the directory'); return; }
+  _origRemoveCompany(idx);
+};
+
+const _origSaveDirectory = saveDirectory;
+saveDirectory = function () {
+  _origSaveDirectory();
+  if (can('library.use')) upsertLibraryFromDirectory();
+};
+
+const _origOpenImportModal = openImportModal;
+openImportModal = function () {
+  if (!can('directory.import')) { denied('import directory data'); return; }
+  _origOpenImportModal();
+};
+
+const _origOpenIssueForm = openIssueForm;
+openIssueForm = function (zone, stage, editingId = null) {
+  if (editingId) {
+    const issue = ISSUES.find(i => i.id === editingId);
+    if (!canEditIssue(issue)) { denied('edit that issue'); return; }
+  } else if (!can('issue.create')) {
+    denied('log issues'); return;
+  }
+  _origOpenIssueForm(zone, stage, editingId);
+};
+
+const _origOpenBlockerForm = openBlockerForm;
+openBlockerForm = function (zoneId, editingId = null) {
+  if (!can('blocker.create') && !can('blocker.edit.any')) { denied('log blockers'); return; }
+  _origOpenBlockerForm(zoneId, editingId);
+};
+
+const _origToggleDateEdit = toggleDateEdit;
+toggleDateEdit = function (zoneId) {
+  if (!can('schedule.edit')) { denied('change schedule dates'); return; }
+  _origToggleDateEdit(zoneId);
+};
+
+const _origUpdateModelPop = updateModelPop;
+updateModelPop = function (zoneId, trade, pct) {
+  if (!canEditTrade(trade)) { denied(`update model population for ${trade}`); return; }
+  _origUpdateModelPop(zoneId, trade, pct);
+};
+
+const _origToggleSignoff = toggleSignoff;
+toggleSignoff = function (zoneId, tradeName) {
+  if (!canSignTrade(tradeName)) { denied(`sign off ${tradeName}`); return; }
+  _origToggleSignoff(zoneId, tradeName);
+};
+window.toggleSignoff = toggleSignoff;
+
+// Hide edit/delete on the issue detail modal when the role can't touch that issue
+const _origOpenIssueDetail = openIssueDetail;
+openIssueDetail = function (id) {
+  _origOpenIssueDetail(id);
+  const issue = ISSUES.find(i => i.id === id);
+  const editBtn = document.getElementById('detail-edit');
+  const delBtn = document.getElementById('detail-delete');
+  const editable = canEditIssue(issue);
+  if (editBtn) editBtn.style.display = editable ? '' : 'none';
+  if (delBtn) delBtn.style.display = (editable && can('issue.delete')) ? '' : 'none';
+};
+
+// Same for blockers
+const _origOpenBlockerDetail = openBlockerDetail;
+openBlockerDetail = function (id) {
+  _origOpenBlockerDetail(id);
+  const editable = can('blocker.edit.any');
+  const delBtn = document.getElementById('blocker-detail-delete');
+  const resolveBtn = document.getElementById('blocker-detail-resolve');
+  if (delBtn) delBtn.style.display = editable ? '' : 'none';
+  if (resolveBtn) resolveBtn.style.display = editable ? '' : 'none';
+};
+
+// Carry library contacts and color into a brand new project's directory
+const _origLaunchNewProject = launchNewProject;
+launchNewProject = function () {
+  const enriched = (wizardData.trades || []).map(t => {
+    if (!t.fromLibrary) return t;
+    const rec = window.LIBRARY[t.fromLibrary];
+    return rec ? { ...t, _libContacts: rec.contacts || [], _libColor: rec.color } : t;
+  });
+  wizardData.trades = enriched;
+  _origLaunchNewProject();
+  // Patch in contacts once the wizard has written the default directory
+  setTimeout(() => {
+    const pid = (wizardData.config.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
+    if (!pid) return;
+    db.ref(`projects/${pid}/directory`).once('value').then((snap) => {
+      const dir = snap.val();
+      if (!dir) return;
+      const arr = Array.isArray(dir) ? dir : Object.values(dir);
+      let touched = false;
+      for (const d of arr) {
+        const match = enriched.find(t => t.company && t.company === d.company && t._libContacts);
+        if (match && (!d.contacts || d.contacts.length === 0)) {
+          d.contacts = match._libContacts;
+          if (match._libColor) d.color = match._libColor;
+          touched = true;
+        }
+      }
+      if (touched) db.ref(`projects/${pid}/directory`).set(arr);
+    });
+  }, 2500);
+};
+
+const _origExportChangeLog = exportChangeLog;
+exportChangeLog = function () {
+  if (!can('changelog.export')) { denied('export the change log'); return; }
+  _origExportChangeLog();
+};
+
+// Stamp every issue with who created it, so issue.edit.own works.
+// Wraps window.saveIssue because an earlier layer already wrapped it for the change log.
+const _origSaveIssue = window.saveIssue;
+window.saveIssue = function () {
+  if (formContext.editingId) {
+    const existing = ISSUES.find(i => i.id === formContext.editingId);
+    if (!canEditIssue(existing)) { denied('edit that issue'); return; }
+  } else if (!can('issue.create')) {
+    denied('log issues'); return;
+  }
+  const before = ISSUES.length;
+  _origSaveIssue();
+  if (ISSUES.length > before && CURRENT_USER) {
+    const fresh = ISSUES[ISSUES.length - 1];
+    fresh.createdByUid = CURRENT_USER.uid;
+    fresh.createdByName = CURRENT_USER.name;
+    if (typeof saveIssues === 'function') saveIssues();
+  }
+};
+
+// Sign-off panel respects own vs any
+const _origRenderSignoffPanel = renderSignoffPanel;
+renderSignoffPanel = function (zoneId) {
+  let html = _origRenderSignoffPanel(zoneId);
+  const trades = getTradeNamesForZone(zoneId);
+  for (const t of trades) {
+    if (!canSignTrade(t)) {
+      html = html.replace(
+        new RegExp(`(<input type="checkbox" class="signoff-check"[^>]*onchange="toggleSignoff\\('${zoneId}','${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}'\\)[^>]*)>`),
+        '$1 disabled title="Your role cannot sign off this trade">'
+      );
+    }
+  }
+  if (!can('signoff.any') && can('signoff.own')) {
+    const mine = myDirEntries().filter(d => d.isTrade !== false).map(d => tradeDisplayName(d));
+    html = html.replace('Sign-Off Status',
+      `Sign-Off Status <span class="role-badge dark" style="margin-left:6px;">You sign: ${mine.join(', ') || 'none assigned'}</span>`);
+  }
+  return html;
+};
+window.renderSignoffPanel = renderSignoffPanel;
+
+/* ============================================================
+   V3.1 — VEC COMPANY LIBRARY
+   Global, self-seeding. Every company saved into any project
+   directory gets upserted here and becomes quick-addable.
+   ============================================================ */
+window.LIBRARY = {};          // slug -> record
+let libraryTarget = null;     // 'wizard' | 'directory'
+let libraryFilter = 'all';
+
+function libSlug(name) {
+  return String(name || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function libraryRecordFromDirEntry(d, projectId) {
+  const slug = libSlug(d.company);
+  if (!slug) return null;
+  return {
+    slug,
+    name: (d.company || '').trim(),
+    role: d.role || '',
+    isTrade: d.isTrade !== false,
+    color: d.color || '#666',
+    trades: Array.isArray(d.trades) ? d.trades.filter(Boolean) : [],
+    contacts: (d.contacts || []).filter(c => c && (c.name || c.email)),
+    projects: projectId ? { [projectId]: true } : {},
+    updatedAt: new Date().toISOString()
+  };
+}
+
+function mergeLibraryRecord(existing, incoming) {
+  if (!existing) return incoming;
+  const contactKey = c => (c.email || c.name || '').toLowerCase();
+  const contacts = [...(existing.contacts || [])];
+  for (const c of incoming.contacts || []) {
+    const k = contactKey(c);
+    if (!k) continue;
+    const at = contacts.findIndex(x => contactKey(x) === k);
+    if (at >= 0) contacts[at] = { ...contacts[at], ...c };
+    else contacts.push(c);
+  }
+  return {
+    ...existing,
+    name: incoming.name || existing.name,
+    role: incoming.role || existing.role,
+    isTrade: incoming.isTrade !== undefined ? incoming.isTrade : existing.isTrade,
+    color: existing.color || incoming.color,
+    trades: Array.from(new Set([...(existing.trades || []), ...(incoming.trades || [])])),
+    contacts,
+    projects: { ...(existing.projects || {}), ...(incoming.projects || {}) },
+    updatedAt: new Date().toISOString()
+  };
+}
+
+// Scan every project directory in the database and fold it into the library.
+// This is what seeds the library off the existing DC6 directory.
+function harvestLibrary(announce) {
+  return db.ref('projects').once('value').then((snap) => {
+    const projects = snap.val() || {};
+    return db.ref('library/companies').once('value').then((libSnap) => {
+      const lib = libSnap.val() || {};
+      let added = 0, updated = 0;
+
+      for (const pid of Object.keys(projects)) {
+        const raw = projects[pid] && projects[pid].directory;
+        if (!raw) continue;
+        const dir = Array.isArray(raw) ? raw : Object.values(raw);
+        for (const d of dir) {
+          const rec = libraryRecordFromDirEntry(d, pid);
+          if (!rec) continue;
+          if (lib[rec.slug]) updated++; else added++;
+          lib[rec.slug] = mergeLibraryRecord(lib[rec.slug], rec);
+        }
+      }
+
+      window.LIBRARY = lib;
+      return db.ref('library/companies').set(lib).then(() => {
+        if (announce) {
+          alert(`Library rescanned.\n\n${added} new compan${added === 1 ? 'y' : 'ies'} added, ${updated} updated.\n${Object.keys(lib).length} total.`);
+          renderLibraryList();
+        }
+        return lib;
+      });
+    });
+  }).catch((err) => {
+    console.error('Library harvest failed:', err);
+    if (announce) alert('Could not reach the library. Check your database rules.');
+  });
+}
+
+// Called on every directory save so the library grows as projects are worked.
+function upsertLibraryFromDirectory() {
+  if (!activeProjectId || typeof DIRECTORY === 'undefined') return;
+  const updates = {};
+  for (const d of DIRECTORY) {
+    const rec = libraryRecordFromDirEntry(d, activeProjectId);
+    if (!rec) continue;
+    const merged = mergeLibraryRecord(window.LIBRARY[rec.slug], rec);
+    window.LIBRARY[rec.slug] = merged;
+    updates['library/companies/' + rec.slug] = merged;
+  }
+  if (Object.keys(updates).length) db.ref().update(updates).catch(e => console.warn('Library upsert:', e));
+}
+
+function loadLibrary() {
+  return db.ref('library/companies').once('value').then((snap) => {
+    window.LIBRARY = snap.val() || {};
+    return window.LIBRARY;
+  }).catch(() => ({}));
+}
+
+function openLibraryManager() {
+  if (!can('library.edit')) { denied('manage the company library'); return; }
+  openLibrary(null);
+}
+
+function openLibrary(target) {
+  libraryTarget = target;
+  libraryFilter = 'all';
+  document.getElementById('library-search').value = '';
+  document.getElementById('library-title').textContent = target ? 'Add from VEC Library' : 'VEC Company Library';
+  document.getElementById('library-sub').textContent = target
+    ? 'Click a company to add it to this project.'
+    : 'Every company VEC has worked with, harvested from past project directories.';
+  document.getElementById('library-harvest').style.display = can('library.edit') ? '' : 'none';
+  document.getElementById('library-modal').classList.add('show');
+  loadLibrary().then(renderLibraryList);
+}
+
+function closeLibrary() {
+  document.getElementById('library-modal').classList.remove('show');
+  libraryTarget = null;
+}
+
+function renderLibraryList() {
+  const list = document.getElementById('library-list');
+  const filterWrap = document.getElementById('library-filters');
+  const q = (document.getElementById('library-search').value || '').trim().toLowerCase();
+  const all = Object.values(window.LIBRARY || {});
+
+  const roles = Array.from(new Set(all.map(r => r.role).filter(Boolean))).sort();
+  filterWrap.innerHTML = ['all', ...roles].map(r => `
+    <button class="lib-chip" style="${libraryFilter === r ? 'background:var(--vec-navy);color:#fff;border-color:var(--vec-navy);' : ''}"
+      onclick="libraryFilter='${r.replace(/'/g, "\\'")}';renderLibraryList()">${r === 'all' ? 'All' : r}</button>
+  `).join('');
+
+  let rows = all.filter(r => {
+    if (libraryFilter !== 'all' && r.role !== libraryFilter) return false;
+    if (!q) return true;
+    return (r.name || '').toLowerCase().includes(q) ||
+           (r.role || '').toLowerCase().includes(q) ||
+           (r.trades || []).join(' ').toLowerCase().includes(q);
+  }).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
+  if (rows.length === 0) {
+    list.innerHTML = `
+      <div style="padding:36px;text-align:center;color:var(--text-tertiary);font-size:13px;">
+        ${all.length === 0
+          ? 'Library is empty. Hit <strong>Rescan Projects</strong> to seed it from every project directory already in the database.'
+          : 'Nothing matches that search.'}
+      </div>`;
+    return;
+  }
+
+  const alreadyHere = new Set(
+    (typeof DIRECTORY !== 'undefined' ? DIRECTORY : []).map(d => libSlug(d.company)).filter(Boolean)
+  );
+  const inWizard = new Set(
+    (typeof wizardData !== 'undefined' ? wizardData.trades || [] : []).map(t => libSlug(t.company)).filter(Boolean)
+  );
+
+  list.innerHTML = rows.map(r => {
+    const used = libraryTarget === 'directory' ? alreadyHere.has(r.slug)
+               : libraryTarget === 'wizard' ? inWizard.has(r.slug)
+               : false;
+    const nProjects = Object.keys(r.projects || {}).length;
+    const nContacts = (r.contacts || []).length;
+    return `
+      <div class="lib-item ${used ? 'added' : ''}" ${libraryTarget ? `onclick="pickFromLibrary('${r.slug}')"` : ''}>
+        <div class="lib-swatch" style="background:${r.color || '#666'};"></div>
+        <div style="flex:1;min-width:0;">
+          <div class="lib-name">${r.name}</div>
+          <div class="lib-meta">${r.role || 'No role recorded'}${nContacts ? ` · ${nContacts} contact${nContacts === 1 ? '' : 's'}` : ''}</div>
+        </div>
+        <div class="lib-count">${nProjects} project${nProjects === 1 ? '' : 's'}</div>
+        ${used ? '<div class="lib-count">Added</div>' : (libraryTarget ? '<div class="lib-count" style="color:var(--vec-teal);">+ Add</div>' : '')}
+      </div>`;
+  }).join('');
+}
+
+// Top library companies as one-click chips inside the wizard's trade step.
+function libraryQuickChips() {
+  const all = Object.values(window.LIBRARY || {})
+    .filter(r => r.isTrade !== false && r.name)
+    .sort((a, b) => Object.keys(b.projects || {}).length - Object.keys(a.projects || {}).length)
+    .slice(0, 14);
+
+  if (all.length === 0) {
+    return `<div style="font-size:11px;color:var(--text-tertiary);font-style:italic;">
+      No companies in the library yet. It fills itself in as you save project directories, or a VEC admin can rescan from the hub.
+    </div>`;
+  }
+
+  const already = new Set((wizardData.trades || []).map(t => libSlug(t.company)).filter(Boolean));
+  return all.filter(r => !already.has(r.slug)).map(r => `
+    <button onclick="pickFromLibrary('${r.slug}')" title="${r.role || ''} · on ${Object.keys(r.projects || {}).length} project(s)"
+      style="padding:4px 12px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);font-size:11px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;">
+      <span style="width:6px;height:6px;border-radius:50%;background:${r.color || '#666'};"></span>+ ${r.name}
+    </button>
+  `).join('');
+}
+
+function pickFromLibrary(slug) {
+  const rec = window.LIBRARY[slug];
+  if (!rec) return;
+
+  // Chips inside the wizard call this without opening the modal first
+  let target = libraryTarget;
+  if (!target) {
+    target = document.getElementById('wizard-view').style.display !== 'none' ? 'wizard' : 'directory';
+  }
+
+  if (target === 'wizard') {
+    wizardData.trades.push({
+      name: rec.trades[0] || rec.role,
+      role: rec.role,
+      company: rec.name,
+      selected: true,
+      fromLibrary: slug
+    });
+    renderWizardStep();
+    renderLibraryList();
+    return;
+  }
+
+  if (target === 'directory') {
+    if (!can('directory.edit')) { denied('edit the directory'); return; }
+    DIRECTORY.push({
+      id: 'co-' + Date.now(),
+      company: rec.name,
+      role: rec.role,
+      isTrade: rec.isTrade !== false,
+      trades: rec.trades.length ? rec.trades : [rec.role],
+      zones: null,
+      contacts: (rec.contacts || []).map(c => ({ name: c.name || '', title: c.title || '', email: c.email || '', phone: c.phone || '' })),
+      docUrl: '',
+      color: rec.color || '#666'
+    });
+    saveDirectory();
+    renderDirectory();
+    renderLibraryList();
+    addChangeLogEntry(
+      document.getElementById('company-selector').value,
+      'status',
+      `Added ${rec.name} to the directory from the VEC library`
+    );
+  }
+}
+
+window.openLibrary = openLibrary;
+window.openLibraryManager = openLibraryManager;
+window.closeLibrary = closeLibrary;
+window.renderLibraryList = renderLibraryList;
+window.pickFromLibrary = pickFromLibrary;
+window.harvestLibrary = harvestLibrary;
+
+/* ============================================================
+   V3.1 — USER MANAGEMENT
+   ============================================================ */
+let ALL_USERS = {};
+let ALL_INVITES = {};
+
+function openUsersManager() {
+  if (!can('user.manage')) { denied('manage users'); return; }
+  document.getElementById('users-modal').classList.add('show');
+  document.getElementById('users-search').value = '';
+  Promise.all([
+    db.ref('users').once('value'),
+    db.ref('invites').once('value'),
+    db.ref('projects').once('value')
+  ]).then(([u, i, p]) => {
+    ALL_USERS = u.val() || {};
+    ALL_INVITES = i.val() || {};
+    allProjects = p.val() || allProjects;
+    renderUsersManager();
+  });
+}
+
+function closeUsersManager() {
+  document.getElementById('users-modal').classList.remove('show');
+}
+
+function roleOptions(selected) {
+  return Object.keys(ROLES)
+    .map(r => `<option value="${r}" ${r === selected ? 'selected' : ''}>${ROLES[r].label}</option>`)
+    .join('');
+}
+
+function companyOptions(selected) {
+  const names = new Set(['VEC']);
+  Object.values(window.LIBRARY || {}).forEach(r => names.add(r.name));
+  (typeof DIRECTORY !== 'undefined' ? DIRECTORY : []).forEach(d => { if (d.company) names.add(d.company); });
+  Object.values(ALL_USERS).forEach(u => { if (u.company) names.add(u.company); });
+  if (selected) names.add(selected);
+  return Array.from(names).sort().map(n => `<option value="${n}" ${n === selected ? 'selected' : ''}>${n}</option>`).join('');
+}
+
+function projectAccessSummary(u) {
+  if (u.projects === 'all' || u.projects === true) return 'All projects';
+  const n = Object.keys(u.projects || {}).length;
+  return n === 0 ? 'None' : `${n} project${n === 1 ? '' : 's'}`;
+}
+
+function renderUsersManager() {
+  const q = (document.getElementById('users-search').value || '').trim().toLowerCase();
+  const list = document.getElementById('users-list');
+  const uids = Object.keys(ALL_USERS).filter(uid => {
+    if (!q) return true;
+    const u = ALL_USERS[uid];
+    return [u.name, u.email, u.company].join(' ').toLowerCase().includes(q);
+  }).sort((a, b) => {
+    const ra = ALL_USERS[a].role === 'pending' ? 0 : 1;
+    const rb = ALL_USERS[b].role === 'pending' ? 0 : 1;
+    if (ra !== rb) return ra - rb;
+    return (ALL_USERS[a].name || '').localeCompare(ALL_USERS[b].name || '');
+  });
+
+  if (uids.length === 0) {
+    list.innerHTML = `<div style="padding:30px;text-align:center;color:var(--text-tertiary);font-size:13px;">No accounts yet.</div>`;
+  } else {
+    list.innerHTML = uids.map(uid => {
+      const u = ALL_USERS[uid];
+      const isMe = CURRENT_USER && CURRENT_USER.uid === uid;
+      return `
+        <div class="user-row ${u.role === 'pending' ? 'pending' : ''}">
+          <div>
+            <div class="user-name">${u.name || '—'} ${isMe ? '<span class="role-badge dark">you</span>' : ''}</div>
+            <div class="user-email">${u.email || ''}</div>
+          </div>
+          <select class="form-select" style="font-size:12px;padding:5px 8px;" onchange="updateUser('${uid}','company',this.value)">
+            <option value="">— unassigned —</option>
+            ${companyOptions(u.company)}
+          </select>
+          <select class="form-select" style="font-size:12px;padding:5px 8px;" ${isMe ? 'disabled title="You cannot change your own role"' : ''} onchange="updateUser('${uid}','role',this.value)">
+            ${roleOptions(u.role)}
+          </select>
+          <div>
+            <button class="btn ghost" style="font-size:11px;padding:4px 10px;" onclick="editUserProjects('${uid}')">${projectAccessSummary(u)}</button>
+          </div>
+          <button class="btn danger" style="font-size:11px;padding:4px 10px;" ${isMe ? 'disabled' : ''} onclick="revokeUser('${uid}')">Revoke</button>
+        </div>`;
+    }).join('');
+  }
+
+  const inviteKeys = Object.keys(ALL_INVITES);
+  document.getElementById('invites-list').innerHTML = inviteKeys.length === 0 ? '' : `
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:8px;">
+      Pre-assigned emails (applied at signup)
+    </div>
+    ${inviteKeys.map(k => {
+      const inv = ALL_INVITES[k];
+      return `
+        <div class="user-row" style="grid-template-columns:1.4fr 1.2fr 1fr auto;">
+          <div><div class="user-email">${inv.email}</div></div>
+          <div style="font-size:12px;">${inv.company || '—'}</div>
+          <div style="font-size:12px;">${roleLabel(inv.role)}</div>
+          <button class="btn danger" style="font-size:11px;padding:4px 10px;" onclick="deleteInvite('${k}')">Remove</button>
+        </div>`;
+    }).join('')}`;
+}
+
+function updateUser(uid, field, value) {
+  if (!can('user.manage')) { denied('manage users'); return; }
+  if (CURRENT_USER && uid === CURRENT_USER.uid && field === 'role') { denied('change your own role'); return; }
+  ALL_USERS[uid][field] = value;
+  const updates = { [`users/${uid}/${field}`]: value };
+  if (field === 'company') {
+    const slug = libSlug(value);
+    ALL_USERS[uid].companyId = slug;
+    updates[`users/${uid}/companyId`] = slug;
+  }
+  if (field === 'role' && (value === 'vec_admin' || value === 'vec_coordinator')) {
+    ALL_USERS[uid].projects = 'all';
+    updates[`users/${uid}/projects`] = 'all';
+  }
+  db.ref().update(updates).then(renderUsersManager);
+}
+
+function editUserProjects(uid) {
+  if (!can('user.manage')) { denied('manage users'); return; }
+  const u = ALL_USERS[uid];
+  const pids = Object.keys(allProjects || {});
+  if (pids.length === 0) { alert('No projects exist yet.'); return; }
+
+  const current = u.projects === 'all' || u.projects === true ? 'all' : (u.projects || {});
+  const lines = pids.map((pid, i) => {
+    const on = current === 'all' || current[pid];
+    return `${i + 1}. [${on ? 'x' : ' '}] ${allProjects[pid]?.config?.name || pid}`;
+  }).join('\n');
+
+  const answer = prompt(
+    `Project access for ${u.name || u.email}\n\n${lines}\n\n` +
+    `Type numbers separated by commas to grant (e.g. 1,3), "all" for everything, or "none".`,
+    current === 'all' ? 'all' : pids.map((p, i) => current[p] ? i + 1 : null).filter(Boolean).join(',')
+  );
+  if (answer === null) return;
+
+  let value;
+  const trimmed = answer.trim().toLowerCase();
+  if (trimmed === 'all') value = 'all';
+  else if (trimmed === 'none' || trimmed === '') value = {};
+  else {
+    value = {};
+    for (const part of trimmed.split(',')) {
+      const idx = parseInt(part.trim(), 10) - 1;
+      if (pids[idx]) value[pids[idx]] = true;
+    }
+  }
+  ALL_USERS[uid].projects = value;
+  db.ref(`users/${uid}/projects`).set(value).then(renderUsersManager);
+}
+
+function revokeUser(uid) {
+  if (!can('user.manage')) { denied('manage users'); return; }
+  const u = ALL_USERS[uid];
+  if (!confirm(`Revoke access for ${u.name || u.email}?\n\nTheir login stays alive but drops to pending with no project access.`)) return;
+  const updates = { [`users/${uid}/role`]: 'pending', [`users/${uid}/projects`]: {} };
+  ALL_USERS[uid].role = 'pending';
+  ALL_USERS[uid].projects = {};
+  db.ref().update(updates).then(renderUsersManager);
+}
+
+function openInviteForm() {
+  const form = document.getElementById('invite-form');
+  const showing = form.style.display !== 'none';
+  form.style.display = showing ? 'none' : 'block';
+  if (!showing) {
+    document.getElementById('invite-email').value = '';
+    document.getElementById('invite-company').innerHTML = '<option value="">— unassigned —</option>' + companyOptions('');
+    document.getElementById('invite-role').innerHTML = roleOptions('trade');
+  }
+}
+
+function saveInvite() {
+  if (!can('user.manage')) { denied('manage users'); return; }
+  const email = document.getElementById('invite-email').value.trim().toLowerCase();
+  const company = document.getElementById('invite-company').value;
+  const role = document.getElementById('invite-role').value;
+  if (!email || !email.includes('@')) { alert('Enter a valid email address.'); return; }
+
+  const invite = {
+    email, company, companyId: libSlug(company), role,
+    projects: (role === 'vec_admin' || role === 'vec_coordinator') ? 'all' : {},
+    createdAt: new Date().toISOString(),
+    createdBy: CURRENT_USER ? CURRENT_USER.email : ''
+  };
+  ALL_INVITES[emailKey(email)] = invite;
+  db.ref('invites/' + emailKey(email)).set(invite).then(() => {
+    document.getElementById('invite-form').style.display = 'none';
+    renderUsersManager();
+  });
+}
+
+function deleteInvite(key) {
+  if (!can('user.manage')) { denied('manage users'); return; }
+  delete ALL_INVITES[key];
+  db.ref('invites/' + key).remove().then(renderUsersManager);
+}
+
+window.openUsersManager = openUsersManager;
+window.closeUsersManager = closeUsersManager;
+window.renderUsersManager = renderUsersManager;
+window.updateUser = updateUser;
+window.editUserProjects = editUserProjects;
+window.revokeUser = revokeUser;
+window.openInviteForm = openInviteForm;
+window.saveInvite = saveInvite;
+window.deleteInvite = deleteInvite;
+
+/* ============================================================
+   V3.1 — INITIALIZATION
+   The auth listener above drives everything. Nothing renders
+   until a signed-in account has a role assigned.
+   ============================================================ */
+setAuthMode('signin');
+showAuthScreen(false);
+
+console.log('🚀 VEC BIM Coordination Platform v3.1 loaded — auth + permissions + company library');
+
 </script>
 
 </body>
