@@ -1921,6 +1921,8 @@
   .disp-opt.on .disp-opt-label { color: var(--brand-deep); }
   .disp-opt-note { font-size: 10.5px; color: var(--text-tertiary); margin-top: 3px; line-height: 1.45; }
 
+
+  .tier-basis { font-size: 11px; color: var(--text-tertiary); margin-top: 4px; font-style: italic; }
 </style>
 </head>
 <body>
@@ -2072,7 +2074,7 @@
     <div class="header-meta">
       <div class="meta-item"><span class="meta-label">Today</span><span class="meta-value mono" id="header-today">—</span></div>
       <div class="meta-item"><span class="meta-label">GC</span><span class="meta-value">HITT</span></div>
-      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v4.0</span></div>
+      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v4.1</span></div>
       <button class="theme-toggle" onclick="toggleTheme()" title="Switch theme">☾</button>
       <div class="notif-bell" onclick="toggleNotifications()" id="notif-bell" style="margin-left:12px;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
@@ -2289,7 +2291,9 @@
             <option value="all">All areas</option>
           </select>
         </div>
+        <button class="zone-footer-btn ghost" onclick="openCodeMap()" id="btn-codemap" style="padding:8px 16px;font-size:12px;">Code map</button>
         <button class="zone-footer-btn ghost" onclick="generateConditions()" id="btn-build-conditions" style="padding:8px 16px;font-size:12px;">Build conditions</button>
+        <button class="zone-footer-btn ghost" onclick="proposeTiers()" id="btn-propose-tiers" style="padding:8px 16px;font-size:12px;">Suggest risk tiers</button>
         <button class="zone-footer-btn" onclick="publishBatch()" id="btn-publish-batch" style="padding:8px 16px;font-size:12px;">Publish write batch</button>
       </div>
     </div>
@@ -2350,6 +2354,20 @@
         </div>
         <button class="zone-footer-btn" onclick="generateReport()" style="padding:8px 18px;font-size:12px;">Generate Report</button>
       </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;">
+        <div>
+          <h3 style="font-size:15px;font-weight:700;color:var(--ink);">Live pull from ACC</h3>
+          <p style="font-size:12px;color:var(--text-tertiary);margin-top:3px;max-width:600px;">
+            ACC only exports BCF or a PDF report, neither of which carries what the disposition cycle needs.
+            The extension pulls every issue through the API instead and pushes it here. No file.
+          </p>
+        </div>
+        <button class="zone-footer-btn" onclick="openSnapshotImport()" style="padding:8px 18px;font-size:12px;">Check for a pushed snapshot</button>
+      </div>
+      <div id="acc-snapshot" style="margin-top:14px;"></div>
     </div>
 
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;">
@@ -2447,7 +2465,7 @@ Cleveland Electric, Electrical, Sarah Lee, BIM Lead, sarah@clevelandelec.com, 40
 </div>
 
 <footer>
-  Virtual Engineering Consultants · BIM Coordination Services · Template v4.0<br>
+  Virtual Engineering Consultants · BIM Coordination Services · Template v4.1<br>
   Clash disposition (VEC-CWP-001) · Role permissions · Schedule intelligence · ACC import · Portfolio analytics
 </footer>
 
@@ -2696,6 +2714,42 @@ Cleveland Electric, Electrical, Sarah Lee, BIM Lead, sarah@clevelandelec.com, 40
 </div>
 
 </div><!-- end project-view -->
+
+<!-- CODE MAP (v4.1) -->
+<div class="modal-backdrop" id="codemap-modal">
+  <div class="modal" style="max-width:720px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Discipline and trade codes</div>
+        <div class="modal-sub">Read out of your issue titles. Tell the platform what each one means.</div>
+      </div>
+      <button class="modal-close" onclick="closeCodeMap()">✕</button>
+    </div>
+    <div class="modal-body" id="codemap-body"></div>
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closeCodeMap()">Cancel</button>
+      <button class="btn" onclick="saveCodeMapAndClose()">Save codes</button>
+    </div>
+  </div>
+</div>
+
+<!-- RISK TIER PROPOSALS (v4.1) -->
+<div class="modal-backdrop" id="tier-modal">
+  <div class="modal" style="max-width:860px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Proposed risk tiers</div>
+        <div class="modal-sub">Read off the title convention against section 3.1. Nothing changes until you apply.</div>
+      </div>
+      <button class="modal-close" onclick="closeTierModal()">✕</button>
+    </div>
+    <div class="modal-body" id="tier-body"></div>
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closeTierModal()">Cancel</button>
+      <button class="btn" onclick="applyTierProposals()">Apply selected</button>
+    </div>
+  </div>
+</div>
 
 <!-- DISPOSITION MODAL (v4.0) -->
 <div class="modal-backdrop" id="disp-modal">
@@ -6888,6 +6942,10 @@ function applyPermissions() {
     if (grid) grid.classList.toggle('perm-locked', !editable);
   }
 
+  ['btn-codemap', 'btn-propose-tiers'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = can('condition.manage') ? '' : 'none';
+  });
   const bcBtn = document.getElementById('btn-build-conditions');
   if (bcBtn) bcBtn.style.display = can('condition.manage') ? '' : 'none';
   const pbBtn = document.getElementById('btn-publish-batch');
@@ -11056,6 +11114,494 @@ openProject = function (pid) {
 window.openProject = openProject;
 
 /* ============================================================
+   V4.1 — ACC TITLE PARSER, CODE MAP, RISK TIER SUGGESTION
+   VEC titles follow the Appendix B convention:
+     L2 - PL (ART) vs MP (MCK) - DH-2300 - CRAH/CDU GALLERY 2303 - pipe vs hanger
+     level  disciplineA (tradeA) vs disciplineB (tradeB)  area  space  condition
+   Everything the disposition cycle needs is in there, delimited
+   and ordered, so it is parsed rather than guessed at.
+   ============================================================ */
+
+window.CODE_MAP = { disciplines: {}, trades: {} };
+
+function saveCodeMap() { fbSave('codeMap', window.CODE_MAP); }
+function loadCodeMap(pid) {
+  return db.ref(`projects/${pid}/codeMap`).once('value').then(snap => {
+    const v = snap.val() || {};
+    window.CODE_MAP = { disciplines: v.disciplines || {}, trades: v.trades || {} };
+    return window.CODE_MAP;
+  }).catch(() => window.CODE_MAP);
+}
+
+/* ---------- the parser ---------- */
+
+// Returns null when the title does not follow the convention, so callers can
+// fall back rather than acting on a bad parse.
+function parseVecTitle(title) {
+  const raw = String(title || '').trim();
+  if (!raw) return null;
+
+  const parts = raw.split(/\s+-\s+/).map(s => s.trim()).filter(Boolean);
+  if (parts.length < 3) return null;
+
+  // Segment 1: the level, L1 / L2 / RF / ROOF / SITE
+  const level = /^(l\d|rf|roof|site|lvl\s*\d)/i.test(parts[0]) ? parts[0] : null;
+  if (!level) return null;
+
+  // Segment 2: DISC (TRADE) vs DISC (TRADE)
+  const pair = parts[1].match(/^([A-Z0-9]+)\s*\(([^)]+)\)\s*vs\s*([A-Z0-9]+)\s*\(([^)]+)\)$/i);
+  if (!pair) return null;
+
+  const [, discA, tradeA, discB, tradeB] = pair.map(x => (x || '').trim());
+
+  // The rest: area, then optional space, then the condition last
+  const rest = parts.slice(2);
+  const area = rest[0] || '';
+  const condition = rest.length > 1 ? rest[rest.length - 1] : '';
+  const space = rest.length > 2 ? rest.slice(1, -1).join(' - ') : '';
+
+  const elements = condition.split(/\s+vs\s+/i).map(s => s.trim()).filter(Boolean);
+
+  return {
+    ok: true, raw,
+    level,
+    disciplines: [discA.toUpperCase(), discB.toUpperCase()],
+    tradeCodes: [tradeA.toUpperCase(), tradeB.toUpperCase()],
+    area, space, condition, elements
+  };
+}
+window.parseVecTitle = parseVecTitle;
+
+// The signature two issues must share to be the same condition:
+// same level, same discipline pair, same area, same space, same elements.
+// This is what keeps "conduit vs hanger" and "conduit vs duct" apart in the
+// same corridor, which loose text matching would have merged.
+function vecConditionKey(p) {
+  if (!p) return null;
+  return [
+    p.level.toUpperCase(),
+    p.disciplines.slice().sort().join('|'),
+    p.area.toUpperCase(),
+    p.space.toUpperCase(),
+    p.elements.map(e => e.toLowerCase()).sort().join('|')
+  ].join(' :: ');
+}
+window.vecConditionKey = vecConditionKey;
+
+/* ---------- discover the codes that are actually in use ---------- */
+
+function harvestCodes(issues) {
+  const found = { disciplines: {}, trades: {} };
+  for (const i of issues || ISSUES) {
+    const p = parseVecTitle(i.title);
+    if (!p) continue;
+    p.disciplines.forEach(d => { found.disciplines[d] = (found.disciplines[d] || 0) + 1; });
+    p.tradeCodes.forEach(t => { found.trades[t] = (found.trades[t] || 0) + 1; });
+  }
+  return found;
+}
+
+function openCodeMap() {
+  if (!can('condition.manage')) { denied('edit the code map'); return; }
+  document.getElementById('codemap-modal').classList.add('show');
+  renderCodeMap();
+}
+function closeCodeMap() { document.getElementById('codemap-modal').classList.remove('show'); }
+
+function renderCodeMap() {
+  const found = harvestCodes();
+  const parsed = ISSUES.filter(i => parseVecTitle(i.title)).length;
+
+  const section = (kind, label, hint) => {
+    const codes = Object.keys(found[kind]).sort();
+    if (!codes.length) return `<div class="viz-empty">No ${label.toLowerCase()} codes found in the issue titles yet.</div>`;
+    return `
+      <div style="display:grid;grid-template-columns:90px 1fr 70px;gap:6px;margin-bottom:6px;
+                  font-size:9.5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-tertiary);">
+        <div>Code</div><div>${hint}</div><div>Seen</div>
+      </div>
+      ${codes.map(c => `
+        <div style="display:grid;grid-template-columns:90px 1fr 70px;gap:6px;margin-bottom:6px;align-items:center;">
+          <div class="mono" style="font-size:12.5px;font-weight:700;color:var(--brand);">${c}</div>
+          <input class="form-input" style="font-size:12px;padding:6px 9px;"
+            value="${(CODE_MAP[kind][c] || '').replace(/"/g, '&quot;')}"
+            placeholder="${hint}"
+            onchange="CODE_MAP['${kind}']['${c}']=this.value">
+          <div class="mono an-dim" style="font-size:11.5px;">${found[kind][c]}</div>
+        </div>`).join('')}`;
+  };
+
+  document.getElementById('codemap-body').innerHTML = `
+    <div class="perm-note">
+      <strong>${parsed} of ${ISSUES.length} issue titles follow the convention.</strong>
+      Codes below were read straight out of them. Fill in what each one means and the platform can map issues to
+      trades in your directory and judge risk tiers off the discipline pair.
+      ${parsed < ISSUES.length ? `<br>The ${ISSUES.length - parsed} that do not parse still work, they just fall back to loose text matching.` : ''}
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Discipline codes</div>
+      ${section('disciplines', 'Discipline', 'What this discipline is, e.g. Plumbing')}
+    </div>
+    <div class="form-section" style="margin-bottom:0;">
+      <div class="form-section-title">Trade codes</div>
+      ${section('trades', 'Trade', 'Company, as it appears in your Directory')}
+    </div>`;
+}
+
+function saveCodeMapAndClose() {
+  saveCodeMap();
+  addChangeLogEntry(actorCompany(), 'status',
+    `Code map updated, ${Object.keys(CODE_MAP.disciplines).length} disciplines and ${Object.keys(CODE_MAP.trades).length} trades`);
+  closeCodeMap();
+  renderDisposition();
+}
+
+window.openCodeMap = openCodeMap;
+window.closeCodeMap = closeCodeMap;
+window.renderCodeMap = renderCodeMap;
+window.saveCodeMapAndClose = saveCodeMapAndClose;
+window.harvestCodes = harvestCodes;
+
+/* ---------- import what the extension pushed ---------- */
+
+function accStatusIn(s) {
+  const k = String(s || '').toLowerCase();
+  return ACC_STATUS[k] || 'open';
+}
+
+function tradeFromCodes(codes) {
+  for (const code of codes) {
+    const name = CODE_MAP.trades[code];
+    if (!name) continue;
+    const hit = matchTrade(name);
+    if (hit) return hit;
+  }
+  for (const code of codes) {
+    const hit = matchTrade(code);
+    if (hit) return hit;
+  }
+  return null;
+}
+
+function zoneFromParsed(p, locationDetails) {
+  if (locationDetails) {
+    const z = matchZone(locationDetails);
+    if (z) return z;
+  }
+  if (p && p.area) {
+    const z = matchZone(p.area + ' ' + (p.level || ''));
+    if (z) return z;
+  }
+  return null;
+}
+
+function openSnapshotImport() {
+  if (!can('issue.import')) { denied('import issues'); return; }
+  const host = document.getElementById('acc-snapshot');
+  host.innerHTML = '<div class="viz-loading">Looking for a pushed snapshot…</div>';
+  db.ref(`projects/${activeProjectId}/accSnapshot`).once('value').then(snap => {
+    const pack = snap.val();
+    if (!pack || !pack.issues) {
+      host.innerHTML = `<div class="perm-note">
+        <strong>Nothing pushed yet.</strong> In ACC, open the extension, Document tab, Pull every issue, then Push to platform.
+        Sign in on the Platform tab first so it knows where to send it.</div>`;
+      return;
+    }
+    window.ACC_SNAPSHOT = pack;
+    const rows = buildSnapshotRows(pack);
+    window.ACC_SNAPSHOT_ROWS = rows;
+    const ok = rows.filter(r => r.zone && r.title);
+    const parsed = rows.filter(r => r.parsed).length;
+    host.innerHTML = `
+      <div class="acc-counts">
+        <div class="acc-count"><span>${pack.count}</span>pulled from ACC</div>
+        <div class="acc-count"><span>${parsed}</span>titles parsed</div>
+        <div class="acc-count"><span>${ok.length}</span>placeable</div>
+        <div class="acc-count ${rows.length - ok.length ? 'bad' : ''}"><span>${rows.length - ok.length}</span>skipped</div>
+      </div>
+      <div class="an-dim" style="font-size:11.5px;margin-top:10px;">
+        Pushed ${new Date(pack.exported).toLocaleString()} from ACC project ${String(pack.project).slice(0, 8)}…
+      </div>
+      <button class="btn" style="margin-top:12px;" onclick="runSnapshotImport()">Import ${ok.length} issues</button>`;
+  }).catch(e => { host.innerHTML = `<div class="perm-note">Could not read the snapshot: ${e.message}</div>`; });
+}
+
+function buildSnapshotRows(pack) {
+  return (pack.issues || []).map(i => {
+    const p = parseVecTitle(i.title);
+    const zone = zoneFromParsed(p, i.locationDetails);
+    const trade = p ? tradeFromCodes(p.tradeCodes) : matchTrade(i.assignedTo);
+    return {
+      externalId: i.issueId, uuid: i.uuid, title: i.title, needed: i.description,
+      status: accStatusIn(i.status), due: i.dueDate ? String(i.dueDate).slice(0, 10) : '',
+      created: i.createdAt || new Date().toISOString(),
+      zone, trade: trade || 'All Trades', parsed: !!p, p,
+      locationDetails: i.locationDetails || ''
+    };
+  });
+}
+
+function runSnapshotImport() {
+  if (!can('issue.import')) { denied('import issues'); return; }
+  const rows = (window.ACC_SNAPSHOT_ROWS || []).filter(r => r.zone && r.title);
+  if (!rows.length) { alert('Nothing placeable. Check that your zone names match the area codes in the titles.'); return; }
+  if (!confirm(`Import ${rows.length} issues from the pushed snapshot?\n\nExisting issues with the same ACC id are updated, not duplicated.`)) return;
+
+  let created = 0, updated = 0;
+  for (const r of rows) {
+    const existing = ISSUES.find(i => String(i.externalId) === String(r.externalId));
+    const signoff = SCHEDULE[r.zone] && SCHEDULE[r.zone].signoff ? SCHEDULE[r.zone].signoff.start : null;
+    const due = r.due || toDateInput(dueForPriority('medium', TODAY, signoff));
+    if (existing) {
+      Object.assign(existing, {
+        title: r.title, needed: r.needed || existing.needed, status: r.status,
+        zone: r.zone, trade: r.trade, due: r.due || existing.due,
+        accUuid: r.uuid, importedAt: new Date().toISOString(), importedBy: actorName()
+      });
+      updated++;
+    } else {
+      ISSUES.push({
+        id: 'ACC-' + r.externalId, externalId: r.externalId, accUuid: r.uuid,
+        zone: r.zone, stage: 'coord', trade: r.trade, court: courtForTrade(r.trade),
+        type: 'clash-hard', title: r.title, needed: r.needed, blocking: '',
+        priority: 'medium', status: r.status, due, created: r.created,
+        createdByUid: CURRENT_USER ? CURRENT_USER.uid : '', createdByName: actorName(),
+        source: 'ACC live pull', importedAt: new Date().toISOString()
+      });
+      created++;
+    }
+  }
+  saveIssues();
+  addChangeLogEntry(actorCompany(), 'issue', `Imported from the ACC live pull: ${created} created, ${updated} updated`);
+  renderAll();
+  alert(`Done. ${created} created, ${updated} updated.`);
+  openSnapshotImport();
+}
+
+window.openSnapshotImport = openSnapshotImport;
+window.runSnapshotImport = runSnapshotImport;
+
+/* ---------- risk tier, read off the parsed title ---------- */
+
+const CRITICAL_SPACE = ['data hall', 'crah', 'cdu', 'gallery', 'electrical room', 'switchgear', 'ups',
+                        'generator', 'mdf', 'idf', 'battery', 'preaction'];
+const PRIMARY_ROUTE  = ['corridor', 'riser', 'main', 'primary', 'gallery'];
+const LOW_ELEMENTS   = ['hanger', 'support', 'seismic', 'brace', 'trapeze', 'rod', 'strut'];
+const LOCKED_WORDS   = ['fabrication', 'fabricated', 'spool', 'released', 'locked', 'pour', 'prefab'];
+const CLEARANCE_WORDS = ['clearance', 'access', 'egress', 'maintenance', 'working space'];
+
+const hasAny = (text, words) => {
+  const t = ' ' + String(text || '').toLowerCase() + ' ';
+  return words.some(w => t.includes(w));
+};
+
+// Returns { tier, basis, source } or null.
+function suggestTier(cond) {
+  const zone = ZONES.find(z => z.id === cond.zone) || {};
+  const titles = [cond.title, ...(cond.issues || []).map(i => i.title)];
+  const p = parseVecTitle(cond.title) || titles.map(parseVecTitle).find(Boolean);
+  const allText = titles.join(' ') + ' ' + (zone.name || '');
+
+  // Section 3.3 overrides sit above the matrix
+  if (hasAny(allText, LOCKED_WORDS)) {
+    return { tier: 'high', source: 'override', basis: 'Tied to a released assembly, fabrication or pour. High regardless of clash test tier, section 3.3.' };
+  }
+
+  if (p) {
+    const space = (p.space || '') + ' ' + (p.area || '');
+    if (hasAny(space, CRITICAL_SPACE)) {
+      return { tier: 'high', source: 'parsed', basis: `Critical equipment space (${p.space || p.area}). Access and maintenance clearances are contractual, Appendix C.` };
+    }
+    if (hasAny(allText, CLEARANCE_WORDS)) {
+      return { tier: 'high', source: 'parsed', basis: 'Affects a required clearance, access or egress, section 3.1.' };
+    }
+
+    const nDisc = new Set(titles.map(parseVecTitle).filter(Boolean).flatMap(x => x.disciplines)).size;
+    if (nDisc >= 3) {
+      return { tier: 'high', source: 'parsed', basis: `${nDisc} disciplines across the condition. Three or more is High, section 3.1.` };
+    }
+
+    const isHangerish = p.elements.some(e => hasAny(e, LOW_ELEMENTS));
+    const inPrimary = hasAny(space, PRIMARY_ROUTE);
+
+    if (isHangerish && !inPrimary) {
+      return { tier: 'low', source: 'parsed', basis: `${p.elements.join(' vs ')}. Hanger or support, absorbed at install by tolerance or sequence, section 3.1 and Appendix C.` };
+    }
+    if (isHangerish && inPrimary) {
+      return { tier: 'medium', source: 'parsed', basis: `${p.elements.join(' vs ')} in ${p.space || p.area}. A support condition, but in a primary route, so it does not absorb cleanly.` };
+    }
+    if (inPrimary) {
+      return { tier: 'high', source: 'parsed', basis: `${p.disciplines.join(' vs ')} in ${p.space || p.area}. Primary distribution route or main corridor, section 3.1.` };
+    }
+    return { tier: 'medium', source: 'parsed', basis: `${p.disciplines.join(' vs ')}, two disciplines outside a primary route. Medium unless the routing envelope absorbs it, section 3.1.` };
+  }
+
+  // Unparsed titles get the honest answer rather than a guess
+  return null;
+}
+window.suggestTier = suggestTier;
+
+/* ---------- propose, review, apply ---------- */
+
+window.TIER_PROPOSALS = [];
+const TIER_RANK = { low: 1, medium: 2, high: 3 };
+
+function proposeTiers() {
+  if (!can('condition.manage')) { denied('set risk tiers'); return; }
+  const zoneId = document.getElementById('disp-zone').value;
+  const pool = (zoneId === 'all' ? CONDITIONS : CONDITIONS.filter(c => c.zone === zoneId));
+  if (!pool.length) { alert('No conditions to tier yet.'); return; }
+
+  window.TIER_PROPOSALS = pool.map(c => {
+    const s = suggestTier(c);
+    if (!s) return { cond: c, skip: 'the title does not follow the convention, so there is nothing reliable to judge from' };
+    // Section 3.3: a tier is never lowered on an individual condition
+    if (c.riskTier && TIER_RANK[s.tier] < TIER_RANK[c.riskTier]) {
+      return { cond: c, skip: `already ${RISK_TIERS[c.riskTier].label}, and a tier is never lowered on a single condition` };
+    }
+    if (c.riskTier === s.tier) return { cond: c, skip: `already ${RISK_TIERS[s.tier].label}` };
+    return { cond: c, ...s, apply: true };
+  });
+
+  document.getElementById('tier-modal').classList.add('show');
+  renderTierProposals();
+}
+function closeTierModal() { document.getElementById('tier-modal').classList.remove('show'); }
+
+function renderTierProposals() {
+  const rows = window.TIER_PROPOSALS;
+  const live = rows.filter(r => !r.skip);
+  const skipped = rows.filter(r => r.skip);
+  const bySource = s => live.filter(r => r.source === s).length;
+
+  document.getElementById('tier-body').innerHTML = `
+    <div class="acc-counts" style="margin-bottom:14px;">
+      <div class="acc-count"><span>${live.filter(r => r.tier === 'high').length}</span>High</div>
+      <div class="acc-count"><span>${live.filter(r => r.tier === 'medium').length}</span>Medium</div>
+      <div class="acc-count"><span>${live.filter(r => r.tier === 'low').length}</span>Low</div>
+      <div class="acc-count"><span>${skipped.length}</span>left alone</div>
+    </div>
+    <div class="an-dim" style="font-size:11.5px;margin-bottom:12px;">
+      ${bySource('parsed')} read off the title convention, ${bySource('override')} from a section 3.3 override.
+      Every one is a proposal. Nothing changes until you apply it.
+    </div>
+
+    ${live.length ? `
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <button class="btn ghost" style="font-size:11px;padding:4px 11px;" onclick="tierSelectAll(true)">Select all</button>
+        <button class="btn ghost" style="font-size:11px;padding:4px 11px;" onclick="tierSelectAll(false)">Select none</button>
+      </div>
+      <div class="an-table-wrap" style="max-height:340px;overflow-y:auto;">
+        <table class="an-table" style="min-width:0;">
+          <thead><tr><th style="width:28px;"></th><th>Condition</th><th>Proposed</th><th>Why</th></tr></thead>
+          <tbody>
+            ${live.map(r => `
+              <tr>
+                <td><input type="checkbox" ${r.apply ? 'checked' : ''} onchange="TIER_PROPOSALS[${rows.indexOf(r)}].apply=this.checked"></td>
+                <td><strong>${r.cond.id}</strong><br><span class="an-dim">${r.cond.title}</span></td>
+                <td><span class="tier tier-${r.tier}">${RISK_TIERS[r.tier].label}</span>
+                  ${r.cond.riskTier ? `<div class="an-dim" style="font-size:10.5px;margin-top:3px;">raised from ${RISK_TIERS[r.cond.riskTier].label}</div>` : ''}</td>
+                <td class="an-dim" style="font-size:11.5px;">${r.basis}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>` : '<div class="viz-empty">Nothing to change.</div>'}
+
+    ${skipped.length ? `
+      <div style="margin-top:16px;">
+        <div class="form-section-title">Left alone</div>
+        ${skipped.map(r => `<div style="font-size:11.5px;color:var(--text-tertiary);padding:3px 0;">
+          <strong style="color:var(--text-secondary);">${r.cond.id}</strong> — ${r.skip}</div>`).join('')}
+      </div>` : ''}`;
+}
+
+function tierSelectAll(on) {
+  window.TIER_PROPOSALS.forEach(r => { if (!r.skip) r.apply = on; });
+  renderTierProposals();
+}
+
+function applyTierProposals() {
+  const picked = window.TIER_PROPOSALS.filter(r => !r.skip && r.apply);
+  if (!picked.length) { alert('Nothing selected.'); return; }
+  for (const r of picked) {
+    const c = CONDITIONS.find(x => x.uid === r.cond.uid);
+    if (!c) continue;
+    const was = c.riskTier;
+    c.riskTier = r.tier;
+    c.tierBasis = r.basis;
+    c.tierSource = r.source;
+    condHistory(c, 'Risk tier', `${was ? RISK_TIERS[was].label : 'none'} → ${RISK_TIERS[r.tier].label} · ${r.basis}`);
+  }
+  saveConditions();
+  addChangeLogEntry(actorCompany(), 'status', `Risk tier set on ${picked.length} condition${picked.length === 1 ? '' : 's'}`);
+  closeTierModal();
+  renderDisposition();
+}
+
+window.proposeTiers = proposeTiers;
+window.closeTierModal = closeTierModal;
+window.renderTierProposals = renderTierProposals;
+window.tierSelectAll = tierSelectAll;
+window.applyTierProposals = applyTierProposals;
+
+/* ---------- never lower a tier by hand either ---------- */
+
+const _p9SetRiskTier = setRiskTier;
+setRiskTier = function (uid, tier) {
+  const c = CONDITIONS.find(x => x.uid === uid);
+  if (c && c.riskTier && tier && TIER_RANK[tier] < TIER_RANK[c.riskTier]) {
+    if (!confirm(
+      `Lower ${c.id} from ${RISK_TIERS[c.riskTier].label} to ${RISK_TIERS[tier].label}?\n\n` +
+      `Section 3.3 says a tier is never lowered on an individual condition. A tier that is wrong for a whole ` +
+      `clash test is corrected in the matrix and reissued.\n\nLower it anyway?`
+    )) { renderDisposition(); return; }
+    condHistory(c, 'Tier lowered', `${RISK_TIERS[c.riskTier].label} → ${RISK_TIERS[tier].label}, against section 3.3`);
+  }
+  _p9SetRiskTier(uid, tier);
+};
+window.setRiskTier = setRiskTier;
+
+/* ---------- grouping uses the parsed signature when it can ---------- */
+
+const _p9TitleSignature = titleSignature;
+titleSignature = function (title) {
+  const p = parseVecTitle(title);
+  if (p) return vecConditionKey(p);
+  return _p9TitleSignature(title);
+};
+window.titleSignature = titleSignature;
+
+/* ---------- show the basis on the condition ---------- */
+
+const _p9RenderDisposition = renderDisposition;
+renderDisposition = function () {
+  _p9RenderDisposition();
+  const zoneSel = document.getElementById('disp-zone');
+  const zoneVal = zoneSel ? zoneSel.value : 'all';
+  document.querySelectorAll('.cond').forEach(el => {
+    const idEl = el.querySelector('.cond-id');
+    if (!idEl || el.querySelector('.tier-basis')) return;
+    const c = CONDITIONS.find(x => x.id === idEl.textContent.trim() &&
+      (zoneVal === 'all' || x.zone === zoneVal));
+    if (!c || !c.tierBasis) return;
+    const meta = el.querySelector('.cond-meta');
+    if (!meta) return;
+    const d = document.createElement('div');
+    d.className = 'tier-basis';
+    d.textContent = c.tierBasis;
+    meta.insertAdjacentElement('afterend', d);
+  });
+};
+window.renderDisposition = renderDisposition;
+
+const _p9OpenProject = openProject;
+openProject = function (pid) {
+  _p9OpenProject(pid);
+  setTimeout(() => { loadCodeMap(pid).then(() => renderDisposition()); }, 800);
+};
+window.openProject = openProject;
+
+/* ============================================================
    V3.1 — INITIALIZATION
    The auth listener above drives everything. Nothing renders
    until a signed-in account has a role assigned.
@@ -11063,7 +11609,7 @@ window.openProject = openProject;
 setAuthMode('signin');
 showAuthScreen(false);
 
-console.log('🚀 VEC BIM Coordination Platform v4.0 loaded');
+console.log('🚀 VEC BIM Coordination Platform v4.1 loaded');
 
 </script>
 
