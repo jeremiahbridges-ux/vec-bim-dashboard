@@ -1780,6 +1780,147 @@
   .an-chip.on { background: var(--brand-tint); border-color: var(--brand); color: var(--brand-deep); }
   .an-chip.reset { margin-left: auto; color: var(--brand); border-color: transparent; background: transparent; }
 
+
+  /* ═══════════ V3.9 MODEL POP BULK + ACC IMPORT ═══════════ */
+  .mp-toolbar {
+    display: flex; justify-content: space-between; align-items: center; gap: 14px;
+    flex-wrap: wrap; padding: 12px 16px; margin-bottom: 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+  }
+  .mp-toolbar-left, .mp-toolbar-right { display: flex; align-items: center; gap: 8px; }
+  .mp-count { font-size: 11.5px; color: var(--text-tertiary); margin-left: 4px; }
+  .mp-viewswitch { display: inline-flex; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .mp-viewswitch button {
+    padding: 5px 14px; border: none; background: var(--surface); cursor: pointer;
+    font-family: inherit; font-size: 11.5px; font-weight: 600; color: var(--text-tertiary);
+  }
+  .mp-viewswitch button.on { background: var(--brand); color: #fff; }
+
+  .mp-applybar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 12px 16px; margin-bottom: 14px;
+    background: var(--brand-tint); border: 1px solid var(--brand);
+    border-radius: var(--radius-lg);
+  }
+  .mp-applybar-label { font-size: 12.5px; color: var(--text-secondary); font-weight: 600; }
+
+  .mp-pick {
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+    font-size: 11px; font-weight: 600; color: var(--text-tertiary);
+    padding: 4px 10px; border: 1px solid var(--border); border-radius: 20px;
+    background: var(--surface); margin-left: 12px; white-space: nowrap;
+  }
+  .mp-pick:hover { border-color: var(--brand); color: var(--brand); }
+
+  .mp-grid { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .mp-grid th {
+    text-align: left; font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--text-tertiary); padding: 8px 8px 8px 0;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  .mp-grid td { padding: 6px 8px 6px 0; border-bottom: 1px solid var(--border); }
+  .mp-grid-zone { min-width: 210px; }
+  .mp-grid-cell input {
+    width: 56px; padding: 5px 6px; text-align: center;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 5px; color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
+  }
+  .mp-grid-cell input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(22,98,244,0.14); }
+  .mp-grid-cell input:disabled { opacity: 0.4; cursor: not-allowed; }
+  .mp-grid-cell.ready input { border-color: var(--green); color: var(--green); font-weight: 700; }
+  .mp-grid-na { color: var(--text-tertiary); text-align: center; }
+  .mp-ready { color: var(--green); font-weight: 700; }
+
+  .acc-map-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border);
+  }
+  .acc-map-row:last-child { border-bottom: none; }
+  .acc-map-label { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+  .acc-map-note { font-size: 10.5px; color: var(--text-tertiary); margin-top: 2px; }
+
+  .acc-counts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .acc-count {
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--text-tertiary);
+  }
+  .acc-count span {
+    display: block; font-size: 24px; font-weight: 700; color: var(--ink);
+    letter-spacing: -0.03em; text-transform: none; margin-bottom: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .acc-count.warn span { color: var(--yellow); }
+  .acc-count.bad span { color: var(--red); }
+  .acc-problem { font-size: 10.5px; color: var(--yellow); margin-top: 3px; }
+  tr.acc-skip { opacity: 0.5; }
+  tr.acc-skip td { background: var(--surface-2); }
+
+
+  /* ═══════════ V4.0 DISPOSITION ═══════════ */
+  .tier { display:inline-block; padding:3px 9px; border-radius:5px; font-size:10px; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; }
+  .tier-high   { background: var(--red-bg);    color: var(--red); }
+  .tier-medium { background: var(--yellow-bg); color: var(--yellow); }
+  .tier-low    { background: var(--surface-2); color: var(--text-secondary); }
+
+  .gate-card {
+    background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--red);
+    border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 16px; box-shadow: var(--shadow-sm);
+  }
+  .gate-card.ready { border-left-color: var(--green); }
+  .gate-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+  .gate-title { font-size: 16px; font-weight: 700; color: var(--ink); letter-spacing: -0.018em; }
+  .gate-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 3px; }
+  .gate-tiers { display: flex; gap: 18px; flex-wrap: wrap; }
+  .gate-tier { font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); text-align: center; }
+  .gate-tier span { display: block; font-size: 22px; font-weight: 700; color: var(--ink); letter-spacing: -0.03em; text-transform: none; font-variant-numeric: tabular-nums; }
+  .gate-tier.bad span { color: var(--red); }
+  .gate-tier.ok span { color: var(--green); }
+  .gate-blockers { margin: 14px 0 0; padding-left: 18px; font-size: 12.5px; color: var(--red); line-height: 1.7; }
+  .gate-ok { margin-top: 12px; font-size: 12.5px; color: var(--green); }
+
+  .cond-list { display: flex; flex-direction: column; gap: 8px; }
+  .cond {
+    display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: start;
+    background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--border-strong);
+    border-radius: var(--radius-lg); padding: 14px 16px; box-shadow: var(--shadow-sm);
+  }
+  .cond.closed   { border-left-color: var(--green); }
+  .cond.rejected, .cond.failed { border-left-color: var(--red); }
+  .cond.review, .cond.backcheck { border-left-color: var(--brand); }
+  .cond.held     { border-left-color: var(--yellow); }
+  .cond-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .cond-id { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: var(--brand); }
+  .cond-title { font-size: 13.5px; font-weight: 600; color: var(--ink); }
+  .cond-state { padding: 2px 8px; border-radius: 5px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; background: var(--surface-2); color: var(--text-secondary); }
+  .cond-state.st-closed { background: var(--green-bg); color: var(--green); }
+  .cond-state.st-rejected, .cond-state.st-failed { background: var(--red-bg); color: var(--red); }
+  .cond-state.st-review, .cond-state.st-backcheck { background: var(--brand-tint); color: var(--brand-deep); }
+  .cond-state.st-held { background: var(--yellow-bg); color: var(--yellow); }
+  .cond-meta { font-size: 11.5px; color: var(--text-tertiary); margin-top: 5px; }
+  .cond-disp { font-size: 12px; color: var(--text-secondary); margin-top: 8px; }
+  .cond-review { font-size: 11.5px; color: var(--text-tertiary); margin-top: 4px; }
+  .cond-side { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+  .cond-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .cond-actions .btn { font-size: 11px; padding: 4px 11px; }
+  .tier-select {
+    padding: 4px 10px; border-radius: 5px; font-family: inherit; font-size: 11px; font-weight: 700;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary); cursor: pointer;
+  }
+  .tier-select.tier-high   { background: var(--red-bg);    color: var(--red);    border-color: var(--red); }
+  .tier-select.tier-medium { background: var(--yellow-bg); color: var(--yellow); border-color: var(--yellow); }
+  .tier-select.tier-low    { background: var(--surface-2); color: var(--text-secondary); }
+
+  .disp-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .disp-opt { border: 1px solid var(--border); border-radius: var(--radius); padding: 11px 13px; cursor: pointer; background: var(--surface); }
+  .disp-opt:hover { border-color: var(--border-strong); }
+  .disp-opt.on { border-color: var(--brand); background: var(--brand-tint); }
+  .disp-opt-label { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .disp-opt.on .disp-opt-label { color: var(--brand-deep); }
+  .disp-opt-note { font-size: 10.5px; color: var(--text-tertiary); margin-top: 3px; line-height: 1.45; }
+
 </style>
 </head>
 <body>
@@ -1931,7 +2072,7 @@
     <div class="header-meta">
       <div class="meta-item"><span class="meta-label">Today</span><span class="meta-value mono" id="header-today">—</span></div>
       <div class="meta-item"><span class="meta-label">GC</span><span class="meta-value">HITT</span></div>
-      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v3.8</span></div>
+      <div class="meta-item"><span class="meta-label">Template</span><span class="meta-value mono">v4.0</span></div>
       <button class="theme-toggle" onclick="toggleTheme()" title="Switch theme">☾</button>
       <div class="notif-bell" onclick="toggleNotifications()" id="notif-bell" style="margin-left:12px;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
@@ -1973,6 +2114,7 @@
   <button class="view-tab active" data-view="zones">Zone Workflows</button>
   <button class="view-tab" data-view="modelpop">Model Population</button>
   <button class="view-tab" data-view="changelog">Change Log</button>
+  <button class="view-tab" data-view="disposition">Disposition</button>
   <button class="view-tab" data-view="schedintel">Schedule Intel</button>
   <button class="view-tab" data-view="reports">Reports</button>
   <button class="view-tab" data-view="directory">Directory</button>
@@ -2130,6 +2272,30 @@
     <div id="changelog-list" style="display:flex;flex-direction:column;gap:4px;"></div>
   </div>
 
+  <!-- DISPOSITION VIEW (v4.0) -->
+  <div class="view-panel" id="panel-disposition">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;gap:16px;flex-wrap:wrap;">
+      <div>
+        <h2 style="font-size:18px;font-weight:700;color:var(--ink);">Clash Disposition</h2>
+        <p style="font-size:12px;color:var(--text-tertiary);margin-top:2px;max-width:640px;">
+          VEC-CWP-001. Issues group into conditions, conditions carry a risk tier, the trade records a disposition,
+          and a condition closes on an accepted review or a passed back-check. Never on the returned document alone.
+        </p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:end;flex-wrap:wrap;">
+        <div>
+          <label style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-tertiary);display:block;margin-bottom:4px;">Coordination area</label>
+          <select class="filter-select" id="disp-zone" onchange="renderDisposition()" style="min-width:220px;">
+            <option value="all">All areas</option>
+          </select>
+        </div>
+        <button class="zone-footer-btn ghost" onclick="generateConditions()" id="btn-build-conditions" style="padding:8px 16px;font-size:12px;">Build conditions</button>
+        <button class="zone-footer-btn" onclick="publishBatch()" id="btn-publish-batch" style="padding:8px 16px;font-size:12px;">Publish write batch</button>
+      </div>
+    </div>
+    <div id="disposition-body"></div>
+  </div>
+
   <!-- SCHEDULE INTEL VIEW (v3.5) -->
   <div class="view-panel" id="panel-schedintel">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
@@ -2183,6 +2349,22 @@
           </select>
         </div>
         <button class="zone-footer-btn" onclick="generateReport()" style="padding:8px 18px;font-size:12px;">Generate Report</button>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;">
+        <div>
+          <h3 style="font-size:15px;font-weight:700;color:var(--ink);">Issue data exchange</h3>
+          <p style="font-size:12px;color:var(--text-tertiary);margin-top:3px;max-width:560px;">
+            Bring an ACC Issue Detail export straight in, or send this project's issues back out in the same shape.
+            Re-importing a file you have already imported updates those issues rather than duplicating them.
+          </p>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="zone-footer-btn" onclick="openAccImport()" id="btn-acc-import" style="padding:8px 18px;font-size:12px;">Import from ACC</button>
+          <button class="zone-footer-btn ghost" onclick="exportIssuesCsv()" style="padding:8px 18px;font-size:12px;">Export issues CSV</button>
+        </div>
       </div>
     </div>
 
@@ -2265,8 +2447,8 @@ Cleveland Electric, Electrical, Sarah Lee, BIM Lead, sarah@clevelandelec.com, 40
 </div>
 
 <footer>
-  Virtual Engineering Consultants · BIM Coordination Services · Template v3.8<br>
-  Zone × Stage workflow · Role permissions · Company library · Schedule intelligence · Meeting prep · Portfolio analytics
+  Virtual Engineering Consultants · BIM Coordination Services · Template v4.0<br>
+  Clash disposition (VEC-CWP-001) · Role permissions · Schedule intelligence · ACC import · Portfolio analytics
 </footer>
 
 <!-- ZONE DETAIL MODAL -->
@@ -2514,6 +2696,70 @@ Cleveland Electric, Electrical, Sarah Lee, BIM Lead, sarah@clevelandelec.com, 40
 </div>
 
 </div><!-- end project-view -->
+
+<!-- DISPOSITION MODAL (v4.0) -->
+<div class="modal-backdrop" id="disp-modal">
+  <div class="modal" style="max-width:680px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Record a disposition</div>
+        <div class="modal-sub" id="disp-modal-sub">—</div>
+      </div>
+      <button class="modal-close" onclick="closeDispositionModal()">✕</button>
+    </div>
+    <div class="modal-body" id="disp-modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closeDispositionModal()">Cancel</button>
+      <button class="btn" onclick="saveDisposition()">Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACC IMPORT (v3.9) -->
+<div class="modal-backdrop" id="acc-modal">
+  <div class="modal" style="max-width:900px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Import issues from ACC</div>
+        <div class="modal-sub">Drop in an Issue Detail export. Re-importing the same file updates rather than duplicates.</div>
+      </div>
+      <button class="modal-close" onclick="closeAccImport()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="form-section">
+        <div class="form-section-title">1 · The file</div>
+        <input type="file" id="acc-file" accept=".csv,text/csv" onchange="accFileChosen(this)" style="font-size:12.5px;">
+        <div style="font-size:11.5px;color:var(--text-tertiary);margin:10px 0 6px;">or paste the CSV</div>
+        <textarea class="form-textarea" id="acc-paste" style="min-height:90px;font-family:'JetBrains Mono',monospace;font-size:11px;" placeholder="Issue ID,Title,Status,Location,Assigned To,Due Date&#10;..."></textarea>
+        <button class="btn ghost" style="margin-top:8px;font-size:11.5px;" onclick="accLoadPaste()">Read pasted CSV</button>
+      </div>
+
+      <div class="form-section" id="acc-step-map" style="display:none;">
+        <div class="form-section-title">2 · Match the columns</div>
+        <p style="font-size:11.5px;color:var(--text-tertiary);margin-bottom:12px;">
+          Guessed from the header row. Change anything that looks wrong, the preview updates as you go.
+        </p>
+        <div id="acc-mapping"></div>
+      </div>
+
+      <div class="form-section" id="acc-step-preview" style="display:none;margin-bottom:0;">
+        <div class="form-section-title">3 · Check before importing</div>
+        <div id="acc-summary"></div>
+        <label style="display:flex;align-items:center;gap:8px;margin:14px 0;font-size:12.5px;cursor:pointer;">
+          <input type="checkbox" id="acc-cycle-dates" checked>
+          Give rows with no due date one from the coordination cycle
+        </label>
+        <div class="an-table-wrap" style="max-height:320px;overflow-y:auto;" id="acc-rows"></div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closeAccImport()">Cancel</button>
+      <button class="btn" id="acc-import-btn" onclick="accRunImport()" style="display:none;">Import</button>
+    </div>
+  </div>
+</div>
 
 <!-- PROJECT SETTINGS (v3.8) -->
 <div class="modal-backdrop" id="settings-modal">
@@ -5323,6 +5569,7 @@ document.querySelectorAll('.view-tab').forEach(tab => {
     if (tab.dataset.view === 'changelog') renderChangeLog();
     if (tab.dataset.view === 'directory') renderDirectory();
     if (tab.dataset.view === 'schedintel') renderScheduleIntel();
+    if (tab.dataset.view === 'disposition') renderDisposition();
   };
   tab.addEventListener('click', tab._handler);
 });
@@ -6640,6 +6887,14 @@ function applyPermissions() {
     const grid = document.getElementById('directory-grid');
     if (grid) grid.classList.toggle('perm-locked', !editable);
   }
+
+  const bcBtn = document.getElementById('btn-build-conditions');
+  if (bcBtn) bcBtn.style.display = can('condition.manage') ? '' : 'none';
+  const pbBtn = document.getElementById('btn-publish-batch');
+  if (pbBtn) pbBtn.style.display = can('batch.publish') ? '' : 'none';
+
+  const accBtn = document.getElementById('btn-acc-import');
+  if (accBtn) accBtn.style.display = can('issue.import') ? '' : 'none';
 
   // Change log export
   const exportBtn = document.querySelector('#panel-changelog button[onclick*="exportChangeLog"]');
@@ -9446,6 +9701,1361 @@ window.renderAnalytics = renderAnalytics;
 })();
 
 /* ============================================================
+   V3.9 — ACC IMPORT/EXPORT · BULK MODEL POP · BLOCKER EDIT
+          · ZONE SCOPED TRADES · OWNER CAN RAISE ISSUES
+   ============================================================ */
+
+/* ---------- 1. PERMISSION CHANGES ---------- */
+
+// Owners find things on a walk and had no way to log them.
+if (PERMISSIONS.owner && !PERMISSIONS.owner.includes('issue.create')) {
+  PERMISSIONS.owner.push('issue.create', 'issue.edit.own');
+}
+// Importing is a coordination job, not a trade one.
+PERMISSIONS.vec_coordinator.push('issue.import');
+PERMISSIONS.gc.push('issue.import');
+
+// A trade can only raise or edit issues in zones it is assigned to in the
+// directory. Everyone with issue.edit.any is unaffected.
+function canPostInZone(zoneId) {
+  if (!CURRENT_USER) return false;
+  if (can('issue.edit.any')) return true;
+  if (CURRENT_USER.role !== 'trade') return true;
+  const mine = myDirEntries();
+  if (!mine.length) return false;
+  return mine.some(d => !Array.isArray(d.zones) || d.zones.includes(zoneId));
+}
+
+function myZoneNames() {
+  return ZONES.filter(z => canPostInZone(z.id)).map(z => z.name);
+}
+
+window.canPostInZone = canPostInZone;
+
+/* ---------- 2. BLOCKER EDIT + HONEST AGEING ---------- */
+
+// A blocker carries two dates. dateSubmitted is when the RFI actually went out;
+// dateLogged is when someone typed it in here. Ageing must run off the first,
+// otherwise a 71 day old RFI logged today reads as 0 days outstanding.
+function blockerAgeDays(b) {
+  const basis = b.dateSubmitted || b.dateLogged;
+  if (!basis) return 0;
+  const d = Math.round((TODAY - new Date(basis)) / 86400000);
+  return isFinite(d) ? Math.max(0, d) : 0;
+}
+function blockerAgeBasis(b) {
+  return b.dateSubmitted ? 'since submitted' : 'since logged';
+}
+window.blockerAgeDays = blockerAgeDays;
+window.blockerAgeBasis = blockerAgeBasis;
+
+function editBlocker(id) {
+  const b = BLOCKERS.find(x => x.id === id);
+  if (!b) return;
+  if (!can('blocker.edit.any') && !can('blocker.create')) { denied('edit blockers'); return; }
+  closeBlockerDetail();
+  openBlockerForm(b.zone, id);
+}
+window.editBlocker = editBlocker;
+
+/* ---------- 3. BULK MODEL POPULATION ---------- */
+
+window.MP_SELECTED = new Set();
+window.MP_VIEW = 'cards';   // 'cards' | 'grid'
+
+function mpToggleZone(zoneId) {
+  if (MP_SELECTED.has(zoneId)) MP_SELECTED.delete(zoneId);
+  else MP_SELECTED.add(zoneId);
+  renderModelPop();
+}
+
+function mpSelectAll(on) {
+  MP_SELECTED.clear();
+  if (on) {
+    const filter = document.getElementById('mp-zone-filter').value;
+    (filter === 'all' ? ZONES : ZONES.filter(z => z.id === filter)).forEach(z => MP_SELECTED.add(z.id));
+  }
+  renderModelPop();
+}
+
+function mpSetView(v) {
+  MP_VIEW = v;
+  renderModelPop();
+}
+
+// Every trade that appears in at least one of the selected zones
+function mpTradesForSelection() {
+  const out = new Set();
+  for (const zid of MP_SELECTED) {
+    try { getTradeNamesForZone(zid).forEach(t => out.add(t)); } catch (e) { /* zone gone */ }
+  }
+  return Array.from(out).sort();
+}
+
+function mpApplyBulk() {
+  const pct = parseInt(document.getElementById('mp-bulk-pct').value, 10);
+  const trade = document.getElementById('mp-bulk-trade').value;
+  if (isNaN(pct) || pct < 0 || pct > 100) { alert('Enter a percentage between 0 and 100.'); return; }
+  if (!MP_SELECTED.size) { alert('Select at least one zone.'); return; }
+
+  const targets = [];
+  for (const zid of MP_SELECTED) {
+    let trades = [];
+    try { trades = getTradeNamesForZone(zid); } catch (e) { continue; }
+    for (const t of trades) {
+      if (trade !== '__all__' && t !== trade) continue;
+      if (!canEditTrade(t)) continue;
+      targets.push([zid, t]);
+    }
+  }
+  if (!targets.length) { denied('update model population for those trades'); return; }
+
+  const zoneNames = Array.from(MP_SELECTED).map(z => (ZONES.find(x => x.id === z) || {}).name || z);
+  if (!confirm(
+    `Set model population to ${pct}% for ${trade === '__all__' ? 'every trade' : trade}\n` +
+    `across ${MP_SELECTED.size} zone${MP_SELECTED.size === 1 ? '' : 's'}:\n\n` +
+    zoneNames.join('\n') + `\n\nThat is ${targets.length} value${targets.length === 1 ? '' : 's'}.`
+  )) return;
+
+  for (const [zid, t] of targets) mpWriteValue(zid, t, pct);
+  saveModelPop();
+  addChangeLogEntry(actorCompany(), 'status',
+    `Set model population to ${pct}% for ${trade === '__all__' ? 'all trades' : trade} across ${MP_SELECTED.size} zones`);
+  renderModelPop();
+  renderAll();
+}
+
+// Writes one cell without the per-change confirmation the single editor uses
+function mpWriteValue(zoneId, trade, pct) {
+  if (!MODEL_POP[zoneId]) MODEL_POP[zoneId] = {};
+  if (!MODEL_POP[zoneId][trade]) MODEL_POP[zoneId][trade] = {};
+  const mp = MODEL_POP[zoneId][trade];
+  mp.pct = Math.max(0, Math.min(100, pct));
+  mp.lastUpdated = new Date().toLocaleDateString();
+  mp.lastUpdatedBy = actorName();
+  mp.updatedAt = new Date().toISOString();
+}
+
+function mpGridSet(zoneId, trade, value) {
+  const pct = parseInt(value, 10);
+  if (isNaN(pct)) return;
+  if (!canEditTrade(trade)) { denied(`update model population for ${trade}`); renderModelPop(); return; }
+  mpWriteValue(zoneId, trade, pct);
+  saveModelPop();
+  renderAll();
+}
+
+function mpBulkBar() {
+  const n = MP_SELECTED.size;
+  const trades = mpTradesForSelection();
+  return `
+    <div class="mp-toolbar">
+      <div class="mp-toolbar-left">
+        <button class="btn ghost" style="font-size:11px;padding:5px 11px;" onclick="mpSelectAll(true)">Select all</button>
+        <button class="btn ghost" style="font-size:11px;padding:5px 11px;" onclick="mpSelectAll(false)">Clear</button>
+        <span class="mp-count">${n ? `${n} zone${n === 1 ? '' : 's'} selected` : 'No zones selected'}</span>
+      </div>
+      <div class="mp-toolbar-right">
+        <div class="mp-viewswitch">
+          <button class="${MP_VIEW === 'cards' ? 'on' : ''}" onclick="mpSetView('cards')">Cards</button>
+          <button class="${MP_VIEW === 'grid' ? 'on' : ''}" onclick="mpSetView('grid')">Grid</button>
+        </div>
+      </div>
+    </div>
+    ${n ? `
+      <div class="mp-applybar">
+        <span class="mp-applybar-label">Set</span>
+        <select class="filter-select" id="mp-bulk-trade" style="min-width:190px;">
+          <option value="__all__">All trades in those zones</option>
+          ${trades.map(t => `<option value="${t}">${t}</option>`).join('')}
+        </select>
+        <span class="mp-applybar-label">to</span>
+        <input type="number" min="0" max="100" id="mp-bulk-pct" class="filter-select" style="width:78px;" placeholder="%">
+        <span class="mp-applybar-label">percent</span>
+        <button class="btn" style="font-size:12px;padding:6px 16px;" onclick="mpApplyBulk()">Apply</button>
+      </div>` : ''}`;
+}
+
+function mpGridView(zones) {
+  const trades = Array.from(new Set(zones.flatMap(z => {
+    try { return getTradeNamesForZone(z.id); } catch (e) { return []; }
+  }))).sort();
+
+  if (!trades.length) return '<p class="viz-empty">No trades assigned to these zones yet.</p>';
+
+  return `
+    <div class="an-table-wrap">
+      <table class="mp-grid">
+        <thead>
+          <tr>
+            <th class="mp-grid-zone">Zone</th>
+            ${trades.map(t => `<th title="${t}">${t.replace(/^.*— /, '')}</th>`).join('')}
+            <th>Avg</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${zones.map(z => {
+            let zoneTrades = [];
+            try { zoneTrades = getTradeNamesForZone(z.id); } catch (e) {}
+            const vals = zoneTrades.map(t => ((MODEL_POP[z.id] || {})[t] || {}).pct || 0);
+            const avg = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 0;
+            return `
+              <tr>
+                <td class="mp-grid-zone">
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                    <input type="checkbox" ${MP_SELECTED.has(z.id) ? 'checked' : ''} onchange="mpToggleZone('${z.id}')">
+                    <span><strong>${z.name}</strong><br><span class="an-dim">${z.segment || ''}</span></span>
+                  </label>
+                </td>
+                ${trades.map(t => {
+                  const inZone = zoneTrades.includes(t);
+                  if (!inZone) return `<td class="mp-grid-na">—</td>`;
+                  const pct = ((MODEL_POP[z.id] || {})[t] || {}).pct || 0;
+                  const editable = canEditTrade(t);
+                  return `<td class="mp-grid-cell ${pct >= 90 ? 'ready' : ''}">
+                    <input type="number" min="0" max="100" value="${pct}" ${editable ? '' : 'disabled title="Not your trade"'}
+                      onchange="mpGridSet('${z.id}','${t.replace(/'/g, "\\'")}',this.value)">
+                  </td>`;
+                }).join('')}
+                <td class="mono ${avg >= 90 ? 'mp-ready' : ''}">${avg}%</td>
+              </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+window.mpToggleZone = mpToggleZone;
+window.mpSelectAll = mpSelectAll;
+window.mpSetView = mpSetView;
+window.mpApplyBulk = mpApplyBulk;
+window.mpGridSet = mpGridSet;
+
+/* ---------- 4. CSV ---------- */
+
+// Handles quoted fields containing commas and newlines, which ACC exports do
+function parseCsv(text) {
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; }
+        else inQuotes = false;
+      } else field += c;
+    } else if (c === '"') inQuotes = true;
+    else if (c === ',') { row.push(field); field = ''; }
+    else if (c === '\r') { /* skip */ }
+    else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+    else field += c;
+  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
+  return rows.filter(r => r.some(c => String(c).trim() !== ''));
+}
+
+function csvEscape(v) {
+  const s = v === null || v === undefined ? '' : String(v);
+  return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+
+/* ---------- 5. ACC ISSUE IMPORT ---------- */
+
+window.ACC = { rows: [], headers: [], map: {}, parsed: [] };
+
+// Our fields, and the ACC header names each one usually arrives under
+const ACC_FIELDS = [
+  { key: 'externalId', label: 'ACC issue ID', hints: ['issue id', 'id', 'issue #', 'number', 'display id'], note: 'Used to update rather than duplicate on re-import' },
+  { key: 'title',      label: 'Title',        hints: ['title', 'name', 'summary', 'issue title'], required: true },
+  { key: 'needed',     label: 'Description',  hints: ['description', 'details', 'issue description'] },
+  { key: 'status',     label: 'Status',       hints: ['status', 'issue status'] },
+  { key: 'priority',   label: 'Priority',     hints: ['priority', 'severity'] },
+  { key: 'due',        label: 'Due date',     hints: ['due date', 'due', 'duedate'] },
+  { key: 'zone',       label: 'Location / zone', hints: ['location', 'location details', 'zone', 'area', 'level', 'placement'] },
+  { key: 'trade',      label: 'Assigned company / trade', hints: ['assigned to', 'assignee', 'company', 'assigned company', 'responsible', 'owner'] },
+  { key: 'type',       label: 'Issue type',   hints: ['type', 'issue type', 'category', 'subtype'] },
+  { key: 'created',    label: 'Created date', hints: ['created at', 'created on', 'created date', 'opened'] },
+  { key: 'docUrl',     label: 'Link',         hints: ['url', 'link', 'permalink', 'web url'] }
+];
+
+const ACC_STATUS = {
+  'open': 'open', 'draft': 'open', 'new': 'open',
+  'pending': 'in-progress', 'in review': 'in-progress', 'in dispute': 'in-progress',
+  'answered': 'in-progress', 'in progress': 'in-progress', 'work completed': 'in-progress',
+  'ready to inspect': 'in-progress',
+  'closed': 'resolved', 'completed': 'resolved', 'resolved': 'resolved',
+  'not approved': 'wont-fix', 'void': 'wont-fix', 'rejected': 'wont-fix'
+};
+
+const ACC_PRIORITY = {
+  'blocker': 'blocker', 'critical': 'blocker', 'urgent': 'blocker',
+  'high': 'high', 'major': 'high',
+  'medium': 'medium', 'normal': 'medium', 'moderate': 'medium',
+  'low': 'low', 'minor': 'low', 'trivial': 'low'
+};
+
+function norm(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }
+
+function guessMapping(headers) {
+  const map = {};
+  const used = new Set();
+  for (const f of ACC_FIELDS) {
+    let best = null, bestScore = 0;
+    headers.forEach((h, i) => {
+      if (used.has(i)) return;
+      const nh = norm(h);
+      for (const hint of f.hints) {
+        const nhint = norm(hint);
+        let score = 0;
+        if (nh === nhint) score = 100;
+        else if (nh.startsWith(nhint) || nhint.startsWith(nh)) score = 70;
+        else if (nh.includes(nhint)) score = 50;
+        if (score > bestScore) { bestScore = score; best = i; }
+      }
+    });
+    if (best !== null && bestScore >= 50) { map[f.key] = best; used.add(best); }
+  }
+  return map;
+}
+
+// Best matching zone for a free text location like "Level 2 > Data Hall 2100"
+function matchZone(text) {
+  const t = norm(text);
+  if (!t) return null;
+  let best = null, bestScore = 0;
+  for (const z of ZONES) {
+    const nz = norm(z.name);
+    let score = 0;
+    if (t === nz) score = 100;
+    else if (t.includes(nz) || nz.includes(t)) score = 80;
+    else {
+      const zt = nz.split(' ').filter(w => w.length > 2);
+      const tt = t.split(' ').filter(w => w.length > 2);
+      const hits = zt.filter(w => tt.includes(w)).length;
+      if (hits) score = (hits / zt.length) * 60;
+    }
+    // A bare number like 2100 is the strongest signal a data hall name gives
+    const nums = nz.match(/\d{3,}/g) || [];
+    if (nums.some(n => t.includes(n))) score = Math.max(score, 90);
+    if (score > bestScore) { bestScore = score; best = z.id; }
+  }
+  return bestScore >= 45 ? best : null;
+}
+
+function matchTrade(text) {
+  const t = norm(text);
+  if (!t) return null;
+  let best = null, bestScore = 0;
+  for (const d of DIRECTORY) {
+    if (d.isTrade === false || !d.company) continue;
+    const nc = norm(d.company);
+    let score = 0;
+    if (t === nc) score = 100;
+    else if (t.includes(nc) || nc.includes(t)) score = 80;
+    else {
+      const ct = nc.split(' ').filter(w => w.length > 2);
+      const hits = ct.filter(w => t.includes(w)).length;
+      if (hits) score = (hits / ct.length) * 60;
+    }
+    if (score > bestScore) { bestScore = score; best = tradeDisplayName(d); }
+  }
+  return bestScore >= 55 ? best : null;
+}
+
+function courtForTrade(tradeLabel) {
+  if (!tradeLabel) return 'VEC';
+  const entry = DIRECTORY.find(d => tradeDisplayName(d) === tradeLabel);
+  if (!entry) return 'Trade — BIM';
+  return (ALL_COURTS.find(c => c.name === entry.role) || {}).name || 'Trade — BIM';
+}
+
+function openAccImport() {
+  if (!can('issue.import')) { denied('import issues'); return; }
+  window.ACC = { rows: [], headers: [], map: {}, parsed: [] };
+  document.getElementById('acc-file').value = '';
+  document.getElementById('acc-paste').value = '';
+  document.getElementById('acc-step-map').style.display = 'none';
+  document.getElementById('acc-step-preview').style.display = 'none';
+  document.getElementById('acc-import-btn').style.display = 'none';
+  document.getElementById('acc-modal').classList.add('show');
+}
+function closeAccImport() { document.getElementById('acc-modal').classList.remove('show'); }
+
+function accLoadText(text) {
+  const rows = parseCsv(text);
+  if (rows.length < 2) { alert('That does not look like a CSV with a header row and at least one issue.'); return; }
+  window.ACC.headers = rows[0].map(h => h.trim());
+  window.ACC.rows = rows.slice(1);
+  window.ACC.map = guessMapping(window.ACC.headers);
+  renderAccMapping();
+  document.getElementById('acc-step-map').style.display = 'block';
+  document.getElementById('acc-import-btn').style.display = '';
+  accPreview();
+}
+
+function accFileChosen(input) {
+  const f = input.files && input.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => accLoadText(String(r.result));
+  r.readAsText(f);
+}
+
+function accLoadPaste() {
+  const t = document.getElementById('acc-paste').value;
+  if (!t.trim()) { alert('Paste the CSV first.'); return; }
+  accLoadText(t);
+}
+
+function renderAccMapping() {
+  const { headers, map } = window.ACC;
+  document.getElementById('acc-mapping').innerHTML = ACC_FIELDS.map(f => `
+    <div class="acc-map-row">
+      <div>
+        <div class="acc-map-label">${f.label}${f.required ? ' <span style="color:var(--red);">*</span>' : ''}</div>
+        ${f.note ? `<div class="acc-map-note">${f.note}</div>` : ''}
+      </div>
+      <select class="form-select" onchange="window.ACC.map['${f.key}']=this.value===''?undefined:parseInt(this.value);accPreview()">
+        <option value="">— not in this file —</option>
+        ${headers.map((h, i) => `<option value="${i}" ${map[f.key] === i ? 'selected' : ''}>${h}</option>`).join('')}
+      </select>
+    </div>`).join('');
+}
+
+function accBuildRows() {
+  const { rows, map } = window.ACC;
+  const get = (r, key) => map[key] === undefined ? '' : (r[map[key]] || '').trim();
+  const existingByExt = {};
+  for (const i of ISSUES) if (i.externalId) existingByExt[String(i.externalId)] = i;
+
+  return rows.map((r, idx) => {
+    const title = get(r, 'title');
+    const extId = get(r, 'externalId');
+    const zoneText = get(r, 'zone');
+    const tradeText = get(r, 'trade');
+    const zone = matchZone(zoneText);
+    const trade = matchTrade(tradeText);
+    const statusRaw = norm(get(r, 'status'));
+    const prioRaw = norm(get(r, 'priority'));
+    const dueRaw = get(r, 'due');
+
+    let due = '';
+    if (dueRaw) {
+      const d = new Date(dueRaw);
+      if (!isNaN(d)) due = toDateInput(d);
+    }
+
+    return {
+      line: idx + 2,
+      externalId: extId,
+      isUpdate: !!(extId && existingByExt[extId]),
+      title,
+      needed: get(r, 'needed'),
+      status: ACC_STATUS[statusRaw] || 'open',
+      priority: ACC_PRIORITY[prioRaw] || 'medium',
+      due,
+      zone, zoneText,
+      trade: trade || 'All Trades', tradeText,
+      docUrl: get(r, 'docUrl'),
+      created: get(r, 'created') || new Date().toISOString(),
+      problems: [
+        !title ? 'no title' : null,
+        !zone ? (zoneText ? `zone "${zoneText}" not recognised` : 'no zone') : null,
+        (tradeText && !trade) ? `company "${tradeText}" not in the directory` : null
+      ].filter(Boolean)
+    };
+  });
+}
+
+function accPreview() {
+  const parsed = accBuildRows();
+  window.ACC.parsed = parsed;
+
+  const ok = parsed.filter(r => r.title && r.zone);
+  const skipped = parsed.filter(r => !r.title || !r.zone);
+  const updates = ok.filter(r => r.isUpdate).length;
+  const warn = ok.filter(r => r.problems.length).length;
+
+  document.getElementById('acc-step-preview').style.display = 'block';
+  document.getElementById('acc-summary').innerHTML = `
+    <div class="acc-counts">
+      <div class="acc-count"><span>${ok.length - updates}</span>new</div>
+      <div class="acc-count"><span>${updates}</span>updates</div>
+      <div class="acc-count ${warn ? 'warn' : ''}"><span>${warn}</span>with warnings</div>
+      <div class="acc-count ${skipped.length ? 'bad' : ''}"><span>${skipped.length}</span>skipped</div>
+    </div>
+    ${skipped.length ? `<div class="perm-note" style="margin-top:12px;">
+      <strong>Skipped rows need a title and a zone.</strong> Fix the Location mapping above, or rename the zone in Project settings so it matches what ACC calls it.
+    </div>` : ''}`;
+
+  document.getElementById('acc-rows').innerHTML = `
+    <table class="an-table" style="min-width:820px;">
+      <thead><tr><th>Row</th><th>Title</th><th>Zone</th><th>Trade</th><th>Priority</th><th>Due</th><th>Action</th></tr></thead>
+      <tbody>
+        ${parsed.slice(0, 60).map(r => `
+          <tr class="${!r.title || !r.zone ? 'acc-skip' : ''}">
+            <td class="mono an-dim">${r.line}</td>
+            <td>${r.title || '<span class="an-dim">no title</span>'}
+              ${r.problems.length ? `<div class="acc-problem">${r.problems.join(' · ')}</div>` : ''}</td>
+            <td>${r.zone ? (ZONES.find(z => z.id === r.zone) || {}).name : `<span class="an-dim">${r.zoneText || '—'}</span>`}</td>
+            <td>${r.trade === 'All Trades' ? `<span class="an-dim">${r.tradeText || 'unassigned'}</span>` : r.trade}</td>
+            <td>${r.priority}</td>
+            <td class="mono">${r.due || '—'}</td>
+            <td>${!r.title || !r.zone ? '<span class="an-dim">skip</span>' : (r.isUpdate ? 'update' : 'create')}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+    ${parsed.length > 60 ? `<div class="an-dim" style="padding:10px 0;font-size:11.5px;">Showing the first 60 of ${parsed.length} rows. All of them import.</div>` : ''}`;
+}
+
+function accRunImport() {
+  if (!can('issue.import')) { denied('import issues'); return; }
+  const parsed = window.ACC.parsed.filter(r => r.title && r.zone);
+  if (!parsed.length) { alert('Nothing importable. Check the Location and Title mappings.'); return; }
+
+  const useCycleDates = document.getElementById('acc-cycle-dates').checked;
+  const updates = parsed.filter(r => r.isUpdate).length;
+
+  if (!confirm(
+    `Import ${parsed.length} issue${parsed.length === 1 ? '' : 's'}?\n\n` +
+    `${parsed.length - updates} created, ${updates} updated in place.\n` +
+    (useCycleDates ? 'Rows with no due date get one from the coordination cycle.\n' : '') +
+    `\nNothing already in the platform is deleted.`
+  )) return;
+
+  let created = 0, updated = 0;
+  for (const r of parsed) {
+    const signoff = SCHEDULE[r.zone] && SCHEDULE[r.zone].signoff ? SCHEDULE[r.zone].signoff.start : null;
+    const due = r.due || (useCycleDates ? toDateInput(dueForPriority(r.priority, TODAY, signoff)) : '');
+
+    const existing = r.externalId ? ISSUES.find(i => String(i.externalId) === String(r.externalId)) : null;
+    if (existing) {
+      Object.assign(existing, {
+        title: r.title, needed: r.needed || existing.needed, status: r.status,
+        priority: r.priority, due: due || existing.due, zone: r.zone,
+        trade: r.trade, docUrl: r.docUrl || existing.docUrl,
+        importedAt: new Date().toISOString(), importedBy: actorName()
+      });
+      updated++;
+    } else {
+      ISSUES.push({
+        id: 'ACC-' + (r.externalId || Date.now() + '-' + created),
+        externalId: r.externalId || '',
+        zone: r.zone,
+        stage: 'coord',
+        trade: r.trade,
+        court: courtForTrade(r.trade),
+        party: '',
+        type: 'clash-hard',
+        title: r.title,
+        needed: r.needed,
+        blocking: '',
+        priority: r.priority,
+        status: r.status,
+        due,
+        docUrl: r.docUrl,
+        created: r.created,
+        createdByUid: CURRENT_USER ? CURRENT_USER.uid : '',
+        createdByName: actorName(),
+        source: 'ACC import',
+        importedAt: new Date().toISOString()
+      });
+      created++;
+    }
+  }
+
+  saveIssues();
+  addChangeLogEntry(actorCompany(), 'issue',
+    `Imported from ACC: ${created} issue${created === 1 ? '' : 's'} created, ${updated} updated`);
+  closeAccImport();
+  renderAll();
+  alert(`Done. ${created} created, ${updated} updated.`);
+}
+
+/* ---------- 6. EXPORT BACK IN THE SAME SHAPE ---------- */
+
+function exportIssuesCsv() {
+  if (!can('report.generate')) { denied('export issues'); return; }
+  const head = ['Issue ID', 'Title', 'Description', 'Status', 'Priority', 'Due Date',
+                'Location', 'Assigned To', 'Court', 'Stage', 'Created At', 'Link',
+                'Resolved At', 'Resolved By', 'Source'];
+  const statusOut = { 'open': 'Open', 'in-progress': 'In Review', 'resolved': 'Closed', 'wont-fix': 'Not Approved' };
+
+  const lines = [head.join(',')];
+  for (const i of ISSUES) {
+    const zone = ZONES.find(z => z.id === i.zone);
+    lines.push([
+      i.externalId || i.id,
+      i.title || '',
+      i.needed || '',
+      statusOut[i.status] || i.status || '',
+      (i.priority || '').replace(/^./, c => c.toUpperCase()),
+      i.due || '',
+      zone ? zone.name : (i.zone || ''),
+      i.trade || '',
+      i.court || '',
+      (STAGES.find(s => s.id === i.stage) || {}).name || i.stage || '',
+      i.created || '',
+      i.docUrl || '',
+      i.resolvedAt || '',
+      i.resolvedBy || '',
+      i.source || 'VEC platform'
+    ].map(csvEscape).join(','));
+  }
+
+  const cfg = (allProjects[activeProjectId] || {}).config || {};
+  const name = (cfg.name || activeProjectId || 'project').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${name}-issues-${toDateInput(TODAY)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+window.openAccImport = openAccImport;
+window.closeAccImport = closeAccImport;
+window.accFileChosen = accFileChosen;
+window.accLoadPaste = accLoadPaste;
+window.accPreview = accPreview;
+window.accRunImport = accRunImport;
+window.exportIssuesCsv = exportIssuesCsv;
+window.parseCsv = parseCsv;
+window.matchZone = matchZone;
+window.matchTrade = matchTrade;
+
+/* ---------- 7. WIRE-UP ---------- */
+
+// Model population tab: toolbar, selection checkboxes, grid view
+const _p7RenderModelPop = renderModelPop;
+renderModelPop = function () {
+  const grid = document.getElementById('model-pop-grid');
+  if (!grid) return;
+  const filter = document.getElementById('mp-zone-filter').value;
+  const zones = filter === 'all' ? ZONES : ZONES.filter(z => z.id === filter);
+
+  if (MP_VIEW === 'grid') {
+    grid.innerHTML = mpBulkBar() + mpGridView(zones);
+    return;
+  }
+
+  _p7RenderModelPop();
+  grid.insertAdjacentHTML('afterbegin', mpBulkBar());
+
+  // Put a selection checkbox on each zone card header
+  const cards = grid.querySelectorAll(':scope > div[style*="border-radius"]');
+  let zi = 0;
+  cards.forEach(card => {
+    const head = card.querySelector(':scope > div');
+    if (!head || card.classList.contains('mp-toolbar')) return;
+    const z = zones[zi++];
+    if (!z) return;
+    const label = document.createElement('label');
+    label.className = 'mp-pick';
+    label.innerHTML = `<input type="checkbox" ${MP_SELECTED.has(z.id) ? 'checked' : ''}> Select`;
+    label.querySelector('input').onchange = () => mpToggleZone(z.id);
+    head.appendChild(label);
+  });
+};
+window.renderModelPop = renderModelPop;
+
+// Blocker detail: Edit button, and age that counts from the right date
+const _p7OpenBlockerDetail = openBlockerDetail;
+openBlockerDetail = function (id) {
+  _p7OpenBlockerDetail(id);
+  const b = BLOCKERS.find(x => x.id === id);
+  if (!b) return;
+
+  const footer = document.querySelector('#blocker-detail-modal .modal-footer');
+  if (footer && !footer.querySelector('#blocker-detail-edit')) {
+    const btn = document.createElement('button');
+    btn.className = 'btn ghost';
+    btn.id = 'blocker-detail-edit';
+    btn.textContent = 'Edit';
+    btn.onclick = () => editBlocker(id);
+    footer.insertBefore(btn, footer.querySelector('#blocker-detail-resolve'));
+  }
+  const editBtn = document.getElementById('blocker-detail-edit');
+  if (editBtn) editBtn.style.display = can('blocker.edit.any') ? '' : 'none';
+
+  // Correct the age the original renderer wrote from dateLogged
+  const body = document.getElementById('blocker-detail-body');
+  if (body) {
+    const days = blockerAgeDays(b);
+    body.innerHTML = body.innerHTML.replace(
+      /<span class="mono">\d+d outstanding<\/span>/,
+      `<span class="mono">${days}d outstanding</span> <span class="an-dim" style="font-size:10.5px;">${blockerAgeBasis(b)}</span>`
+    );
+  }
+};
+window.openBlockerDetail = openBlockerDetail;
+
+// Zone scoping for trades, on top of the existing permission wrappers
+const _p7OpenIssueForm = openIssueForm;
+openIssueForm = function (zone, stage, editingId = null) {
+  if (zone && !canPostInZone(zone)) {
+    const zoneName = (ZONES.find(z => z.id === zone) || {}).name || zone;
+    alert(`You can only log issues in the zones your company is assigned to.\n\n` +
+          `${zoneName} is not one of them.\n\nYour zones: ${myZoneNames().join(', ') || 'none assigned'}`);
+    return;
+  }
+  _p7OpenIssueForm(zone, stage, editingId);
+};
+window.openIssueForm = openIssueForm;
+
+/* ============================================================
+   V4.0 — CLASH DISPOSITION (VEC-CWP-001)
+   Conditions, risk tiers, dispositions, review outcomes, the
+   sign-off gate, and the approved batch the ACC extension writes.
+
+   Closing follows the procedure, not the returned document:
+   a condition closes on an Accepted review outcome, or on a
+   passed back-check for Cleared. Nothing closes on the trade's
+   word alone.
+   ============================================================ */
+
+window.CONDITIONS = [];
+
+const RISK_TIERS = {
+  high:   { label: 'High',   blurb: 'Blocks area sign-off. Zero permitted at the gate.' },
+  medium: { label: 'Medium', blurb: 'May carry only with written client acceptance, listed individually.' },
+  low:    { label: 'Low',    blurb: 'May carry. Reported in aggregate by trade and condition type.' }
+};
+
+const DISPOSITIONS = {
+  field_fix: { label: 'Field Fix',  requires: ['fieldOfficial'], routedTo: 'Client Operations and VDC', closes: 'on Accepted' },
+  cleared:   { label: 'Cleared',    requires: ['modelRev'],      routedTo: 'VEC back-check',            closes: 'on a passed back-check' },
+  non_issue: { label: 'Non-Issue',  requires: ['basis'],         routedTo: 'Client Operations and VDC', closes: 'on Accepted' },
+  pending:   { label: 'Pending',    requires: ['blockerRef'],    routedTo: 'Client VDC',                closes: 'never, it is held' }
+};
+
+const OUTCOMES = {
+  accepted: { label: 'Accepted', blurb: 'The condition closes. A Field Fix closes to the carry forward register.' },
+  rejected: { label: 'Rejected', blurb: 'The disposition is void. Three business days to resolve, back-check on day five.' },
+  deferred: { label: 'Deferred', blurb: 'Blocker confirmed outside the trade\'s control. Held, not counted against the trade.' }
+};
+
+/* ---------- permissions ---------- */
+
+PERMISSIONS.vec_admin = ['*'];
+['vec_coordinator'].forEach(r => PERMISSIONS[r].push('condition.manage', 'condition.disposition.any', 'condition.review', 'batch.publish', 'condition.backcheck'));
+PERMISSIONS.gc.push('condition.disposition.any', 'condition.review');
+PERMISSIONS.owner.push('condition.review');
+PERMISSIONS.design.push('condition.review');
+PERMISSIONS.trade.push('condition.disposition.own');
+
+// A trade records its own position. It cannot review its own condition,
+// which is the rule in section 5.2.
+function canDisposition(cond) {
+  if (can('condition.disposition.any')) return true;
+  if (!can('condition.disposition.own')) return false;
+  return myTradeNames().includes(cond.trade);
+}
+function canReview(cond) {
+  if (!can('condition.review')) return false;
+  if (myTradeNames().includes(cond.trade)) return false;
+  return true;
+}
+window.canDisposition = canDisposition;
+window.canReview = canReview;
+
+/* ---------- storage ---------- */
+
+function saveConditions() {
+  fbSave('conditions', window.CONDITIONS);
+}
+
+function loadConditions(pid) {
+  return db.ref(`projects/${pid}/conditions`).once('value').then(snap => {
+    const v = snap.val();
+    window.CONDITIONS = v ? (Array.isArray(v) ? v.filter(Boolean) : Object.values(v).filter(Boolean)) : [];
+    return window.CONDITIONS;
+  }).catch(() => { window.CONDITIONS = []; return []; });
+}
+
+function condHistory(c, action, detail) {
+  c.history = c.history || [];
+  c.history.push({ at: new Date().toISOString(), by: actorName(), company: actorCompany(), action, detail: detail || '' });
+}
+
+/* ---------- grouping issues into conditions ---------- */
+
+// A condition is a group of clash issues sharing systems, trades and physical
+// cause. Grouping on trade, zone and the shape of the title gets most of the way
+// there; the rest is edited by hand.
+function titleSignature(title) {
+  return String(title || '')
+    .toLowerCase()
+    .replace(/[#\d]+/g, ' ')                     // issue numbers, grid numbers, elevations
+    .replace(/\b(at|the|of|in|on|to|and|with|near|above|below)\b/g, ' ')
+    .replace(/[^a-z ]+/g, ' ')
+    .split(/\s+/).filter(w => w.length > 3)
+    .slice(0, 4).sort().join(' ');
+}
+
+function buildConditionsFromIssues(zoneId, opts) {
+  opts = opts || {};
+  const pool = ISSUES.filter(i =>
+    i.zone === zoneId &&
+    i.status !== 'resolved' && i.status !== 'wont-fix' &&
+    !CONDITIONS.some(c => (c.issues || []).some(x => x.id === i.id))
+  );
+  if (!pool.length) return [];
+
+  const groups = {};
+  for (const i of pool) {
+    const key = [i.trade || 'unassigned', titleSignature(i.title) || 'ungrouped'].join('|');
+    (groups[key] = groups[key] || []).push(i);
+  }
+
+  const existing = CONDITIONS.filter(c => c.zone === zoneId).length;
+  let n = existing;
+  const made = [];
+  for (const key of Object.keys(groups)) {
+    const list = groups[key];
+    n++;
+    made.push({
+      id: 'C' + String(n).padStart(2, '0'),
+      uid: 'cond-' + Date.now() + '-' + n,
+      zone: zoneId,
+      trade: list[0].trade || 'All Trades',
+      title: list[0].title || 'Untitled condition',
+      count: list.length,
+      issues: list.map(i => ({ id: i.id, externalId: i.externalId || '', title: i.title, court: i.court || '' })),
+      riskTier: opts.defaultTier || null,
+      disposition: null,
+      dispositionBy: '', dispositionAt: '',
+      fieldOfficial: '', fieldOfficialTitle: '', closeBy: '',
+      blockerRef: '', basis: '', modelRev: '',
+      reviewOutcome: null, reviewBy: '', reviewAt: '', reviewNote: '',
+      backCheck: null,
+      sourceDoc: '',
+      createdAt: new Date().toISOString(),
+      createdBy: actorName(),
+      history: [{ at: new Date().toISOString(), by: actorName(), company: actorCompany(),
+                  action: 'Created', detail: `${list.length} issue${list.length === 1 ? '' : 's'} grouped` }]
+    });
+  }
+  return made;
+}
+
+function generateConditions() {
+  if (!can('condition.manage')) { denied('build conditions'); return; }
+  const zoneId = document.getElementById('disp-zone').value;
+  if (!zoneId || zoneId === 'all') { alert('Pick a single coordination area first.'); return; }
+
+  const made = buildConditionsFromIssues(zoneId);
+  if (!made.length) {
+    alert('Every open issue in this area is already in a condition.');
+    return;
+  }
+  const zoneName = (ZONES.find(z => z.id === zoneId) || {}).name || zoneId;
+  const total = made.reduce((a, c) => a + c.count, 0);
+  if (!confirm(
+    `Group ${total} open issue${total === 1 ? '' : 's'} in ${zoneName} into ${made.length} condition${made.length === 1 ? '' : 's'}?\n\n` +
+    `Grouped on trade and the shape of the issue title. You can merge, split and rename after.`
+  )) return;
+
+  CONDITIONS = CONDITIONS.concat(made);
+  saveConditions();
+  addChangeLogEntry(actorCompany(), 'status', `Built ${made.length} conditions from ${total} issues in ${zoneName}`);
+  renderDisposition();
+}
+
+function setRiskTier(uid, tier) {
+  if (!can('condition.manage')) { denied('set risk tiers'); return; }
+  const c = CONDITIONS.find(x => x.uid === uid);
+  if (!c) return;
+  const was = c.riskTier;
+  c.riskTier = tier || null;
+  condHistory(c, 'Risk tier', `${was ? RISK_TIERS[was].label : 'none'} → ${tier ? RISK_TIERS[tier].label : 'none'}`);
+  saveConditions();
+  renderDisposition();
+}
+
+function splitIssueOut(uid, issueId) {
+  if (!can('condition.manage')) { denied('split conditions'); return; }
+  const c = CONDITIONS.find(x => x.uid === uid);
+  if (!c || c.issues.length < 2) return;
+  const issue = c.issues.find(i => i.id === issueId);
+  c.issues = c.issues.filter(i => i.id !== issueId);
+  c.count = c.issues.length;
+  condHistory(c, 'Split', `Issue ${issue.externalId || issue.id} moved out`);
+
+  const n = CONDITIONS.filter(x => x.zone === c.zone).length + 1;
+  CONDITIONS.push({
+    ...JSON.parse(JSON.stringify(c)),
+    id: 'C' + String(n).padStart(2, '0'),
+    uid: 'cond-' + Date.now(),
+    title: issue.title,
+    issues: [issue], count: 1,
+    disposition: null, reviewOutcome: null, backCheck: null,
+    history: [{ at: new Date().toISOString(), by: actorName(), company: actorCompany(), action: 'Split', detail: `Separated from ${c.id}` }]
+  });
+  saveConditions();
+  renderDisposition();
+}
+
+function deleteCondition(uid) {
+  if (!can('condition.manage')) { denied('remove conditions'); return; }
+  const c = CONDITIONS.find(x => x.uid === uid);
+  if (!c) return;
+  if (!confirm(`Remove condition ${c.id}?\n\nThe ${c.count} issue${c.count === 1 ? '' : 's'} in it go back to being ungrouped. Nothing in ACC changes.`)) return;
+  CONDITIONS = CONDITIONS.filter(x => x.uid !== uid);
+  saveConditions();
+  renderDisposition();
+}
+
+/* ---------- disposition and review ---------- */
+
+let dispDraft = null;
+
+function openDisposition(uid) {
+  const c = CONDITIONS.find(x => x.uid === uid);
+  if (!c) return;
+  if (!canDisposition(c)) { denied('record a disposition on this condition'); return; }
+  dispDraft = { uid, ...JSON.parse(JSON.stringify(c)) };
+  document.getElementById('disp-modal').classList.add('show');
+  renderDispositionForm();
+}
+function closeDispositionModal() {
+  document.getElementById('disp-modal').classList.remove('show');
+  dispDraft = null;
+}
+
+function renderDispositionForm() {
+  const d = dispDraft;
+  const zoneName = (ZONES.find(z => z.id === d.zone) || {}).name || d.zone;
+  document.getElementById('disp-modal-sub').textContent = `${d.id} · ${zoneName} · ${d.trade} · ${d.count} issue${d.count === 1 ? '' : 's'}`;
+
+  const pick = d.disposition;
+  const req = pick ? DISPOSITIONS[pick].requires : [];
+
+  document.getElementById('disp-modal-body').innerHTML = `
+    <div class="form-section">
+      <div class="form-section-title">The condition</div>
+      <div style="font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:6px;">${d.title}</div>
+      <div class="an-dim" style="font-size:11.5px;">
+        ${d.issues.map(i => '#' + (i.externalId || i.id)).join(', ')}
+      </div>
+      ${d.riskTier ? `<div style="margin-top:10px;"><span class="tier tier-${d.riskTier}">${RISK_TIERS[d.riskTier].label} risk</span>
+        <span class="an-dim" style="font-size:11.5px;margin-left:8px;">${RISK_TIERS[d.riskTier].blurb}</span></div>` : ''}
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Disposition</div>
+      <div class="disp-picker">
+        ${Object.keys(DISPOSITIONS).map(k => `
+          <div class="disp-opt ${pick === k ? 'on' : ''}" onclick="dispPick('${k}')">
+            <div class="disp-opt-label">${DISPOSITIONS[k].label}</div>
+            <div class="disp-opt-note">Routed to ${DISPOSITIONS[k].routedTo}. Closes ${DISPOSITIONS[k].closes}.</div>
+          </div>`).join('')}
+      </div>
+
+      ${pick === 'field_fix' ? `
+        <div class="form-row" style="margin-top:14px;">
+          <div><label class="form-label">Field official <span style="color:var(--red)">*</span></label>
+            <input class="form-input" value="${d.fieldOfficial}" placeholder="Name of the person who holds the crew" onchange="dispDraft.fieldOfficial=this.value">
+          </div>
+          <div><label class="form-label">Title</label>
+            <input class="form-input" value="${d.fieldOfficialTitle}" placeholder="e.g. Superintendent" onchange="dispDraft.fieldOfficialTitle=this.value">
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Close by date <span style="color:var(--red)">*</span></label>
+          <input type="date" class="form-input" value="${d.closeBy}" onchange="dispDraft.closeBy=this.value">
+        </div>` : ''}
+
+      ${pick === 'cleared' ? `
+        <div class="form-group" style="margin-top:14px;margin-bottom:0;">
+          <label class="form-label">Published model revision <span style="color:var(--red)">*</span></label>
+          <input class="form-input" value="${d.modelRev}" placeholder="Revision or publish reference VEC will back-check against" onchange="dispDraft.modelRev=this.value">
+        </div>` : ''}
+
+      ${pick === 'non_issue' ? `
+        <div class="form-group" style="margin-top:14px;margin-bottom:0;">
+          <label class="form-label">Written basis <span style="color:var(--red)">*</span></label>
+          <textarea class="form-textarea" placeholder="Why this installs clean with no work in the model and none in the field" onchange="dispDraft.basis=this.value">${d.basis}</textarea>
+        </div>` : ''}
+
+      ${pick === 'pending' ? `
+        <div class="form-group" style="margin-top:14px;margin-bottom:0;">
+          <label class="form-label">Blocker reference <span style="color:var(--red)">*</span></label>
+          <input class="form-input" value="${d.blockerRef}" placeholder="RFI, bulletin, design revision, procurement hold, or the model awaited" onchange="dispDraft.blockerRef=this.value">
+        </div>` : ''}
+    </div>
+
+    ${pick ? `<div class="perm-note">
+      <strong>${DISPOSITIONS[pick].label}</strong> does not close anything on its own.
+      It is routed to ${DISPOSITIONS[pick].routedTo} and closes ${DISPOSITIONS[pick].closes}.
+    </div>` : ''}
+  `;
+}
+
+function dispPick(k) { dispDraft.disposition = k; renderDispositionForm(); }
+window.dispPick = dispPick;
+
+function saveDisposition() {
+  const d = dispDraft;
+  if (!d.disposition) { alert('Pick a disposition.'); return; }
+  const missing = [];
+  if (d.disposition === 'field_fix') {
+    if (!d.fieldOfficial.trim()) missing.push('a named field official');
+    if (!d.closeBy) missing.push('a close by date');
+  }
+  if (d.disposition === 'cleared' && !d.modelRev.trim()) missing.push('the published model revision');
+  if (d.disposition === 'non_issue' && !d.basis.trim()) missing.push('a written basis');
+  if (d.disposition === 'pending' && !d.blockerRef.trim()) missing.push('a blocker reference');
+  if (missing.length) {
+    alert(`A ${DISPOSITIONS[d.disposition].label} needs ${missing.join(' and ')}.\n\nWithout it the condition is recorded as unresolved and stays open against the trade.`);
+    return;
+  }
+
+  const c = CONDITIONS.find(x => x.uid === d.uid);
+  Object.assign(c, {
+    disposition: d.disposition,
+    fieldOfficial: d.fieldOfficial, fieldOfficialTitle: d.fieldOfficialTitle,
+    closeBy: d.closeBy, modelRev: d.modelRev, basis: d.basis, blockerRef: d.blockerRef,
+    dispositionBy: actorName(), dispositionAt: new Date().toISOString(),
+    // A new disposition voids any prior review
+    reviewOutcome: null, reviewBy: '', reviewAt: '', reviewNote: ''
+  });
+  condHistory(c, 'Disposition', `${DISPOSITIONS[d.disposition].label} by ${actorName()}`);
+  saveConditions();
+  addChangeLogEntry(actorCompany(), 'status', `${c.id} dispositioned ${DISPOSITIONS[d.disposition].label}`);
+  closeDispositionModal();
+  renderDisposition();
+}
+
+function recordOutcome(uid, outcome) {
+  const c = CONDITIONS.find(x => x.uid === uid);
+  if (!c) return;
+  if (!canReview(c)) {
+    alert(myTradeNames().includes(c.trade)
+      ? 'A trade cannot review its own condition. Section 5.2.'
+      : 'Your role cannot record review outcomes.');
+    return;
+  }
+  if (!c.disposition) { alert('There is no disposition to review yet.'); return; }
+
+  const note = prompt(
+    `Record ${OUTCOMES[outcome].label} on ${c.id}?\n\n${OUTCOMES[outcome].blurb}\n\nNote (optional):`, '');
+  if (note === null) return;
+
+  c.reviewOutcome = outcome;
+  c.reviewBy = actorName();
+  c.reviewAt = new Date().toISOString();
+  c.reviewNote = note;
+
+  if (outcome === 'rejected') {
+    c.resolveBy = toDateInput(addBusinessDays(TODAY, 3));
+    c.backCheckDue = toDateInput(addBusinessDays(TODAY, 5));
+    condHistory(c, 'Rejected', `${note || 'no note'} · resolve by ${c.resolveBy}, back-check ${c.backCheckDue}`);
+  } else {
+    condHistory(c, OUTCOMES[outcome].label, note || '');
+  }
+  saveConditions();
+  addChangeLogEntry(actorCompany(), 'status', `${c.id} review outcome ${OUTCOMES[outcome].label}`);
+  renderDisposition();
+}
+
+function addBusinessDays(from, n) {
+  const d = new Date(from);
+  let added = 0;
+  while (added < n) {
+    d.setDate(d.getDate() + 1);
+    if (d.getDay() !== 0 && d.getDay() !== 6) added++;
+  }
+  return d;
+}
+
+function recordBackCheck(uid, pass) {
+  const c = CONDITIONS.find(x => x.uid === uid);
+  if (!c) return;
+  if (!can('condition.backcheck')) { denied('record back-checks'); return; }
+  c.backCheck = { pass: !!pass, at: new Date().toISOString(), by: actorName() };
+  if (pass) { c.reviewOutcome = 'accepted'; c.reviewBy = actorName(); c.reviewAt = new Date().toISOString(); }
+  condHistory(c, 'Back-check', pass ? 'Passed, condition resolved' : 'Failed, condition remains open');
+  saveConditions();
+  renderDisposition();
+}
+
+window.generateConditions = generateConditions;
+window.setRiskTier = setRiskTier;
+window.splitIssueOut = splitIssueOut;
+window.deleteCondition = deleteCondition;
+window.openDisposition = openDisposition;
+window.closeDispositionModal = closeDispositionModal;
+window.saveDisposition = saveDisposition;
+window.recordOutcome = recordOutcome;
+window.recordBackCheck = recordBackCheck;
+
+/* ---------- what state is a condition actually in ---------- */
+
+function condState(c) {
+  if (!c.disposition) return { key: 'awaiting', label: 'Awaiting disposition', open: true };
+  if (c.disposition === 'cleared') {
+    if (!c.backCheck) return { key: 'backcheck', label: 'Awaiting back-check', open: true };
+    return c.backCheck.pass
+      ? { key: 'closed', label: 'Closed, back-check passed', open: false }
+      : { key: 'failed', label: 'Back-check failed', open: true };
+  }
+  if (!c.reviewOutcome) return { key: 'review', label: 'Awaiting review', open: true };
+  if (c.reviewOutcome === 'accepted') {
+    return c.disposition === 'pending'
+      ? { key: 'held', label: 'Held on blocker', open: true }
+      : { key: 'closed', label: 'Closed, accepted', open: false };
+  }
+  if (c.reviewOutcome === 'rejected') return { key: 'rejected', label: 'Rejected, resolution window', open: true };
+  return { key: 'held', label: 'Deferred, blocker confirmed', open: true };
+}
+
+/* ---------- the sign-off gate ---------- */
+
+function gateStatus(zoneId) {
+  const list = CONDITIONS.filter(c => c.zone === zoneId);
+  const open = list.filter(c => condState(c).open);
+  const highOpen = open.filter(c => c.riskTier === 'high');
+  const medOpen = open.filter(c => c.riskTier === 'medium');
+  const lowOpen = open.filter(c => c.riskTier === 'low');
+  const untiered = list.filter(c => !c.riskTier);
+  const fieldFixes = list.filter(c => c.disposition === 'field_fix' && c.reviewOutcome === 'accepted');
+  const pendings = open.filter(c => c.disposition === 'pending');
+  const noDisp = list.filter(c => !c.disposition);
+
+  const blockers = [];
+  if (highOpen.length) blockers.push(`${highOpen.length} High tier condition${highOpen.length === 1 ? '' : 's'} still open`);
+  if (untiered.length) blockers.push(`${untiered.length} condition${untiered.length === 1 ? '' : 's'} with no risk tier set`);
+  if (noDisp.length) blockers.push(`${noDisp.length} condition${noDisp.length === 1 ? '' : 's'} with no disposition returned`);
+  const ffBad = fieldFixes.filter(c => !c.fieldOfficial || !c.closeBy).length;
+  if (ffBad) blockers.push(`${ffBad} accepted Field Fix without a named official and close by date`);
+
+  return {
+    total: list.length, open: open.length,
+    highOpen: highOpen.length, medOpen: medOpen.length, lowOpen: lowOpen.length,
+    untiered: untiered.length, fieldFixes: fieldFixes.length, pending: pendings.length,
+    blockers, ready: blockers.length === 0 && list.length > 0
+  };
+}
+window.gateStatus = gateStatus;
+window.condState = condState;
+
+/* ---------- the batch the extension writes ---------- */
+
+// Only conditions that have actually cleared review become a batch. This is the
+// difference between the platform and the old PDF flow: the extension writes
+// what was reviewed, not what a trade returned.
+function buildBatch(zoneId) {
+  const items = [];
+  for (const c of CONDITIONS.filter(c => c.zone === zoneId)) {
+    const st = condState(c);
+    const zoneName = (ZONES.find(z => z.id === c.zone) || {}).name || c.zone;
+
+    let action = null, toStatus = null;
+    if (st.key === 'closed') { action = 'close'; toStatus = 'closed'; }
+    else if (c.disposition === 'pending' && c.reviewOutcome) { action = 'pending'; toStatus = 'pending'; }
+    if (!action) continue;
+
+    const comment = action === 'close'
+      ? `${DISPOSITIONS[c.disposition].label} per ${c.sourceDoc || 'VEC disposition'}, condition ${c.id}. ` +
+        (c.disposition === 'field_fix'
+          ? `Accepted by ${c.fieldOfficial}${c.fieldOfficialTitle ? ', ' + c.fieldOfficialTitle : ''}, ${c.trade}. Close by ${c.closeBy}.`
+          : c.disposition === 'non_issue'
+            ? `Basis: ${c.basis} Reviewed ${OUTCOMES[c.reviewOutcome].label.toLowerCase()} by ${c.reviewBy}.`
+            : `Back-check passed against ${c.modelRev} by ${c.backCheck.by}.`)
+      : `Pending per ${c.sourceDoc || 'VEC disposition'}, condition ${c.id}. Blocker: ${c.blockerRef}. ` +
+        `${OUTCOMES[c.reviewOutcome].label} by ${c.reviewBy}.`;
+
+    for (const i of c.issues) {
+      items.push({
+        externalId: i.externalId || '', localId: i.id, condition: c.id,
+        action, toStatus, comment,
+        customFields: {
+          'Risk Tier': c.riskTier ? RISK_TIERS[c.riskTier].label : '',
+          'Disposition': DISPOSITIONS[c.disposition].label,
+          'Review Outcome': c.reviewOutcome ? OUTCOMES[c.reviewOutcome].label : '',
+          'Field Official': c.fieldOfficial ? `${c.fieldOfficial}${c.fieldOfficialTitle ? ', ' + c.fieldOfficialTitle : ''}` : '',
+          'Close By Date': c.closeBy || '',
+          'Blocker Reference': c.blockerRef || '',
+          'Source Document': c.sourceDoc || ''
+        },
+        area: zoneName, trade: c.trade
+      });
+    }
+  }
+  return items;
+}
+
+function publishBatch() {
+  if (!can('batch.publish')) { denied('publish a write batch'); return; }
+  const zoneId = document.getElementById('disp-zone').value;
+  if (!zoneId || zoneId === 'all') { alert('Pick a single coordination area.'); return; }
+
+  const items = buildBatch(zoneId);
+  if (!items.length) { alert('Nothing has cleared review in this area yet, so there is nothing to write.'); return; }
+
+  const cfg = (allProjects[activeProjectId] || {}).config || {};
+  const zoneName = (ZONES.find(z => z.id === zoneId) || {}).name || zoneId;
+  const docNumber = `VEC-${(cfg.name || activeProjectId).replace(/[^A-Za-z0-9]/g, '').slice(0, 8).toUpperCase()}-CD-${toDateInput(TODAY).replace(/-/g, '')}`;
+
+  const batch = {
+    docNumber, project: activeProjectId, projectName: cfg.name || activeProjectId,
+    area: zoneName, areaId: zoneId,
+    createdAt: new Date().toISOString(), createdBy: actorName(), createdByCompany: actorCompany(),
+    procedure: 'VEC-CWP-001',
+    itemCount: items.length,
+    items
+  };
+
+  const closes = items.filter(i => i.action === 'close').length;
+  if (!confirm(
+    `Publish a write batch for ${zoneName}?\n\n` +
+    `${items.length} issue${items.length === 1 ? '' : 's'}: ${closes} to close, ${items.length - closes} to pending.\n` +
+    `Document ${docNumber}\n\n` +
+    `This does not touch ACC. It publishes the batch for the extension to write.`
+  )) return;
+
+  db.ref(`projects/${activeProjectId}/batches/${docNumber}`).set(batch).then(() => {
+    window.LAST_BATCH = batch;
+    addChangeLogEntry(actorCompany(), 'status', `Published write batch ${docNumber} for ${zoneName}, ${items.length} issues`);
+    document.getElementById('disp-batch-out').innerHTML = `
+      <div class="perm-note" style="background:var(--green-bg);border-color:transparent;color:var(--green);">
+        <strong>${docNumber} published.</strong> ${items.length} issues staged. Open the extension in ACC and pull this document number,
+        or copy the JSON below if you are on the older extension build.
+      </div>
+      <textarea class="form-textarea mono" style="min-height:150px;font-size:11px;" readonly>${JSON.stringify(batch, null, 2)}</textarea>
+      <button class="btn ghost" style="margin-top:8px;" onclick="copyBatchJson()">Copy JSON</button>`;
+  }).catch(e => alert('Could not publish: ' + e.message));
+}
+
+function copyBatchJson() {
+  const ta = document.querySelector('#disp-batch-out textarea');
+  if (!ta) return;
+  ta.select();
+  try { document.execCommand('copy'); alert('Batch copied.'); }
+  catch (e) { alert('Select the text and copy it manually.'); }
+}
+
+window.publishBatch = publishBatch;
+window.copyBatchJson = copyBatchJson;
+window.buildBatch = buildBatch;
+
+/* ---------- the Disposition tab ---------- */
+
+function renderDisposition() {
+  const host = document.getElementById('disposition-body');
+  if (!host) return;
+
+  const sel = document.getElementById('disp-zone');
+  if (sel && sel.options.length !== ZONES.length + 1) {
+    const keep = sel.value;
+    sel.innerHTML = '<option value="all">All areas</option>' +
+      ZONES.map(z => `<option value="${z.id}">${z.name}</option>`).join('');
+    if (keep) sel.value = keep;
+  }
+
+  const zoneId = sel ? sel.value : 'all';
+  const list = zoneId === 'all' ? CONDITIONS : CONDITIONS.filter(c => c.zone === zoneId);
+  const gate = zoneId === 'all' ? null : gateStatus(zoneId);
+
+  const ungrouped = zoneId === 'all' ? 0 : ISSUES.filter(i =>
+    i.zone === zoneId && i.status !== 'resolved' && i.status !== 'wont-fix' &&
+    !CONDITIONS.some(c => (c.issues || []).some(x => x.id === i.id))).length;
+
+  host.innerHTML = `
+    ${gate ? `
+      <div class="gate-card ${gate.ready ? 'ready' : ''}">
+        <div class="gate-head">
+          <div>
+            <div class="gate-title">${gate.ready ? 'Area is ready to sign' : 'Area is not ready to sign'}</div>
+            <div class="gate-sub">${gate.total} condition${gate.total === 1 ? '' : 's'}, ${gate.open} still open</div>
+          </div>
+          <div class="gate-tiers">
+            <div class="gate-tier ${gate.highOpen ? 'bad' : 'ok'}"><span>${gate.highOpen}</span>High open</div>
+            <div class="gate-tier"><span>${gate.medOpen}</span>Medium open</div>
+            <div class="gate-tier"><span>${gate.lowOpen}</span>Low open</div>
+            <div class="gate-tier"><span>${gate.fieldFixes}</span>Field fixes carried</div>
+            <div class="gate-tier"><span>${gate.pending}</span>Pending</div>
+          </div>
+        </div>
+        ${gate.blockers.length ? `<ul class="gate-blockers">${gate.blockers.map(b => `<li>${b}</li>`).join('')}</ul>`
+          : '<div class="gate-ok">No High tier open, every condition tiered and dispositioned, carried items have an official and a date.</div>'}
+      </div>` : ''}
+
+    ${ungrouped ? `
+      <div class="perm-note">
+        <strong>${ungrouped} open issue${ungrouped === 1 ? '' : 's'} not yet in a condition.</strong>
+        Group them before issuing a disposition document, otherwise they are invisible to the gate.
+      </div>` : ''}
+
+    ${list.length ? `
+      <div class="cond-list">
+        ${list.map(c => {
+          const st = condState(c);
+          const zoneName = (ZONES.find(z => z.id === c.zone) || {}).name || c.zone;
+          return `
+            <div class="cond ${st.key}">
+              <div class="cond-main">
+                <div class="cond-head">
+                  <span class="cond-id">${c.id}</span>
+                  <span class="cond-title">${c.title}</span>
+                  <span class="cond-state st-${st.key}">${st.label}</span>
+                </div>
+                <div class="cond-meta">
+                  ${zoneId === 'all' ? zoneName + ' · ' : ''}${c.trade} · ${c.count} issue${c.count === 1 ? '' : 's'}
+                  ${c.issues.length <= 8 ? ' · ' + c.issues.map(i => '#' + (i.externalId || i.id)).join(', ') : ''}
+                </div>
+                ${c.disposition ? `
+                  <div class="cond-disp">
+                    <strong>${DISPOSITIONS[c.disposition].label}</strong>
+                    ${c.fieldOfficial ? ` · ${c.fieldOfficial}${c.fieldOfficialTitle ? ', ' + c.fieldOfficialTitle : ''}` : ''}
+                    ${c.closeBy ? ` · close by ${c.closeBy}` : ''}
+                    ${c.blockerRef ? ` · ${c.blockerRef}` : ''}
+                    ${c.modelRev ? ` · rev ${c.modelRev}` : ''}
+                    <span class="an-dim"> — ${c.dispositionBy}</span>
+                  </div>` : ''}
+                ${c.reviewOutcome ? `<div class="cond-review">${OUTCOMES[c.reviewOutcome].label} by ${c.reviewBy}${c.reviewNote ? ' · ' + c.reviewNote : ''}${c.resolveBy ? ` · resolve by ${c.resolveBy}, back-check ${c.backCheckDue}` : ''}</div>` : ''}
+              </div>
+
+              <div class="cond-side">
+                <select class="tier-select tier-${c.riskTier || 'none'}" ${can('condition.manage') ? '' : 'disabled'}
+                  onchange="setRiskTier('${c.uid}', this.value)">
+                  <option value="" ${!c.riskTier ? 'selected' : ''}>No tier</option>
+                  ${Object.keys(RISK_TIERS).map(t => `<option value="${t}" ${c.riskTier === t ? 'selected' : ''}>${RISK_TIERS[t].label}</option>`).join('')}
+                </select>
+                <div class="cond-actions">
+                  ${canDisposition(c) ? `<button class="btn ghost" onclick="openDisposition('${c.uid}')">${c.disposition ? 'Change' : 'Disposition'}</button>` : ''}
+                  ${c.disposition === 'cleared' && !c.backCheck && can('condition.backcheck')
+                    ? `<button class="btn ghost" onclick="recordBackCheck('${c.uid}', true)">Back-check pass</button>
+                       <button class="btn danger" onclick="recordBackCheck('${c.uid}', false)">Fail</button>`
+                    : ''}
+                  ${c.disposition && c.disposition !== 'cleared' && !c.reviewOutcome && canReview(c) ? `
+                    <button class="btn" onclick="recordOutcome('${c.uid}','accepted')">Accept</button>
+                    <button class="btn danger" onclick="recordOutcome('${c.uid}','rejected')">Reject</button>
+                    ${c.disposition === 'pending' ? `<button class="btn ghost" onclick="recordOutcome('${c.uid}','deferred')">Defer</button>` : ''}` : ''}
+                  ${can('condition.manage') ? `<button class="btn ghost" onclick="deleteCondition('${c.uid}')" title="Ungroup">Remove</button>` : ''}
+                </div>
+              </div>
+            </div>`;
+        }).join('')}
+      </div>`
+      : `<div class="viz-empty">No conditions yet. Pick an area and build them from the open issues.</div>`}
+
+    <div id="disp-batch-out" style="margin-top:18px;"></div>`;
+}
+window.renderDisposition = renderDisposition;
+
+/* ---------- wire-up ---------- */
+
+const _p8OpenProject = openProject;
+openProject = function (pid) {
+  _p8OpenProject(pid);
+  setTimeout(() => { loadConditions(pid).then(renderDisposition); }, 700);
+};
+window.openProject = openProject;
+
+/* ============================================================
    V3.1 — INITIALIZATION
    The auth listener above drives everything. Nothing renders
    until a signed-in account has a role assigned.
@@ -9453,7 +11063,7 @@ window.renderAnalytics = renderAnalytics;
 setAuthMode('signin');
 showAuthScreen(false);
 
-console.log('🚀 VEC BIM Coordination Platform v3.8 loaded');
+console.log('🚀 VEC BIM Coordination Platform v4.0 loaded');
 
 </script>
 
